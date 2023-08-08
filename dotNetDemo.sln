@@ -11,6 +11,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageDecoderTests", "Pack
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PrismNavigationTest", "PrismNavigationTest\PrismNavigationTest.csproj", "{362AFF40-D9BA-42A4-8F1D-73C7D61CF38C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugin", "Plugin", "{18D721C5-BC6B-45F2-BAB1-4E7CB50AC916}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginDemo.Core", "PluginDemo.Core\PluginDemo.Core.csproj", "{51A6FFA0-FD21-4128-B9FA-D0288713C0E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginDemo.PluginA", "PluginDemo.PluginA\PluginDemo.PluginA.csproj", "{F4F687EF-8AA5-453B-AB23-AD8D2CB61103}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginDemo.Main", "PluginDemo.Main\PluginDemo.Main.csproj", "{04AD0C33-9136-4BBD-9508-7DEBB1D5F65C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
