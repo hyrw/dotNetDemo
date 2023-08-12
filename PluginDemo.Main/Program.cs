@@ -3,13 +3,9 @@ using PluginDemo.Core;
 using System.Reflection;
 
 var dllFiles = Directory.EnumerateFiles(AppContext.BaseDirectory, "*.dll");
-var assemblys = new List<Assembly>();
-foreach (var dllFile in dllFiles)
-{
-    assemblys.Add(Assembly.LoadFile(dllFile));
-}
 
-var pluginTypes = assemblys
+var pluginTypes = dllFiles
+    .Select(file => Assembly.LoadFile(file))
     .SelectMany(i => i.GetExportedTypes())
     .Where(i => i.IsAssignableTo(typeof(IPlugin)));
 
