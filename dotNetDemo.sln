@@ -25,6 +25,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginDemo.Main", "PluginDe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumerableObject", "EnumerableObject\EnumerableObject.csproj", "{BE89BA7B-6343-4C54-8E02-08C8667A3A2D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Animation", "Animation", "{9FA9D297-487F-4704-B3AE-5F3F187FD698}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WaterRipple", "WaterRipple\WaterRipple.csproj", "{67961214-B52C-4307-913A-ECCA86478068}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +75,10 @@ Global
 		{BE89BA7B-6343-4C54-8E02-08C8667A3A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE89BA7B-6343-4C54-8E02-08C8667A3A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE89BA7B-6343-4C54-8E02-08C8667A3A2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67961214-B52C-4307-913A-ECCA86478068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67961214-B52C-4307-913A-ECCA86478068}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67961214-B52C-4307-913A-ECCA86478068}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67961214-B52C-4307-913A-ECCA86478068}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,6 +87,7 @@ Global
 		{51A6FFA0-FD21-4128-B9FA-D0288713C0E9} = {18D721C5-BC6B-45F2-BAB1-4E7CB50AC916}
 		{F4F687EF-8AA5-453B-AB23-AD8D2CB61103} = {18D721C5-BC6B-45F2-BAB1-4E7CB50AC916}
 		{04AD0C33-9136-4BBD-9508-7DEBB1D5F65C} = {18D721C5-BC6B-45F2-BAB1-4E7CB50AC916}
+		{67961214-B52C-4307-913A-ECCA86478068} = {9FA9D297-487F-4704-B3AE-5F3F187FD698}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4350933C-605F-4B50-B504-0661444DF5FF}
