@@ -1,0 +1,20 @@
+﻿<Window x:Class="NotifyIconAndHotKeyDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:local="clr-namespace:NotifyIconAndHotKeyDemo"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.InputBindings>
+        <KeyBinding Gesture="Control+ALt+q" HotkeyManager.RegisterGlobalHotkey="True" Command="{Binding TestCommand}" />
+    </Window.InputBindings>
+    <Grid>
+        <tb:TaskbarIcon x:Name="myNotifyIcon"
+                    ToolTipText="Tool"
+                    TrayMouseDoubleClick="myNotifyIcon_TrayMouseDoubleClick"
+                    IconSource="icon.ico"/>
+        <Button HorizontalAlignment="Center" VerticalAlignment="Center" Content="Hidden" Click="Button_Click" />
+    </Grid>
+</Window>
