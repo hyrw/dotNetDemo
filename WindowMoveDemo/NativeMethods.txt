@@ -1,0 +1,4 @@
+DwmGetWindowAttribute
+GetWindowThreadProcessId
+SetWinEventHook
+UnhookWinEvent
