@@ -2,3 +2,7 @@ DwmGetWindowAttribute
 GetWindowThreadProcessId
 SetWinEventHook
 UnhookWinEvent
+SetWindowsHookEx
+CallNextHookEx
+UnhookWindowsHookEx
+GetAsyncKeyState

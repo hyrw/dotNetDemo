@@ -3,7 +3,7 @@
 namespace OverlayDemo;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct Rect
+public struct RECT
 {
     public int Left;
     public int Top;

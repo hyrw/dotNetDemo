@@ -6,11 +6,11 @@
         xmlns:local="clr-namespace:OverlayDemo"
         mc:Ignorable="d"
         Topmost="True"
-        Width="200"
+        LostFocus="Window_LostFocus"
         Height="100"
+        Width="300"
         Title="MainWindow" >
-    <Grid
-             HorizontalAlignment="Center" VerticalAlignment="Center" TextElement.Foreground="DarkOrange">
-        <TextBlock Text="Overlay" FontSize="32" FontWeight="Bold"/>
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center"  TextElement.Foreground="DarkOrange">
+        <TextBlock x:Name="textBlock" FontSize="32" FontWeight="Bold"/>
     </Grid>
 </Window>
