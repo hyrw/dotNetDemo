@@ -55,9 +55,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.UI", "MQTTDemo\MQTT.UI
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DesignPpattern", "DesignPpattern", "{B0CAF74B-CD86-4CE2-BDFF-983F351D3F00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Singleton", "DesignPpattern\Singleton\Singleton.csproj", "{D7F45048-D396-404B-8FD2-542FC28EE604}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Singleton", "DesignPpattern\Singleton\Singleton.csproj", "{D7F45048-D396-404B-8FD2-542FC28EE604}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SingletonTest", "DesignPpattern\SingletonTest\SingletonTest.csproj", "{7BBFF733-15CB-4218-A662-0C9A5ECE30B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SingletonTest", "DesignPpattern\SingletonTest\SingletonTest.csproj", "{7BBFF733-15CB-4218-A662-0C9A5ECE30B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTemplateSelectorDemo", "WPF\DataTemplateSelectorDemo\DataTemplateSelectorDemo.csproj", "{D50D6EE9-16A3-471B-B6C9-0383A12C7881}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -157,6 +159,10 @@ Global
 		{7BBFF733-15CB-4218-A662-0C9A5ECE30B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7BBFF733-15CB-4218-A662-0C9A5ECE30B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7BBFF733-15CB-4218-A662-0C9A5ECE30B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D50D6EE9-16A3-471B-B6C9-0383A12C7881}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D50D6EE9-16A3-471B-B6C9-0383A12C7881}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D50D6EE9-16A3-471B-B6C9-0383A12C7881}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D50D6EE9-16A3-471B-B6C9-0383A12C7881}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -177,6 +183,7 @@ Global
 		{BF484A6D-6DB9-4DD5-898C-84BD684085BF} = {4DFF34B1-6159-4D53-9F6E-589F1863642B}
 		{D7F45048-D396-404B-8FD2-542FC28EE604} = {B0CAF74B-CD86-4CE2-BDFF-983F351D3F00}
 		{7BBFF733-15CB-4218-A662-0C9A5ECE30B7} = {B0CAF74B-CD86-4CE2-BDFF-983F351D3F00}
+		{D50D6EE9-16A3-471B-B6C9-0383A12C7881} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4350933C-605F-4B50-B504-0661444DF5FF}
