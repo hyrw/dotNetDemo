@@ -29,9 +29,9 @@
             </i:Interaction.Triggers>
         </CheckBox>
         <TextBlock x:Name="text" Text="UnChange" />
-        <TextBox Text="">
+        <TextBox>
             <i:Interaction.Behaviors>
-                <b:TextBoxWaterMarkBehavior IsNotNullForeground="#000" WaterMarkText="Please enter text" />
+                <b:TextBoxPlaceholderBehavior IsNotNullForeground="Red" WaterMarkText="Please enter text" />
             </i:Interaction.Behaviors>
         </TextBox>
     </StackPanel>
