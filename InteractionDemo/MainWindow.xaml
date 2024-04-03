@@ -34,5 +34,6 @@
                 <b:TextBoxPlaceholderBehavior IsNotNullForeground="Red" WaterMarkText="Please enter text" />
             </i:Interaction.Behaviors>
         </TextBox>
+        <TextBox local:Placeholder.Text="Please input ..." />
     </StackPanel>
 </Window>
