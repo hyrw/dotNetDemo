@@ -1,0 +1,42 @@
+﻿<Window
+    x:Class="DataTemplateSelectorDemo.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DataTemplateSelectorDemo"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="MainWindow"
+    Width="800"
+    Height="450"
+    d:DataContext="{d:DesignInstance Type=local:MainWindow}"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <local:PersonDataTempelateSelector x:Key="TempelateSelector" />
+
+        <DataTemplate x:Key="PersonTemplate" DataType="{x:Type local:Person}">
+            <Border>
+                <StackPanel x:Name="bg" Orientation="Horizontal">
+                    <TextBlock Width="100" Text="{Binding Name}" />
+                    <TextBlock Width="100" Text="{Binding Age}" />
+                </StackPanel>
+            </Border>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Age}" Value="20">
+                    <Setter TargetName="bg" Property="Background" Value="red" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+        <DataTemplate x:Key="EmployeeTemplate" DataType="{x:Type local:Employee}">
+            <Border>
+                <StackPanel x:Name="bg" Orientation="Horizontal">
+                    <TextBlock Width="100" Text="{Binding Name}" />
+                    <TextBlock Width="100" Text="{Binding Age}" />
+                    <TextBlock Width="100" Text="{Binding Department}" />
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid>
+        <ListBox ItemTemplateSelector="{StaticResource TempelateSelector}" ItemsSource="{Binding Persons}" />
+    </Grid>
+</Window>
