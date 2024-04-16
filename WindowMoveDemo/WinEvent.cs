@@ -1,7 +1,7 @@
 ﻿namespace OverlayDemo
 {
     /// <summary>
-    /// https://learn.microsoft.com/zh-cn/windows/win32/winauto/event-constants
+    /// https://learn.microsoft.com/zh-cn/windows/Win32/winauto/event-constants
     /// </summary>
     internal enum WinEvent : uint
     {

@@ -5,12 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OverlayDemo"
         mc:Ignorable="d"
-        Topmost="True"
-        LostFocus="Window_LostFocus"
-        Height="100"
-        Width="300"
+        Topmost="{Binding Topmost, Mode=OneWay, FallbackValue=True}"
+        Left="{Binding Left}"
+        Top="{Binding Top}"
+        xmlns:vm="clr-namespace:OverlayDemo.ViewModel"
+        d:DataContext="{d:DesignInstance Type={x:Type vm:MainWindowViewModel}}"
+        Height="300"
+        Width="600"
         Title="MainWindow" >
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center"  TextElement.Foreground="DarkOrange">
-        <TextBlock x:Name="textBlock" FontSize="32" FontWeight="Bold"/>
-    </Grid>
+    <StackPanel TextElement.FontSize="32" TextElement.FontWeight="Black"  TextBlock.TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"  TextElement.Foreground="DarkOrange">
+        <TextBlock Text="{Binding FastDiscard}" x:Name="fastDiscardState">
+            <Run Text="快速丢弃："/>
+        </TextBlock>
+        <TextBlock>
+            <Run Text="{Binding PreseKey, Mode=OneWay}"/>
+            <Run Text="Shift:"/>
+            <Run Text="{Binding PreseShift, Mode=OneWay, FallbackValue=False}"/>
+            <Run Text="Ctrl:"/>
+            <Run Text="{Binding PreseCtrl, Mode=OneWay, FallbackValue=False}"/>
+            <Run Text="Alt:"/>
+            <Run Text="{Binding PreseAlt, Mode=OneWay, FallbackValue=False}"/>
+        </TextBlock>
+        <TextBlock Text="{Binding MousePosition, Mode=OneWay}" />
+    </StackPanel>
 </Window>
