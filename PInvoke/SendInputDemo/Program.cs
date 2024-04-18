@@ -1,8 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Windows.Win32;
-using Windows.Win32.Foundation;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
-using Windows.Win32.UI.WindowsAndMessaging;
 
 const int MouseEvent_Absolute = 0x8000; 
 const int MouserEvent_Hwheel = 0x01000; 
@@ -17,13 +15,6 @@ const int MouseEvent_RightUp = 0x0010;
 const int MouseEvent_Wheel = 0x0800;
 const int MousseEvent_XUp = 0x0100;
 const int MousseEvent_XDown = 0x0080;
-
-HOOKPROC mousehookProc =
-
-
-var mouseHookHandle = PInvoke.SetWindowsHookEx(Windows.Win32.UI.WindowsAndMessaging.WINDOWS_HOOK_ID.WH_MOUSE_LL,
-    
-    )
 
 List<INPUT> inputs = [];
 INPUT mouseLeftButtonDown = new();
