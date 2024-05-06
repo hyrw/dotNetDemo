@@ -11,8 +11,8 @@
     <Grid VerticalAlignment="Center" Margin="100" >
         <Viewbox >
             <UniformGrid Columns="2" VerticalAlignment="Top">
-                <DatePicker Grid.Column="0" Margin="20"/>
-                <controls:SmartDate Grid.Column="1" Margin="20" Width="216"/>
+                <controls:SmartDate Grid.Column="0" Margin="20" Width="216"/>
+                <controls:AutoCompleteBox x:Name="autoComplete" ItemsSource="{Binding Names}" Grid.Column="2" Height="30" />
             </UniformGrid>
         </Viewbox>
     </Grid>

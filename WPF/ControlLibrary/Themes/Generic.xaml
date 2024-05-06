@@ -9,5 +9,6 @@
         <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/CalendarBox.xaml"/>
         <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/CalendarBoxItem.xaml"/>
         <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/ChevronButton.xaml"/>
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/AutoCompleteBox.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -18,7 +18,11 @@ namespace ControlDemoApp
     {
         public MainWindow()
         {
+            Names = ["123", "abc", "lskdf"];
             InitializeComponent();
+            DataContext = this;
         }
+        public List<string> Names { get; set; }
     }
+
 }
