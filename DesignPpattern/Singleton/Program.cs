@@ -1,6 +1,4 @@
-﻿Console.WriteLine();
-
-public class Singleton_0
+﻿public class Singleton_0
 {
     private static readonly Singleton_0 instance = new();
     public static Singleton_0 Instance => instance;
@@ -11,7 +9,7 @@ public class Singleton_0
 public class Singleton_1
 {
     private readonly static object lockObj = new();
-    private static Singleton_1 instance;
+    private static Singleton_1? instance;
     public static Singleton_1 Instance
     {
         get
@@ -39,4 +37,10 @@ public class Singleton_2
     }
 
     public Singleton_2() { }
+}
+
+public class Singleton_3<T> where T : new()
+{
+    readonly static Lazy<T> instance = new();
+    public static T Instance => instance.Value;
 }
