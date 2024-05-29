@@ -1,25 +1,35 @@
 ﻿namespace PackageDecoder;
+
+/// <summary>
+/// [flag(?)+data_length(?)+data+...]
+/// </summary>
 public class IndefinitePackage : PackageBase
 {
 
-    private readonly IEnumerable<byte> START_FLAG = new byte[] { 0x1A, 0x2B };
-    private const int PACKAGE_LEN = sizeof(int);
+    private readonly IEnumerable<byte> _flag;
+    private readonly int _dataLength;
 
-    public IndefinitePackage() : base() { }
+    public IndefinitePackage(IEnumerable<byte> flag, int dataLength) : base()
+    {
+        _flag = flag.ToArray();
+        _dataLength = dataLength;
+    }
 
     protected override int CalculatePackageLen()
     {
-        int headLen = this.START_FLAG.Count() + PACKAGE_LEN;
-        int len;
-        if (base._recivedBytes!.StartWith(this.START_FLAG)
-            && base._recivedBytes!.Count() >= headLen)
+        int headLength = _flag.Count() + _dataLength;
+        int packageLength;
+        if (base._receivedBytes.StartWith(this._flag)
+            && base._receivedBytes.Count() >= headLength)
         {
-            var intBytes = base._recivedBytes!.Skip(headLen).Take(PACKAGE_LEN);
-            len = BitConverter.ToInt32(intBytes.ToArray());
-        }else
-        {
-            len = base.InvalidLen;
+            int dataLength = BitConverter.ToInt32(
+                base._receivedBytes.Skip(this._flag.Count()).Take(_dataLength).ToArray());
+            packageLength = headLength + dataLength;
         }
-        return len;
+        else
+        {
+            packageLength = base.InvalidLen;
+        }
+        return packageLength;
     }
 }

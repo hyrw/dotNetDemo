@@ -2,7 +2,7 @@
 
 public abstract class PackageBase
 {
-    protected IEnumerable<byte>? _recivedBytes;
+    protected IEnumerable<byte> _receivedBytes;
 
     protected readonly int InvalidLen = -1;
 
@@ -15,19 +15,26 @@ public abstract class PackageBase
 
     public PackageBase()
     {
-        _recivedBytes = Enumerable.Empty<byte>();
+        _receivedBytes = Enumerable.Empty<byte>();
     }
 
     public void Input(IEnumerable<byte> bytes)
     {
         if (bytes is null) throw new ArgumentNullException(nameof(bytes));
-        _recivedBytes = _recivedBytes!.Concat(bytes);
+        _receivedBytes = _receivedBytes.Concat(bytes);
 
-        var packageLen = CalculatePackageLen();
-        while (_recivedBytes.Count() > packageLen)
+        while (true)
         {
-            OnDataParsed?.Invoke(this, _recivedBytes.Take(packageLen));
-            _recivedBytes = _recivedBytes.Skip(packageLen);
+            var packageLen = CalculatePackageLen();
+            if (packageLen != InvalidLen && _receivedBytes.Count() >= packageLen)
+            {
+                OnDataParsed?.Invoke(this, _receivedBytes.Take(packageLen));
+                _receivedBytes = _receivedBytes.Skip(packageLen);
+            }
+            else
+            {
+                break;
+            }
         }
     }
 }
