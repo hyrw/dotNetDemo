@@ -16,11 +16,23 @@
     <Window.DataContext>
         <vms:MainWindowViewModel />
     </Window.DataContext>
-    <Grid>
-        <views:TodoView>
-            <views:TodoView.DataContext>
-                <vms:TodoViewModel />
-            </views:TodoView.DataContext>
-        </views:TodoView>
-    </Grid>
+    <TabControl>
+        <TabItem Header="ListView">
+            <views:TodoView>
+                <views:TodoView.DataContext>
+                    <vms:TodoViewModel />
+                </views:TodoView.DataContext>
+            </views:TodoView>
+        </TabItem>
+        <TabItem Header="其它">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Left">
+                    <controls:Draggable Margin="5" Background="Red" />
+                    <controls:Draggable Margin="5" Background="Green" />
+                    <controls:Draggable Margin="5" Background="Orange" />
+                </StackPanel>
+                <controls:DropZoon Width="200" DockPanel.Dock="Right" />
+            </DockPanel>
+        </TabItem>
+    </TabControl>
 </Window>
