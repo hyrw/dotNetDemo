@@ -69,7 +69,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlDemoApp", "WPF\Contr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ControlLibrary", "WPF\ControlLibrary\ControlLibrary.csproj", "{3E1116E5-DB2E-4E2B-8C6F-D21BA39B8543}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Validation", "WPF\Validation\Validation.csproj", "{E18B6F81-0A37-49DB-B5FD-A196636D49EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Validation", "WPF\Validation\Validation.csproj", "{E18B6F81-0A37-49DB-B5FD-A196636D49EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragDemo", "WPF\DragDemo\DragDemo.csproj", "{C735C5EE-20E1-4675-BD3C-408E24210107}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -189,6 +191,10 @@ Global
 		{E18B6F81-0A37-49DB-B5FD-A196636D49EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E18B6F81-0A37-49DB-B5FD-A196636D49EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E18B6F81-0A37-49DB-B5FD-A196636D49EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C735C5EE-20E1-4675-BD3C-408E24210107}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C735C5EE-20E1-4675-BD3C-408E24210107}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C735C5EE-20E1-4675-BD3C-408E24210107}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C735C5EE-20E1-4675-BD3C-408E24210107}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -214,6 +220,7 @@ Global
 		{8AA8E88C-CF8A-4E1A-B892-F95EACE3F729} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
 		{3E1116E5-DB2E-4E2B-8C6F-D21BA39B8543} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
 		{E18B6F81-0A37-49DB-B5FD-A196636D49EB} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
+		{C735C5EE-20E1-4675-BD3C-408E24210107} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4350933C-605F-4B50-B504-0661444DF5FF}
