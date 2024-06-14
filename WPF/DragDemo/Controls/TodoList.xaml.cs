@@ -45,24 +45,27 @@ public partial class TodoList : UserControl
 
     private void ListViewItem_MouseMove(object sender, MouseEventArgs e)
     {
+        e.Handled = true;
         if (Mouse.LeftButton == MouseButtonState.Pressed &&
             sender is FrameworkElement frameworkElement)
         {
             object todoItem = frameworkElement.DataContext;
-            DragDropEffects result = DragDrop.DoDragDrop(frameworkElement, new DataObject(DataFormats.Serializable, todoItem), DragDropEffects.Move);
+            DataObject data = new(typeof(TodoItemModel), todoItem);
+            DragDropEffects result = DragDrop.DoDragDrop(frameworkElement, data, DragDropEffects.Move);
             if (result == DragDropEffects.None)
             {
                 AddCommand?.Execute(todoItem);
             }
         }
-
     }
 
     private void ListView_Drop(object sender, DragEventArgs e)
     {
-        var obj = e.Data.GetData(DataFormats.Serializable);
-        if (obj is TodoItemModel todoItem)
+        e.Handled = true;
+        Type format = typeof(TodoItemModel);
+        if (e.Data.GetDataPresent(format))
         {
+            TodoItemModel todoItem = (TodoItemModel)e.Data.GetData(format);
             if (AddCommand?.CanExecute(null) ?? false)
             {
                 AddCommand.Execute(todoItem);
@@ -72,11 +75,14 @@ public partial class TodoList : UserControl
 
     private void ListView_DragLeave(object sender, DragEventArgs e)
     {
+        e.Handled = true;
         HitTestResult result = VisualTreeHelper.HitTest(list, e.GetPosition(list));
         if (result != null) return;
-        var obj = e.Data.GetData(DataFormats.Serializable);
-        if (obj is TodoItemModel todoItem)
+        Type format = typeof(TodoItemModel);
+        if (e.Data.GetDataPresent(format))
         {
+            var todoItem = (TodoItemModel)e.Data.GetData(format);
+
             if (RemoveCommand?.CanExecute(null) ?? false)
             {
                 RemoveCommand.Execute(todoItem);
@@ -86,6 +92,7 @@ public partial class TodoList : UserControl
 
     private void ListViewItem_DragOver(object sender, DragEventArgs e)
     {
+        e.Handled = true;
         if (sender is FrameworkElement frameworkElement) {
             var insert = frameworkElement.DataContext;
             var data = e.Data.GetData(DataFormats.Serializable);
