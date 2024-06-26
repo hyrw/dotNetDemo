@@ -11,7 +11,7 @@
     <Grid>
         <Rectangle
             x:Name="hpRect"
-            Width="{Binding ElementName=root, Path=Width}"
+            Width="{Binding ElementName=root, Path=Width, Mode=OneWay}"
             HorizontalAlignment="Left"
             Fill="DarkRed" />
     </Grid>

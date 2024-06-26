@@ -11,6 +11,8 @@ internal partial class HPBarViewModel : ObservableObject
     [NotifyCanExecuteChangedFor(nameof(RandomLossOfLifeCommand))]
     double hp = 400;
 
+    public double MaxHP => 1000;
+
     [ObservableProperty]
     double lossLife;
 
@@ -25,7 +27,8 @@ internal partial class HPBarViewModel : ObservableObject
     [RelayCommand]
     private void ResetLife()
     {
-        Hp = 400;
+        Hp = MaxHP;
+        LossLife = 0;
     }
 
 }

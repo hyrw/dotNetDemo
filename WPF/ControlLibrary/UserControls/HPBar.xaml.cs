@@ -10,12 +10,20 @@ namespace ControlLibrary.UserControls;
 public partial class HPBar : UserControl
 {
 
+    public static readonly DependencyProperty HPProperty;
+    public static readonly DependencyProperty MaxHPProperty;
+
     public double HP
     {
-        get { return (double)GetValue(HPProperty); }
-        set { SetValue(HPProperty, value); }
+        get => (double)GetValue(HPProperty);
+        set => SetValue(HPProperty, value);
     }
-    public static readonly DependencyProperty HPProperty;
+
+    public double MaxHP
+    {
+        get => (double)GetValue(MaxHPProperty);
+        set => SetValue(MaxHPProperty, value);
+    }
 
     readonly DoubleAnimation widthAnimation;
 
@@ -26,7 +34,6 @@ public partial class HPBar : UserControl
         {
             IsAdditive = true,
             IsCumulative = true,
-            Duration = TimeSpan.FromSeconds(1),
             FillBehavior = FillBehavior.HoldEnd,
         };
     }
@@ -34,13 +41,29 @@ public partial class HPBar : UserControl
     static HPBar()
     {
         HPProperty = DependencyProperty.Register(nameof(HP), typeof(double), typeof(HPBar), new PropertyMetadata(default(double), OnHPChanged));
+        MaxHPProperty = DependencyProperty.Register(nameof(MaxHP), typeof(double), typeof(HPBar), new PropertyMetadata(default(double), OnMaxHPChanged));
+    }
+
+    private static void OnMaxHPChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        HPBar hpBar = (HPBar)d;
+        hpBar.widthAnimation.To = hpBar.HP2Width(hpBar.HP);
+        hpBar.widthAnimation.Duration = TimeSpan.Zero;
+        hpBar.hpRect.BeginAnimation(WidthProperty, hpBar.widthAnimation);
     }
 
     static void OnHPChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         HPBar hpBar = (HPBar)d;
-        hpBar.widthAnimation.To = (double)e.NewValue;
+        if (hpBar.MaxHP <= 0) return;
+
+        hpBar.widthAnimation.To = hpBar.HP2Width((double)e.NewValue);
+        hpBar.widthAnimation.Duration = TimeSpan.FromSeconds(1);
         hpBar.hpRect.BeginAnimation(WidthProperty, hpBar.widthAnimation);
     }
 
+    double HP2Width(double hp)
+    {
+        return hp / MaxHP * Width;
+    }
 }
