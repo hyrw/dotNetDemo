@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
-namespace ControlLibrary.UserControls;
+namespace ControlLibrary.Controls;
 
 /// <summary>
 /// HPBar.xaml 的交互逻辑

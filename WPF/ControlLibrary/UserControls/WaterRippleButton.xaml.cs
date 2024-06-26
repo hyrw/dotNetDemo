@@ -1,12 +1,11 @@
-﻿using System;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows;
+using System.Windows.Shapes;
 
-namespace WaterRipple;
+namespace ControlLibrary.Controls;
 
 // source http://note.youdao.com/s/ZsJLkpDu
 [TemplatePart(Name = PART_Geometry, Type = typeof(EllipseGeometry))]
