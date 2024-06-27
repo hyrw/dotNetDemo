@@ -9,7 +9,7 @@ internal partial class HPBarViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RandomLossOfLifeCommand))]
-    double hp = 400;
+    double hp = 500;
 
     public double MaxHP => 1000;
 

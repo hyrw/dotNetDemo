@@ -36,6 +36,30 @@ public partial class HPBar : UserControl
             IsCumulative = true,
             FillBehavior = FillBehavior.HoldEnd,
         };
+        /**
+         * 监听 DP 变化gg
+         */
+        //TypeDescriptor.GetProperties(this)[nameof(Width)]!.AddValueChanged(this, OnWidthChanged);
+        //DependencyPropertyDescriptor.FromProperty(WidthProperty, typeof(FrameworkElement)).AddValueChanged(this, OnWidthChanged);
+        //SizeChanged += OnWidthChanged;
+    }
+
+    // 监听 DP 变化
+    protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        if (e.Property == WidthProperty)
+        {
+            OnWidthChanged(this, EventArgs.Empty);
+        }
+    }
+
+    private static void OnWidthChanged(object? sender, EventArgs e)
+    {
+        if (sender is not HPBar hpBar) return;
+        hpBar.widthAnimation.To = hpBar.HP2Width(hpBar.HP);
+        hpBar.widthAnimation.Duration = TimeSpan.Zero;
+        hpBar.hpRect.BeginAnimation(WidthProperty, hpBar.widthAnimation);
     }
 
     static HPBar()
@@ -55,7 +79,6 @@ public partial class HPBar : UserControl
     static void OnHPChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         HPBar hpBar = (HPBar)d;
-        if (hpBar.MaxHP <= 0) return;
 
         hpBar.widthAnimation.To = hpBar.HP2Width((double)e.NewValue);
         hpBar.widthAnimation.Duration = TimeSpan.FromSeconds(1);
@@ -64,6 +87,13 @@ public partial class HPBar : UserControl
 
     double HP2Width(double hp)
     {
-        return hp / MaxHP * Width;
+        if (MaxHP <= 0)
+        {
+            return Width;
+        }
+        else
+        {
+            return hp / MaxHP * Width;
+        }
     }
 }
