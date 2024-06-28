@@ -21,34 +21,40 @@
             <DrawingBrush.Drawing>
                 <DrawingGroup>
                     <DrawingGroup.Children>
-                        <DrawingCollection>
-                            <GeometryDrawing>
-                                <GeometryDrawing.Geometry>
-                                    <GeometryGroup>
-                                        <LineGeometry StartPoint="10 0" EndPoint="10 50" />
-                                        <LineGeometry StartPoint="20 0" EndPoint="20 50" />
-                                        <LineGeometry StartPoint="30 0" EndPoint="30 50" />
-                                        <LineGeometry StartPoint="40 0" EndPoint="40 50" />
+                        <!--<GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <GeometryGroup>
+                                    <LineGeometry StartPoint="10 0" EndPoint="10 50" />
+                                    <LineGeometry StartPoint="20 0" EndPoint="20 50" />
+                                    <LineGeometry StartPoint="30 0" EndPoint="30 50" />
+                                    <LineGeometry StartPoint="40 0" EndPoint="40 50" />
 
-                                        <LineGeometry StartPoint="0 10" EndPoint="50 10" />
-                                        <LineGeometry StartPoint="0 20" EndPoint="50 20" />
-                                        <LineGeometry StartPoint="0 30" EndPoint="50 30" />
-                                        <LineGeometry StartPoint="0 40" EndPoint="50 40" />
-                                    </GeometryGroup>
-                                </GeometryDrawing.Geometry>
-                                <GeometryDrawing.Pen>
-                                    <Pen Brush="LightGray" />
-                                </GeometryDrawing.Pen>
-                            </GeometryDrawing>
-                            <GeometryDrawing>
-                                <GeometryDrawing.Geometry>
-                                    <PathGeometry Figures="M0,50 L0,0 50,0" />
-                                </GeometryDrawing.Geometry>
-                                <GeometryDrawing.Pen>
-                                    <Pen Brush="DarkGray" />
-                                </GeometryDrawing.Pen>
-                            </GeometryDrawing>
-                        </DrawingCollection>
+                                    <LineGeometry StartPoint="0 10" EndPoint="50 10" />
+                                    <LineGeometry StartPoint="0 20" EndPoint="50 20" />
+                                    <LineGeometry StartPoint="0 30" EndPoint="50 30" />
+                                    <LineGeometry StartPoint="0 40" EndPoint="50 40" />
+                                </GeometryGroup>
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="LightGray" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>-->
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <PathGeometry Figures="M0,10 H50 M0,20 H50 M0,30 H50 M0,40 H50 M10,0 V50 M20,0 V50 M30,0 V50 M40,0 V50" />
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="LightGray" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
+                        <GeometryDrawing>
+                            <GeometryDrawing.Geometry>
+                                <PathGeometry Figures="M0,50 L0,0 50,0" />
+                            </GeometryDrawing.Geometry>
+                            <GeometryDrawing.Pen>
+                                <Pen Brush="DarkGray" />
+                            </GeometryDrawing.Pen>
+                        </GeometryDrawing>
                     </DrawingGroup.Children>
                 </DrawingGroup>
             </DrawingBrush.Drawing>
