@@ -3,12 +3,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:ControlLibrary.CustomControls">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/SmartDate.xaml"/>
-        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/CalendarSwitch.xaml"/>
-        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/DayOfWeek.xaml"/>
-        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/CalendarBox.xaml"/>
-        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/CalendarBoxItem.xaml"/>
-        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/ChevronButton.xaml"/>
-        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/AutoCompleteBox.xaml"/>
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/SmartDate.xaml" />
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/CalendarSwitch.xaml" />
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/DayOfWeek.xaml" />
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/CalendarBox.xaml" />
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/CalendarBoxItem.xaml" />
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/ChevronButton.xaml" />
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/AutoCompleteBox.xaml" />
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/NumberRoll.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

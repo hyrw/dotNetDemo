@@ -51,7 +51,7 @@ await host.WaitForShutdownAsync();
 await host.StopAsync();
 
 
-var wpfAppBuilder = WpfApplication<App, MainWindow>.CreateBuilder(args);
+//var wpfAppBuilder = WpfApplication<App, MainWindow>.CreateBuilder(args);
 //var wpfApp = wpfAppBuilder.Build();
 //await wpfApp.RunAsync();
 
