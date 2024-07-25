@@ -25,7 +25,7 @@
                                 Foreground="{TemplateBinding Foreground}"
                                 ScrollViewer.CanContentScroll="True">
                                 <ItemsControl.RenderTransform>
-                                    <TranslateTransform x:Name="PART_translate" Y="-0" />
+                                    <TranslateTransform x:Name="PART_translate" />
                                 </ItemsControl.RenderTransform>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>

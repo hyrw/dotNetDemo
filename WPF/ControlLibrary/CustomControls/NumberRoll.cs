@@ -14,6 +14,11 @@ public class NumberRoll : Control
     public static readonly DependencyProperty ValueProperty;
     ItemsControl? itemsControl;
     TranslateTransform? translate;
+
+    readonly Storyboard storyboard;
+    readonly DoubleAnimation animation;
+    bool animationPlaying;
+    int lastNum = 0;
     public int Value
     {
         get { return (int)GetValue(ValueProperty); }
@@ -22,6 +27,16 @@ public class NumberRoll : Control
 
     public NumberRoll()
     {
+        animation = new DoubleAnimation()
+        {
+            Duration = TimeSpan.FromSeconds(1),
+            FillBehavior = FillBehavior.Stop,
+        };
+        Storyboard.SetTarget(animation, this.itemsControl);
+        Storyboard.SetTargetProperty(animation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
+        storyboard = new Storyboard {};
+        storyboard.Children.Add(animation);
+        storyboard.Completed += StoryboardCompleted;
     }
     static NumberRoll()
     {
@@ -30,42 +45,83 @@ public class NumberRoll : Control
         ValueProperty = DependencyProperty.Register(nameof(Value), typeof(int), typeof(NumberRoll), new PropertyMetadata(0, OnValueChanged));
     }
 
+    private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        NumberRoll roll = (NumberRoll)d;
+        if (roll.animationPlaying) return;
+
+        roll.RollAnimation();
+    }
+
     public override void OnApplyTemplate()
     {
         base.OnApplyTemplate();
 
         this.itemsControl = (ItemsControl)Template.FindName(PART_ITEMS, this);
         this.translate = (TranslateTransform)Template.FindName(PART_TRANSLATE, this);
-        if (this.itemsControl is null) return;
 
-        this.itemsControl.Items.Clear();
-        for (int i = 0; i < 10; i++)
+        FillNumbers(0);
+    }
+
+    private void RollAnimation()
+    {
+        if (lastNum == Value) return;
+
+        animation.To = GetOffsetY(lastNum, Value, Height);
+        storyboard.Begin(this.itemsControl, true);
+        animationPlaying = true;
+        lastNum = Value;
+    }
+
+    private void StoryboardCompleted(object? sender, EventArgs e)
+    {
+        animationPlaying = false;
+        FillNumbers(lastNum);
+        this.translate!.Y = 0;
+        if (Value != lastNum)
         {
-            this.itemsControl.Items.Add(i);
+            this.RollAnimation();
         }
     }
 
-    private void RollAnimation(double y)
+    private static double GetOffsetY(int oldValue, int newValue, double height)
     {
-        if (this.itemsControl is null) return;
-
-        DoubleAnimation animation = new DoubleAnimation()
+        double y;
+        if (newValue > oldValue)
         {
-            To = y,
-            Duration = TimeSpan.FromSeconds(1),
-            FillBehavior = FillBehavior.HoldEnd,
-        };
-        this.translate!.BeginAnimation(TranslateTransform.YProperty, animation);
+            y = -(newValue - oldValue) * height;
+        }
+        else if (newValue == oldValue)
+        {
+            y = 0;
+        }
+        else
+        {
+            y = -(10 - oldValue + newValue) * height;
+        }
+        return y;
     }
 
-    private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    /// <summary>
+    /// 从指定值开始填充10个数，
+    /// </summary>
+    /// <param name="value">0 - 9</param>
+    private void FillNumbers(int value)
     {
-        NumberRoll roll = (NumberRoll)d;
-        int oldValue = (int)e.OldValue;
-        int newValue = (int)e.NewValue;
-        if (newValue == oldValue) return;
+        if (value > 9 || value < 0) throw new ArgumentException($"{nameof(value)} 必须在 0 - 9 的之间");
 
-        double translateY = -(newValue * roll.Height);
-        roll.RollAnimation(translateY);
+        this.itemsControl!.Items.Clear();
+        for (int i = 0; i < 10; i++)
+        {
+            this.itemsControl.Items.Add(value);
+            if (value == 9)
+            {
+                value = 0;
+            }
+            else
+            {
+                value++;
+            }
+        }
     }
 }

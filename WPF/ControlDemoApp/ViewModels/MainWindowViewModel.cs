@@ -1,14 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using ControlDemoApp.Views;
 using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace ControlDemoApp.ViewModels;
 
 internal partial class MainWindowViewModel : ObservableObject
 {
     readonly IServiceProvider serviceProvider;
-    private readonly DispatcherTimer timer;
 
     public Page HPBarView
     {
@@ -23,24 +22,11 @@ internal partial class MainWindowViewModel : ObservableObject
     public MainWindowViewModel(IServiceProvider serviceProvider)
     {
         this.serviceProvider = serviceProvider;
-        this.timer = new DispatcherTimer();
-        timer.Interval = TimeSpan.FromSeconds(2);
-        timer.Tick += Timer_Tick;
-        timer.Start();
     }
 
-    private void Timer_Tick(object? sender, EventArgs e)
+    [RelayCommand]
+    private void ChangeNumber()
     {
-        Dispatcher.CurrentDispatcher.Invoke(() =>
-        {
-            if (Num == 9)
-            {
-                Num = 0;
-            }
-            else
-            {
-                Num++;
-            }
-        });
+        Num = Random.Shared.Next(0, 10);
     }
 }

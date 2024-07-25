@@ -64,15 +64,20 @@
     <Grid x:Name="grid" Background="{StaticResource gridBrush}">
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Row="0" Grid.Column="0">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="32"
+                Text="{Binding Num}" />
+            <Button Command="{Binding ChangeNumberCommand}" Content="Change Number" />
+        </StackPanel>
+        <StackPanel Grid.Column="1">
             <controls:NumberRoll FontSize="32" Value="{Binding Num}" />
-            <Button Content="test" />
         </StackPanel>
     </Grid>
 </Window>
