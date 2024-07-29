@@ -11,5 +11,6 @@
         <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/ChevronButton.xaml" />
         <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/AutoCompleteBox.xaml" />
         <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/NumberRoll.xaml" />
+        <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/FlipCard.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

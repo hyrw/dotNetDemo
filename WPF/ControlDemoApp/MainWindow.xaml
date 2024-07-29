@@ -5,11 +5,7 @@
     xmlns:controls="clr-namespace:ControlLibrary.Controls;assembly=ControlLibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="clr-namespace:ControlDemoApp.ViewModels"
-    Title="MainWindow"
-    Width="800"
-    Height="1080"
-    Background="White"
+    Title="Control Demo App"
     SnapsToDevicePixels="True"
     UseLayoutRounding="True"
     mc:Ignorable="d">
@@ -62,22 +58,21 @@
         </DrawingBrush>
     </Window.Resources>
     <Grid x:Name="grid" Background="{StaticResource gridBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.Column="0">
-            <TextBlock
-                HorizontalAlignment="Center"
-                FontSize="32"
-                Text="{Binding Num}" />
-            <Button Command="{Binding ChangeNumberCommand}" Content="Change Number" />
-        </StackPanel>
-        <StackPanel Grid.Column="1">
-            <controls:NumberRoll FontSize="32" Value="{Binding Num}" />
-        </StackPanel>
+        <controls:FlipCard Width="600" Height="600">
+            <controls:FlipCard.Front>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="32"
+                    Text="正面" />
+            </controls:FlipCard.Front>
+            <controls:FlipCard.Back>
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="32"
+                    Text="反面" />
+            </controls:FlipCard.Back>
+        </controls:FlipCard>
     </Grid>
 </Window>
