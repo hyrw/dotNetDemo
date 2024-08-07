@@ -1,5 +1,4 @@
-﻿using ControlDemoApp.Views;
-using System.Windows;
+﻿using System.Windows;
 
 namespace ControlDemoApp;
 
@@ -13,4 +12,8 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        this.flipItem.StarAnimation();
+    }
 }

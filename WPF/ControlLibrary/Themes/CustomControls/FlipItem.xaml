@@ -1,0 +1,162 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:ControlLibrary.Controls">
+
+    <Style TargetType="{x:Type controls:FlipItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:FlipItem}">
+                    <ControlTemplate.Resources>
+                        <MeshGeometry3D
+                            x:Key="mesh_geometry3d"
+                            Positions="-200,200,0 -200,-200,0 200,-200,0 200,200,0"
+                            TextureCoordinates="0,0 0,1 1,1 1,0"
+                            TriangleIndices="0 1 2 0 2 3" />
+                        <DiffuseMaterial x:Key="diffuse_material" Viewport2DVisual3D.IsVisualHostMaterial="True" />
+                        <Vector3D
+                            x:Key="z_axis"
+                            X="1"
+                            Y="0"
+                            Z="0" />
+                    </ControlTemplate.Resources>
+                    <Viewport3D Width="400" Height="400">
+                        <Viewport3D.Camera>
+                            <PerspectiveCamera LookDirection="0 0 -1" Position="0 0 600" />
+                        </Viewport3D.Camera>
+                        <ModelVisual3D>
+                            <ModelVisual3D.Content>
+                                <DirectionalLight />
+                            </ModelVisual3D.Content>
+                        </ModelVisual3D>
+                        <!--#region After 上半部分-->
+                        <Viewport2DVisual3D
+                            x:Name="PART_after_top"
+                            Geometry="{StaticResource mesh_geometry3d}"
+                            Material="{StaticResource diffuse_material}">
+                            <Viewport2DVisual3D.Transform>
+                                <RotateTransform3D>
+                                    <RotateTransform3D.Rotation>
+                                        <AxisAngleRotation3D Angle="0" Axis="1 0 0" />
+                                    </RotateTransform3D.Rotation>
+                                </RotateTransform3D>
+                            </Viewport2DVisual3D.Transform>
+                            <Viewport2DVisual3D.Visual>
+                                <Grid
+                                    Width="400"
+                                    Height="400"
+                                    Background="Transparent">
+                                    <Border Background="DarkOliveGreen">
+                                        <Border.Clip>
+                                            <RectangleGeometry Rect="0 0 400 200" />
+                                        </Border.Clip>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="400"
+                                            Text="{TemplateBinding AfterValue}" />
+                                    </Border>
+                                </Grid>
+                            </Viewport2DVisual3D.Visual>
+                        </Viewport2DVisual3D>
+                        <!--#endregion After 上半部分-->
+                        <!--#region After 下半部分-->
+                        <Viewport2DVisual3D
+                            x:Name="PART_after_bottom"
+                            Geometry="{StaticResource mesh_geometry3d}"
+                            Material="{StaticResource diffuse_material}">
+                            <Viewport2DVisual3D.Transform>
+                                <RotateTransform3D>
+                                    <RotateTransform3D.Rotation>
+                                        <AxisAngleRotation3D Angle="-90" Axis="1 0 0" />
+                                    </RotateTransform3D.Rotation>
+                                </RotateTransform3D>
+                            </Viewport2DVisual3D.Transform>
+                            <Viewport2DVisual3D.Visual>
+                                <Grid
+                                    Width="400"
+                                    Height="400"
+                                    Background="Transparent">
+                                    <Border Background="DarkOliveGreen">
+                                        <Border.Clip>
+                                            <RectangleGeometry Rect="0 200 400 200" />
+                                        </Border.Clip>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="400"
+                                            Text="{TemplateBinding AfterValue}" />
+                                    </Border>
+                                </Grid>
+                            </Viewport2DVisual3D.Visual>
+                        </Viewport2DVisual3D>
+                        <!--#endregion After 下半部分-->
+                        <!--#region Before 上半部分-->
+                        <Viewport2DVisual3D
+                            x:Name="PART_before_top"
+                            Geometry="{StaticResource mesh_geometry3d}"
+                            Material="{StaticResource diffuse_material}">
+                            <Viewport2DVisual3D.Transform>
+                                <RotateTransform3D>
+                                    <RotateTransform3D.Rotation>
+                                        <AxisAngleRotation3D Angle="0" Axis="1 0 0" />
+                                    </RotateTransform3D.Rotation>
+                                </RotateTransform3D>
+                            </Viewport2DVisual3D.Transform>
+                            <Viewport2DVisual3D.Visual>
+                                <Grid
+                                    Width="400"
+                                    Height="400"
+                                    Background="Transparent">
+                                    <Border Background="DarkSeaGreen">
+                                        <Border.Clip>
+                                            <RectangleGeometry Rect="0 0 400 200" />
+                                        </Border.Clip>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="400"
+                                            Text="{TemplateBinding BeforeValue}" />
+                                    </Border>
+                                </Grid>
+                            </Viewport2DVisual3D.Visual>
+                        </Viewport2DVisual3D>
+                        <!--#endregion Before 上半部分-->
+                        <!--#region Before 下半部分-->
+                        <Viewport2DVisual3D
+                            x:Name="PART_before_bottom"
+                            Geometry="{StaticResource mesh_geometry3d}"
+                            Material="{StaticResource diffuse_material}">
+                            <Viewport2DVisual3D.Transform>
+                                <RotateTransform3D>
+                                    <RotateTransform3D.Rotation>
+                                        <AxisAngleRotation3D Angle="0" Axis="1 0 0" />
+                                    </RotateTransform3D.Rotation>
+                                </RotateTransform3D>
+                            </Viewport2DVisual3D.Transform>
+                            <Viewport2DVisual3D.Visual>
+                                <Grid
+                                    Width="400"
+                                    Height="400"
+                                    Background="Transparent">
+                                    <Border Background="DarkSeaGreen">
+                                        <Border.Clip>
+                                            <RectangleGeometry Rect="0 200 400 200" />
+                                        </Border.Clip>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontSize="400"
+                                            Text="{TemplateBinding BeforeValue}" />
+                                    </Border>
+                                </Grid>
+                            </Viewport2DVisual3D.Visual>
+                        </Viewport2DVisual3D>
+                        <!--#region Before 下半部分-->
+                    </Viewport3D>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ControlDemoApp.Views;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows.Controls;
 
 namespace ControlDemoApp.ViewModels;

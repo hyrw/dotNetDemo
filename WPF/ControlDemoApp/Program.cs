@@ -1,6 +1,8 @@
 ﻿using ControlDemoApp;
 using ControlDemoApp.ViewModels;
 using ControlDemoApp.Views;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Windows;
 using System.Windows.Threading;
 

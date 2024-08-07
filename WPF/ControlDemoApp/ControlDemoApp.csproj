@@ -16,7 +16,6 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="Wpf.Extensions.Hosting" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>

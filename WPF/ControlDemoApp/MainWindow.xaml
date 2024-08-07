@@ -4,11 +4,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:ControlLibrary.Controls;assembly=ControlLibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:o="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:vm="clr-namespace:ControlDemoApp.ViewModels"
     Title="Control Demo App"
+    MaxWidth="500"
+    MaxHeight="500"
+    d:DataContext="{d:DesignInstance Type=vm:MainWindowViewModel}"
+    RenderOptions.EdgeMode="Aliased"
     SnapsToDevicePixels="True"
     UseLayoutRounding="True"
-    mc:Ignorable="d">
+    mc:Ignorable="d o">
     <Window.Resources>
         <DrawingBrush
             x:Key="gridBrush"
@@ -57,22 +65,10 @@
             </DrawingBrush.Drawing>
         </DrawingBrush>
     </Window.Resources>
-    <Grid x:Name="grid" Background="{StaticResource gridBrush}">
-        <controls:FlipCard Width="600" Height="600">
-            <controls:FlipCard.Front>
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="32"
-                    Text="正面" />
-            </controls:FlipCard.Front>
-            <controls:FlipCard.Back>
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="32"
-                    Text="反面" />
-            </controls:FlipCard.Back>
-        </controls:FlipCard>
-    </Grid>
+    <StackPanel>
+        <Grid x:Name="grid" Background="{StaticResource gridBrush}">
+            <controls:FlipItem x:Name="flipItem" />
+        </Grid>
+        <Button Click="Button_Click" Content="Play" />
+    </StackPanel>
 </Window>
