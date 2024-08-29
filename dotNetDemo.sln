@@ -69,6 +69,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Validation", "WPF\Validatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DragDemo", "WPF\DragDemo\DragDemo.csproj", "{C735C5EE-20E1-4675-BD3C-408E24210107}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Avalonia", "Avalonia", "{A4362810-B671-4388-A3B2-1CE5D94E7048}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaApplication", "Avalonia\AvaloniaApplication\AvaloniaApplication.csproj", "{BAE2E9F8-A72B-47B0-A781-5715470109EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +191,10 @@ Global
 		{C735C5EE-20E1-4675-BD3C-408E24210107}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C735C5EE-20E1-4675-BD3C-408E24210107}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C735C5EE-20E1-4675-BD3C-408E24210107}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAE2E9F8-A72B-47B0-A781-5715470109EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAE2E9F8-A72B-47B0-A781-5715470109EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAE2E9F8-A72B-47B0-A781-5715470109EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAE2E9F8-A72B-47B0-A781-5715470109EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -212,6 +220,7 @@ Global
 		{3E1116E5-DB2E-4E2B-8C6F-D21BA39B8543} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
 		{E18B6F81-0A37-49DB-B5FD-A196636D49EB} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
 		{C735C5EE-20E1-4675-BD3C-408E24210107} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
+		{BAE2E9F8-A72B-47B0-A781-5715470109EE} = {A4362810-B671-4388-A3B2-1CE5D94E7048}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4350933C-605F-4B50-B504-0661444DF5FF}

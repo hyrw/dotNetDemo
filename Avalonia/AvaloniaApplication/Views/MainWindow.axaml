@@ -1,0 +1,55 @@
+<Window
+    x:Class="AvaloniaApplication.Views.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:AvaloniaApplication.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:AvaloniaApplication.ViewModels"
+    Name="root"
+    Title="AvaloniaApplication"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainWindowViewModel"
+    Icon="/Assets/avalonia-logo.ico"
+    mc:Ignorable="d">
+    <Design.DataContext>
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+    <Window.Styles>
+        <Style Selector="TextBlock.Flash">
+            <Style.Animations>
+                <Animation
+                    FillMode="None"
+                    IterationCount="2"
+                    Duration="0.25">
+                    <KeyFrame Cue="100%">
+                        <Setter Property="Background" Value="DarkGreen" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+    </Window.Styles>
+
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <DataGrid
+            IsReadOnly="True"
+            ItemsSource="{Binding Values}"
+            SelectedIndex="0">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Value">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="{x:Type vm:RemarkAndValue}">
+                            <controls:FlashTextBlock EnableFlash="{Binding $parent[DataGrid].((vm:MainWindowViewModel)DataContext).EnableFlash}" Text="{Binding Value}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Binding="{Binding Remark}" Header="Remark" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <UniformGrid>
+            <CheckBox Content="Enable Flash Animation" IsChecked="{Binding EnableFlash}" />
+        </UniformGrid>
+    </StackPanel>
+
+</Window>

@@ -1,0 +1,42 @@
+<UserControl
+    x:Class="AvaloniaApplication.Controls.FlashTextBlock"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="using:Avalonia.Xaml.Interactions.Custom"
+    xmlns:controls="using:AvaloniaApplication.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="using:Avalonia.Xaml.Interactivity"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Name="root"
+    mc:Ignorable="d">
+    <Interaction.Behaviors>
+        <ValueChangedTriggerBehavior Binding="{Binding #root.Text}">
+            <AddClassAction
+                ClassName="Flash"
+                RemoveIfExists="True"
+                StyledElement="{Binding #border}" />
+        </ValueChangedTriggerBehavior>
+    </Interaction.Behaviors>
+    <UserControl.Styles>
+        <Style Selector="Border">
+            <Style Selector="^.Flash.EnableFlash">
+                <Style.Animations>
+                    <Animation
+                        FillMode="None"
+                        IterationCount="2"
+                        Duration="0.25">
+                        <KeyFrame Cue="100%">
+                            <Setter Property="Background" Value="DarkGreen" />
+                        </KeyFrame>
+                    </Animation>
+                </Style.Animations>
+            </Style>
+        </Style>
+    </UserControl.Styles>
+    <Border Name="border" Classes.EnableFlash="{Binding #root.EnableFlash}">
+        <TextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="{Binding #root.Text}" />
+    </Border>
+</UserControl>
