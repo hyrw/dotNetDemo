@@ -11,13 +11,11 @@ namespace PackageDecoder.Tests;
 public class ModbusTcpPackageTests
 {
     private static readonly IPEndPoint TcpEndPoint = new IPEndPoint(IPAddress.Loopback, 502);
+    private const int ModbusTcpApuSize = 260;
 
     [TestMethod]
     public async Task Test()
     {
-        var modbusPdu = ModbusPdu.Create(1, 0, 10);
-
-        var modbusApu = ModbusTcpApu.Create(0, 1, modbusPdu);
 
         var pipe = new Pipe();
         var writer = pipe.Writer;
@@ -28,12 +26,17 @@ public class ModbusTcpPackageTests
 
         var sendAndReceiveTask = Task.Run(() =>
         {
-            var client = new IocpClient(TcpEndPoint, writer);
+            ushort transactionId = 0;
+            var modbusPdu = ModbusPdu.Create(1, 0, 10);
+            var modbusApu = ModbusTcpApu.Create(transactionId, 1, modbusPdu);
+            var client = new IocpClient(TcpEndPoint, writer, ModbusTcpApuSize);
             client.Connect();
             while (true)
             {
+                modbusApu.TransactionId = transactionId;
                 client.Send(modbusApu.Encoder());
                 client.Receive();
+                transactionId++;
             }
         });
 
@@ -44,7 +47,11 @@ public class ModbusTcpPackageTests
             while (true)
             {
                 var apu = await channel.Reader.ReadAsync();
-                Debug.WriteLine(apu);
+                if (channel.Reader.Completion.IsCompleted)
+                {
+                    break;
+                }
+                // Debug.WriteLine(apu);
             }
         });
 

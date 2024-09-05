@@ -50,11 +50,17 @@ public class ModbusTcpPackage(PipeReader reader, ChannelWriter<ModbusTcpApu> cha
 
 }
 
-public record ModbusTcpApu(ushort TransactionId, ushort ProtocolFlag, ushort Length, byte UnitId, ModbusPdu PDU)
+public record ModbusTcpApu(ushort TransactionId, ushort ProtocolFlag, ushort Length, byte UnitId, ModbusPdu Pdu)
 {
+    public ushort TransactionId
+    {
+        get;
+        set;
+    } = TransactionId;
+    
     public byte[] Encoder()
     {
-        var pdu = PDU.Encoder();
+        var pdu = Pdu.Encoder();
         var pduLength = pdu.Length;
         int packageLen = 7 + pduLength;
         byte[] bytes = new byte[packageLen];

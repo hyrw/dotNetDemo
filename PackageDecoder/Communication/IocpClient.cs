@@ -13,14 +13,16 @@ public class IocpClient
     
     private readonly AutoResetEvent _connectEvent = new AutoResetEvent(false);  
     private readonly AutoResetEvent _sendEvent = new AutoResetEvent(false);  
-    private readonly AutoResetEvent _receiveEvent = new AutoResetEvent(false);  
-    
+    private readonly AutoResetEvent _receiveEvent = new AutoResetEvent(false);
+    private readonly int _bufferSize;
+
     public bool Connected => _socket?.Connected ?? false;
 
-    public IocpClient(IPEndPoint remoteEndpoint, PipeWriter pipeWriter)
+    public IocpClient(IPEndPoint remoteEndpoint, PipeWriter pipeWriter, int bufferSize)
     {
         this._remoteEndPoint = remoteEndpoint;  
         this._pipeWriter = pipeWriter;
+        this._bufferSize = bufferSize;
         _socket = new(remoteEndpoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
         _receiveEventArgs.Completed += OnReceiveCompleted;
         _sendEventArgs.Completed += OnSendCompleted;
@@ -64,11 +66,12 @@ public class IocpClient
     private void OnSendCompleted(object? sender, SocketAsyncEventArgs e)
     {
         _sendEvent.Set();
-        if (e.SocketError != SocketError.Success) return;
     }
 
     public void Receive()
     {
+        var memory = _pipeWriter.GetMemory(_bufferSize);
+        _receiveEventArgs.SetBuffer(memory);
         _receiveEventArgs.RemoteEndPoint = this._remoteEndPoint;
         if (!_socket.ReceiveAsync(_receiveEventArgs))
         {
@@ -76,13 +79,20 @@ public class IocpClient
         }
         _receiveEvent.WaitOne();
     }
+    
     private void OnReceiveCompleted(object? sender, SocketAsyncEventArgs e)
     {
-        _receiveEvent.Set();
-        if (e.SocketError != SocketError.Success) return;
-        
-        if (e.BytesTransferred <= 0) return;
-        _pipeWriter.Advance(e.BytesTransferred);
-        _pipeWriter.FlushAsync();
+        try
+        {
+            if (e.SocketError != SocketError.Success ||
+                e.BytesTransferred <= 0) return;
+            
+            _pipeWriter.Advance(e.BytesTransferred);
+            _pipeWriter.FlushAsync();
+        }
+        finally
+        {
+            _receiveEvent.Set();
+        }
     }
 }
