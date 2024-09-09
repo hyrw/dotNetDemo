@@ -80,8 +80,8 @@ public record ModbusTcpApu(ushort TransactionId, ushort ProtocolFlag, ushort Len
     }
     public static ModbusTcpApu Create(ushort transactionId, byte unitId, ModbusPdu pdu)
     {
-        ushort length = sizeof(byte) + sizeof(ushort) * 2;
-        return new ModbusTcpApu(transactionId, 0x0000, length, unitId, pdu);
+        const ushort Length = sizeof(byte) + sizeof(ushort) * 2;
+        return new ModbusTcpApu(transactionId, 0x0000, Length, unitId, pdu);
     }
     public static ModbusTcpApu Decoder(ReadOnlySequence<byte> bufferSlice)
     {
@@ -121,8 +121,8 @@ public record ModbusPdu()
     
     public byte[] Encoder()
     {
-        const int size = sizeof(byte) + sizeof(ushort) * 2;
-        var bytes = new byte[size];
+        const int Size = sizeof(byte) + sizeof(ushort) * 2;
+        var bytes = new byte[Size];
         var span = bytes.AsSpan();
         span[0] = FunctionCode;
         BinaryPrimitives.WriteUInt16BigEndian(span[1..], StartingAddress);

@@ -24,7 +24,7 @@ public class ModbusTcpPackageTests
 
         var modbusTcpPackage = new ModbusTcpPackage(reader, channel.Writer);
 
-        var sendAndReceiveTask = Task.Run(() =>
+        var sendAndReceiveTask = Task.Run( async () =>
         {
             ushort transactionId = 0;
             var modbusPdu = ModbusPdu.Create(1, 0, 10);
@@ -34,8 +34,8 @@ public class ModbusTcpPackageTests
             while (true)
             {
                 modbusApu.TransactionId = transactionId;
-                client.Send(modbusApu.Encoder());
-                client.Receive();
+                await client.SendAsync(modbusApu.Encoder());
+                await client.ReceiveAsync();
                 transactionId++;
             }
         });

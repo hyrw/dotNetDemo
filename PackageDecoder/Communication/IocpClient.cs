@@ -12,9 +12,10 @@ public class IocpClient
     private readonly SocketAsyncEventArgs _receiveEventArgs = new(), _sendEventArgs = new ();
     
     private readonly AutoResetEvent _connectEvent = new AutoResetEvent(false);  
-    private readonly AutoResetEvent _sendEvent = new AutoResetEvent(false);  
-    private readonly AutoResetEvent _receiveEvent = new AutoResetEvent(false);
     private readonly int _bufferSize;
+
+    private TaskCompletionSource _sendTcs;
+    private TaskCompletionSource _receiveTcs;
 
     public bool Connected => _socket?.Connected ?? false;
 
@@ -51,25 +52,26 @@ public class IocpClient
         _connectEvent.Set();
     }
 
-    public void Send(Memory<byte> bytes) 
+    public Task SendAsync(Memory<byte> bytes)
     {
+        _sendTcs = new TaskCompletionSource();
         _sendEventArgs.SetBuffer(bytes);
         _sendEventArgs.RemoteEndPoint = this._remoteEndPoint;
         if (!_socket.SendAsync(_sendEventArgs))
         {
             OnSendCompleted(_socket, _sendEventArgs);
         }
-        
-        _sendEvent.WaitOne();
+        return _sendTcs.Task;
     }
     
     private void OnSendCompleted(object? sender, SocketAsyncEventArgs e)
     {
-        _sendEvent.Set();
+        _sendTcs.SetResult();
     }
 
-    public void Receive()
+    public Task ReceiveAsync()
     {
+        _receiveTcs = new TaskCompletionSource();   
         var memory = _pipeWriter.GetMemory(_bufferSize);
         _receiveEventArgs.SetBuffer(memory);
         _receiveEventArgs.RemoteEndPoint = this._remoteEndPoint;
@@ -77,7 +79,8 @@ public class IocpClient
         {
             OnReceiveCompleted(_socket, _receiveEventArgs);
         }
-        _receiveEvent.WaitOne();
+
+        return _receiveTcs.Task;
     }
     
     private void OnReceiveCompleted(object? sender, SocketAsyncEventArgs e)
@@ -86,13 +89,14 @@ public class IocpClient
         {
             if (e.SocketError != SocketError.Success ||
                 e.BytesTransferred <= 0) return;
-            
+
             _pipeWriter.Advance(e.BytesTransferred);
             _pipeWriter.FlushAsync();
+            _receiveTcs.SetResult();
         }
-        finally
+        catch (Exception ex)
         {
-            _receiveEvent.Set();
+            _receiveTcs.SetException(ex);
         }
     }
 }
