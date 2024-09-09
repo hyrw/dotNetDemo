@@ -1,10 +1,9 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
-using Prism.Regions;
 using PrismNavigationTest.Const;
 using PrismNavigationTest.Views;
-using System;
 using System.Windows.Input;
+using Prism.Navigation.Regions;
 
 namespace PrismNavigationTest.ViewModels
 {

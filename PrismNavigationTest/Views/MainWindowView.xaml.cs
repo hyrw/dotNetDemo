@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 using Prism.Ioc;
-using Prism.Regions;
+using Prism.Navigation.Regions;
 using PrismNavigationTest.Const;
 
 namespace PrismNavigationTest.Views
