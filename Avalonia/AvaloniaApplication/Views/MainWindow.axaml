@@ -13,6 +13,11 @@
     x:DataType="vm:MainWindowViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Loaded">
+            <InvokeCommandAction Command="{Binding StartCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
     <Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>

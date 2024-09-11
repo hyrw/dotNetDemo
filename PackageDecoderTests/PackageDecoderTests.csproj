@@ -24,4 +24,16 @@
     <ProjectReference Include="..\PackageDecoder\PackageDecoder.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Communication\Modbus\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Communication\Modbus\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Communication\Modbus\**" />
+  </ItemGroup>
+
 </Project>

@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PackageDecoder.Communication;
 using Pipe = System.IO.Pipelines.Pipe;
 
-namespace PackageDecoder.Tests;
+namespace PackageDecoderTests.Communication;
 
 [TestClass]
 public class IocpClientTests
@@ -33,7 +33,7 @@ public class IocpClientTests
         
         var sendTask = Task.Factory.StartNew( async () =>
         {
-            client.Connect();
+            await client.ConnectAsync();
             while (true)
             {
                 await client.SendAsync(_bytes.AsMemory());
@@ -42,7 +42,7 @@ public class IocpClientTests
         
         var receiveTask = Task.Factory.StartNew( async () =>
         {
-            client.Connect();
+            await client.ConnectAsync();
             while (true)
             {
                 await client.ReceiveAsync();

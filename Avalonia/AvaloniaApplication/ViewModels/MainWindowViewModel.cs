@@ -1,69 +1,66 @@
-﻿using Avalonia.Threading;
+﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using System;
-using System.Collections.Generic;
+
 using System.Collections.ObjectModel;
+using System.Net;
+using System.Threading.Tasks;
+using Avalonia.Threading;
+using CommunityToolkit.Mvvm.Input;
+using PackageDecoder.Communication.Modbus;
 
 namespace AvaloniaApplication.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    readonly DispatcherTimer timer;
-    readonly int tempCount = 2;
-
+    private readonly IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Loopback, 502);
+    
     [ObservableProperty]
     ObservableCollection<RemarkAndValue> values = [];
 
     [ObservableProperty]
     bool enableFlash = true;
 
+    [ObservableProperty]
+    private int interval = 1000;
+
+    private readonly ModbusCommunication modbus;
+
     public MainWindowViewModel()
     {
-        var list = new List<RemarkAndValue>(tempCount * sizeof(double));
-        for (int i = 0; i < tempCount; i++)
-        {
-            double temp = 100;
-            byte[] bytes = BitConverter.GetBytes(temp);
-            for (int j = 0; j < bytes.Length; j++)
-            {
-                if (j == 0)
-                {
-                    list.Add(new RemarkAndValue($"temp{i + 1}", bytes[j]));
-                }
-                else
-                {
-                    list.Add(new RemarkAndValue(string.Empty, bytes[j]));
-                }
-            }
-        }
-        Values = new(list);
-        this.timer = new DispatcherTimer()
-        {
-            Interval = TimeSpan.FromSeconds(1),
-        };
-        this.timer.Tick += Timer_Tick;
-        this.timer.Start();
+        this.modbus = new ModbusCommunication(ipEndPoint, ModbusType.TcpIp);
     }
 
-    private void Timer_Tick(object? sender, EventArgs e)
+    [RelayCommand]
+    private async Task Start()
     {
-        int index = Random.Shared.Next(0, tempCount);
-        index = sizeof(double) * index;
-        double temp = Random.Shared.NextDouble() * 100;
-        byte[] bytes = BitConverter.GetBytes(temp);
-        for (int i = 0; i < bytes.Length; i++)
+        var readCoilRegister = ReadCoilRegister.Create(0, 1, ModbusFunctionCode.ReadCoil, 0x00, 10);
+        while (true)
         {
-            Values[index + i].Value = bytes[i];
+            if (!this.modbus.Connected)
+            {
+                await this.modbus.ConnectAsync();
+            }
+            var result= await modbus.ReadCoilRegisterAsync(readCoilRegister);
+            var coils = result.Coils;
+            Dispatcher.UIThread.Post(()=>
+            {
+                Values.Clear();
+                foreach (var t in coils)
+                {
+                    Values.Add(new RemarkAndValue(string.Empty, t));
+                }
+            });
+            await Task.Delay(TimeSpan.FromMilliseconds(Interval));
         }
     }
+
 }
 
-public partial class RemarkAndValue(string Remark, byte Value) : ViewModelBase
+public partial class RemarkAndValue(string remark, byte value) : ViewModelBase
 {
     [ObservableProperty]
-    public string remark = Remark;
+    private string remark = remark;
 
     [ObservableProperty]
-    public byte value = Value;
+    private byte value = value;
 }

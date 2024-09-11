@@ -21,7 +21,7 @@ public class IocpBenchmark
     {
         var pipe = new Pipe();
         IocpClient client = new (_ipEndPoint, pipe.Writer, 1024*10);
-        client.Connect();
+        await client.ConnectAsync();
             
         var consumerTask = Task.Factory.StartNew( async () =>
         {

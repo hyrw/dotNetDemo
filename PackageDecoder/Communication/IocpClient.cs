@@ -11,9 +11,9 @@ public class IocpClient
     private readonly PipeWriter _pipeWriter;
     private readonly SocketAsyncEventArgs _receiveEventArgs = new(), _sendEventArgs = new ();
     
-    private readonly AutoResetEvent _connectEvent = new AutoResetEvent(false);  
     private readonly int _bufferSize;
 
+    private TaskCompletionSource _connectTcs;
     private TaskCompletionSource _sendTcs;
     private TaskCompletionSource _receiveTcs;
 
@@ -29,8 +29,9 @@ public class IocpClient
         _sendEventArgs.Completed += OnSendCompleted;
     }
     
-    public void Connect()
+    public Task ConnectAsync()
     {
+        _connectTcs = new TaskCompletionSource();
         var socketAsyncEventArgs = new SocketAsyncEventArgs();
         socketAsyncEventArgs.Completed += OnConnectCompleted;
         socketAsyncEventArgs.RemoteEndPoint = this._remoteEndPoint;
@@ -39,7 +40,7 @@ public class IocpClient
         {
             OnConnectCompleted(_socket, socketAsyncEventArgs);
         }
-        _connectEvent.WaitOne();
+        return _connectTcs.Task;
     }
 
     public void Disconnect()
@@ -49,7 +50,7 @@ public class IocpClient
     }
     private void OnConnectCompleted(object? sender, SocketAsyncEventArgs e)
     {
-        _connectEvent.Set();
+        _connectTcs.SetResult();
     }
 
     public Task SendAsync(Memory<byte> bytes)
