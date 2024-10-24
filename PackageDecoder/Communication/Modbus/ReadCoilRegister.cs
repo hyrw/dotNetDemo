@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System.Buffers.Binary;
 
 namespace PackageDecoder.Communication.Modbus;
 
@@ -11,17 +11,16 @@ public record ReadCoilRegister
     public ushort Quantity { get; private init; }
 
     public byte[] Coils { get; private set; } = [];
-    
-    internal ModbusApu GetModbusTcpApu()
+
+    internal ModbusApplicationDataUnit GetModbusAdu()
     {
-        var pdu = ModbusPdu.Create((byte)FunctionCode, StartAddress, Quantity);
-        return ModbusApu.CreateModbusTcpApu(TransactionId, UnitId, pdu);
-    }
-    
-    internal ModbusApu GetModbusRtuApu()
-    {
-        var pdu = ModbusPdu.Create((byte)FunctionCode, StartAddress, Quantity);
-        return ModbusApu.CreateModbusRtuApu(UnitId, pdu);
+        const int size = 4;
+        var data = new byte[size];
+        Span<byte> span = data;
+        BinaryPrimitives.WriteUInt16BigEndian(span, StartAddress);
+        BinaryPrimitives.WriteUInt16BigEndian(span.Slice(2, 2), Quantity);
+        var pdu = ModbusProtocolDataUnit.Create((byte)FunctionCode, data);
+        return new ModbusApplicationDataUnit(TransactionId, default, UnitId, pdu);
     }
 
     public static ReadCoilRegister Create(ushort transactionId, byte unitId, ModbusFunctionCode functionCode,
@@ -37,21 +36,16 @@ public record ReadCoilRegister
         };
     }
 
-    public static ReadCoilRegister CreateFromResponse(ushort transactionId, byte unitId, byte functionCode, ushort startAddress, ushort quantity, ReadOnlySpan<byte> buffer)
+    public ReadCoilRegister CreateFromResponse(ModbusApplicationDataUnit adu)
     {
-        var bitArray = new BitArray(buffer.ToArray());
-        var coils = new byte[quantity];
-        for (var i = 0; i < coils.Length; i++)
-        {
-            coils[i] = (byte) (bitArray[i] ? 1 : 0);
-        }
+        var coils = adu.Pdu.ReadCoilRegister(Quantity);
         return new ReadCoilRegister()
         {
-            TransactionId = transactionId,
-            UnitId = unitId,
-            FunctionCode = (ModbusFunctionCode) functionCode,
-            StartAddress = startAddress,
-            Quantity = quantity,
+            TransactionId = adu.TransactionId,
+            UnitId = adu.UnitId,
+            FunctionCode = (ModbusFunctionCode) adu.Pdu.FunctionCode,
+            StartAddress = StartAddress,
+            Quantity = Quantity,
             Coils = coils,
         };
     }

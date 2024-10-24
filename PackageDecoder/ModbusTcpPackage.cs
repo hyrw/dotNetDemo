@@ -6,7 +6,7 @@ using PackageDecoder.Communication.Modbus;
 
 namespace PackageDecoder;
 
-public class ModbusTcpPackage(PipeReader reader, ChannelWriter<ModbusApu> channelWriter)
+public class ModbusTcpPackage(PipeReader reader, ChannelWriter<ModbusApplicationDataUnit> channelWriter)
 {
     private const int MBAPLength = 7;
 
@@ -24,8 +24,8 @@ public class ModbusTcpPackage(PipeReader reader, ChannelWriter<ModbusApu> channe
 
             var packageSlice = buffer.Slice(0, packageLen);
 
-            var modbusApu = ModbusApu.DecoderModbusTcpApu(packageSlice);
-            await channelWriter.WriteAsync(modbusApu);
+            var adu = ModbusApplicationDataUnit.FormatTcpAdu(packageSlice.FirstSpan);
+            await channelWriter.WriteAsync(adu);
 
             reader.AdvanceTo(packageSlice.End);
 

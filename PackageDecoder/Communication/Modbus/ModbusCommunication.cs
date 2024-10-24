@@ -7,15 +7,15 @@ namespace PackageDecoder.Communication.Modbus;
 public class ModbusCommunication
 {
     private readonly IocpClient? _iocpClient;
-    private readonly Pipe _pipe = new Pipe();
-    private readonly Channel<ModbusApu> channel = Channel.CreateUnbounded<ModbusApu>();
-    private readonly ModbusType modbusType;
+    private readonly Pipe _pipe = new();
+    private readonly Channel<ModbusApplicationDataUnit> channel = Channel.CreateUnbounded<ModbusApplicationDataUnit>();
+    private readonly ModbusType _communicationType;
 
     public bool Connected { get; private set; }
     public ModbusCommunication(IPEndPoint ipEndPoint, ModbusType type)
     {
-        this.modbusType = type;
-        switch (this.modbusType)
+        this._communicationType = type;
+        switch (this._communicationType)
         {
             case ModbusType.TcpIp:
                 this._iocpClient = new IocpClient(ipEndPoint, _pipe.Writer, ModbusApu.MaxTcpPackageSize);
@@ -36,7 +36,7 @@ public class ModbusCommunication
 
     public async Task ConnectAsync()
     {
-        if (this.modbusType == ModbusType.TcpIp)
+        if (this._communicationType == ModbusType.TcpIp)
         {
             await this._iocpClient!.ConnectAsync();
         }
@@ -45,7 +45,7 @@ public class ModbusCommunication
 
     public  Task DisconnectAsync()
     {
-        if (this.modbusType == ModbusType.TcpIp)
+        if (this._communicationType == ModbusType.TcpIp)
         {
             _iocpClient!.Disconnect();
         }
@@ -60,13 +60,12 @@ public class ModbusCommunication
             await _iocpClient.ConnectAsync();
         }
 
-        var requestApu = readCoilRegister.GetModbusTcpApu();
-        
-        await _iocpClient.SendAsync(requestApu.EncoderTcpApu());
+        var requestApu = readCoilRegister.GetModbusAdu();
+
+        await _iocpClient.SendAsync(requestApu.EncoderTcpAdu().ToArray());
         await _iocpClient.ReceiveAsync();
         var responseApu = await channel.Reader.ReadAsync();
-        
-        return ReadCoilRegister.CreateFromResponse(responseApu.TransactionId, responseApu.UnitId, responseApu.Pdu.FunctionCode,
-            requestApu.Pdu.StartingAddress!.Value, requestApu.Pdu.Quantity!.Value, responseApu.Pdu.Data);
+
+        return readCoilRegister.CreateFromResponse(responseApu);
     }
 }
