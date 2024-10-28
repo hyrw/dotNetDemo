@@ -27,10 +27,7 @@ public class ModbusCommunication
         var modbusPackage = new ModbusTcpPackage(_pipe.Reader, channel.Writer);
         Task.Factory.StartNew(async () =>
         {
-            while (true)
-            {
-                await modbusPackage.StartProcessAsync();
-            }
+            await modbusPackage.StartProcessAsync();
         }, TaskCreationOptions.LongRunning);
     }
 
