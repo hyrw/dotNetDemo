@@ -18,7 +18,7 @@ public class ModbusCommunication
         switch (this._communicationType)
         {
             case ModbusType.TcpIp:
-                this._iocpClient = new IocpClient(ipEndPoint, _pipe.Writer, ModbusApu.MaxTcpPackageSize);
+                this._iocpClient = new IocpClient(ipEndPoint, _pipe.Writer, ModbusApplicationDataUnit.MaxTcpPackageSize);
                 break;
             case ModbusType.SerialRtu:
             case ModbusType.SerialAscii:

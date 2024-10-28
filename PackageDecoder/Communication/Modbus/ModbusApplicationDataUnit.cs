@@ -4,7 +4,7 @@ namespace PackageDecoder.Communication.Modbus;
 
 public record ModbusApplicationDataUnit(ushort TransactionId, ushort Length, byte UnitId, ModbusProtocolDataUnit Pdu)
 {
-
+    public static readonly int MaxTcpPackageSize = 270;
     public ReadOnlySpan<byte> EncoderTcpAdu()
     {
         var packageLen = 7 + Pdu.PackageSize;

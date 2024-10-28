@@ -46,7 +46,7 @@ public record ReadCoilRegister
             FunctionCode = (ModbusFunctionCode) adu.Pdu.FunctionCode,
             StartAddress = StartAddress,
             Quantity = Quantity,
-            Coils = coils,
+            Coils = coils.ToArray(),
         };
     }
 }
