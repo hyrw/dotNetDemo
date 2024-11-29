@@ -47,6 +47,7 @@ public class IocpClient
     {
         var socketAsyncEventArgs = new SocketAsyncEventArgs();
         _socket.DisconnectAsync(socketAsyncEventArgs);
+        _pipeWriter.Complete();
     }
     private void OnConnectCompleted(object? sender, SocketAsyncEventArgs e)
     {
