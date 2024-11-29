@@ -1,6 +1,5 @@
 ﻿using System.IO.Pipelines;
 using System.Net;
-using System.Threading.Channels;
 
 namespace PackageDecoder.Communication.Modbus;
 
@@ -8,8 +7,8 @@ public class ModbusCommunication
 {
     private readonly IocpClient? _iocpClient;
     private readonly Pipe _pipe = new();
-    private readonly Channel<ModbusApplicationDataUnit> channel = Channel.CreateUnbounded<ModbusApplicationDataUnit>();
     private readonly ModbusType _communicationType;
+    private readonly ModbusTcpParser modbusParser;
 
     public bool Connected { get; private set; }
     public ModbusCommunication(IPEndPoint ipEndPoint, ModbusType type)
@@ -24,11 +23,7 @@ public class ModbusCommunication
             case ModbusType.SerialAscii:
             default: break;
         }
-        var modbusPackage = new ModbusTcpPackage(_pipe.Reader, channel.Writer);
-        Task.Factory.StartNew(async () =>
-        {
-            await modbusPackage.StartProcessAsync();
-        }, TaskCreationOptions.LongRunning);
+        this.modbusParser = new ModbusTcpParser(_pipe.Reader);
     }
 
     public async Task ConnectAsync()
@@ -61,8 +56,8 @@ public class ModbusCommunication
 
         await _iocpClient.SendAsync(requestApu.EncoderTcpAdu().ToArray());
         await _iocpClient.ReceiveAsync();
-        var responseApu = await channel.Reader.ReadAsync();
+        var responseApu = await this.modbusParser.GetOneApu();
 
-        return readCoilRegister.CreateFromResponse(responseApu);
+        return readCoilRegister.CreateFromResponse(responseApu!);
     }
 }
