@@ -15,7 +15,9 @@ public static class ModbusProtocolDataUnitEx
     /// <returns></returns>
     public static ReadOnlySpan<byte> ReadCoilRegister(this ModbusProtocolDataUnit pdu, int quantity)
     {
-        var bitArray = new BitArray(pdu.Data[1..].ToArray());
+        if (pdu.HasError) { return []; };
+
+        var bitArray = new BitArray(pdu.Data.ToArray());
         var coils = new byte[quantity];
         for (var i = 0; i < coils.Length; i++)
         {

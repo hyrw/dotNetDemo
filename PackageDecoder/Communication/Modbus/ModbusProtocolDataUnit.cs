@@ -6,7 +6,14 @@ public record ModbusProtocolDataUnit
 
     public byte FunctionCode => (byte)(_functionCode & 0b_0111_1111);
     public ReadOnlyMemory<byte> Data { get; }
-    public bool HasError => (FunctionCode >>> 7) == 1;
+    public bool HasError => (_functionCode >>> 7) == 1;
+
+    public byte ErrorCode => HasError switch
+    {
+        true => Data.Span[0],
+        false => 0,
+    };
+
     public ushort PackageSize => (ushort)(1 + Data.Length); // FunctionCode + Data
 
     private ModbusProtocolDataUnit(byte functionCode, ReadOnlyMemory<byte> data)
@@ -23,7 +30,8 @@ public record ModbusProtocolDataUnit
     public static ModbusProtocolDataUnit Format(ReadOnlySpan<byte> frame)
     {
         byte functionCode = frame[0];
-        byte[] data = frame[1..].ToArray();
+        byte len = frame[1];
+        byte[] data = frame[2..(2 + len)].ToArray();
 
         return Create(functionCode, data);
     }
