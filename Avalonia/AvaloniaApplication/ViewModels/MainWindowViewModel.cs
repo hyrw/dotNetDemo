@@ -12,7 +12,7 @@ namespace AvaloniaApplication.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Loopback, 502);
+    private readonly IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Loopback, 503);
     
     [ObservableProperty]
     ObservableCollection<RemarkAndValue> values = [];
@@ -20,8 +20,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty]
     bool enableFlash = true;
 
-    [ObservableProperty]
-    private int interval = 1000;
+    private TimeSpan interval = TimeSpan.FromSeconds(1);
 
     private readonly ModbusCommunication modbus;
 
@@ -50,7 +49,7 @@ public partial class MainWindowViewModel : ViewModelBase
                     Values.Add(new RemarkAndValue(string.Empty, t));
                 }
             });
-            await Task.Delay(TimeSpan.FromMilliseconds(Interval));
+            await Task.Delay(interval);
         }
     }
 
