@@ -19,7 +19,7 @@ public record ReadCoilRegister
         Span<byte> span = data;
         BinaryPrimitives.WriteUInt16BigEndian(span, StartAddress);
         BinaryPrimitives.WriteUInt16BigEndian(span.Slice(2, 2), Quantity);
-        var pdu = ModbusProtocolDataUnit.Create((byte)FunctionCode, data);
+        var pdu = ModbusPDU.Create((byte)FunctionCode, data);
         return new ModbusApplicationDataUnit(TransactionId, default, UnitId, pdu);
     }
 

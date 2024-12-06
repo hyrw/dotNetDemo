@@ -56,7 +56,7 @@ public class ModbusCommunication
 
         await _iocpClient.SendAsync(requestApu.EncoderTcpAdu().ToArray());
         await _iocpClient.ReceiveAsync();
-        var responseApu = await this.modbusParser.GetOneApu();
+        var responseApu = await this.modbusParser.Parser();
 
         return readCoilRegister.CreateFromResponse(responseApu!);
     }

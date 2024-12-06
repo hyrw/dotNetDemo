@@ -1,69 +1,41 @@
-﻿using System.Buffers;
-using System.Buffers.Binary;
+﻿namespace PackageDecoder.Communication.Modbus;
 
-namespace PackageDecoder.Communication.Modbus;
+public record ModbusPDU
+{
+    private readonly byte _functionCode;
 
-//public record ModbusPdu()
-//{
-//    public byte FunctionCode { get; init; }
+    public byte FunctionCode => (byte)(_functionCode & 0b_0111_1111);
+    public ReadOnlyMemory<byte> Data { get; }
+    public bool HasError => (_functionCode >>> 7) == 1;
 
-//    #region Request
-//    public ushort? StartingAddress { get; set; }
-//    public ushort? Quantity { get; set; }
-//    #endregion
+    public byte ErrorCode => HasError switch
+    {
+        true => Data.Span[0],
+        false => 0,
+    };
 
-//    #region Response
-//    public byte? ByteCount { get; init; }
-//    public byte[]? Data { get; init; }
-//    #endregion
+    /// <summary>
+    /// FunctionCode + Data
+    /// </summary>
+    public ushort PackageSize => (ushort)(1 + Data.Length);
 
-//    public static ModbusPdu Create(byte functionCode, ushort startingAddress, ushort quantity)
-//    {
-//        return new ModbusPdu()
-//        {
-//            FunctionCode = functionCode,
-//            StartingAddress = startingAddress,
-//            Quantity = quantity,
-//        };
-//    }
-    
-//    public static ModbusPdu Create(ModbusPdu pdu, ReadOnlySequence<byte> buffer)
-//    {
-//        var decoder = Decoder(buffer);
-//        var modbusPdu = new ModbusPdu()
-//        {
-//            FunctionCode = pdu.FunctionCode,
-//            StartingAddress = pdu.StartingAddress,
-//            Quantity = pdu.Quantity,
-//            ByteCount = decoder.ByteCount,
-//            Data = decoder.Data,
-//        };
-//        return modbusPdu;
-//    }
-    
-//    public byte[] Encoder()
-//    {
-//        const int size = sizeof(byte) + sizeof(ushort) * 2;
-//        var bytes = new byte[size];
-//        var span = bytes.AsSpan();
-//        span[0] = FunctionCode;
-//        BinaryPrimitives.WriteUInt16BigEndian(span[1..], StartingAddress!.Value);
-//        BinaryPrimitives.WriteUInt16BigEndian(span[3..], Quantity!.Value);
-//        return bytes;
-//    }
+    private ModbusPDU(byte functionCode, ReadOnlyMemory<byte> data)
+    {
+        _functionCode = functionCode;
+        Data = data;
+    }
 
-//    public static ModbusPdu Decoder(ReadOnlySequence<byte> bufferSlice)
-//    {
-//        var functionCode = bufferSlice.FirstSpan[0];
-//        var byteCount = bufferSlice.FirstSpan[1];
-//        var data = bufferSlice.Slice(2, byteCount);
+    public static ModbusPDU Create(byte functionCode, byte[] data)
+    {
+        return new ModbusPDU(functionCode, data);
+    }
 
-//        return new ModbusPdu()
-//        {
-//            FunctionCode = functionCode,
-//            ByteCount = byteCount,
-//            Data = data.ToArray(),
-//        };
-//    }
+    public static ModbusPDU Format(ReadOnlySpan<byte> frame)
+    {
+        byte functionCode = frame[0];
+        byte len = frame[1];
+        byte[] data = frame[2..(2 + len)].ToArray();
 
-//}
+        return Create(functionCode, data);
+    }
+}

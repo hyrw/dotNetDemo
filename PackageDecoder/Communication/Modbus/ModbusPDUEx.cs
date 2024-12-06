@@ -5,7 +5,7 @@ using System.Net.Sockets;
 
 namespace PackageDecoder.Communication.Modbus;
 
-public static class ModbusProtocolDataUnitEx
+public static class ModbusPDUEx
 {
     /// <summary>
     /// 0x01 读线圈状态（Read Coils）
@@ -13,7 +13,7 @@ public static class ModbusProtocolDataUnitEx
     /// <param name="pdu"></param>
     /// <param name="quantity">数量</param>
     /// <returns></returns>
-    public static ReadOnlySpan<byte> ReadCoilRegister(this ModbusProtocolDataUnit pdu, int quantity)
+    public static ReadOnlySpan<byte> ReadCoilRegister(this ModbusPDU pdu, int quantity)
     {
         if (pdu.HasError) { return []; };
 
@@ -30,7 +30,7 @@ public static class ModbusProtocolDataUnitEx
     /// 0x02 读离散输入状态（Read Discrete Inputs ）
     /// </summary>
     /// <returns></returns>
-    public static ReadOnlySpan<byte> ReadDiscreteInputs(this ModbusProtocolDataUnit pdu, int quantity)
+    public static ReadOnlySpan<byte> ReadDiscreteInputs(this ModbusPDU pdu, int quantity)
     {
         return pdu.ReadDiscreteInputs(quantity);
     }
@@ -41,7 +41,7 @@ public static class ModbusProtocolDataUnitEx
     /// <param name="pdu"></param>
     /// <param name="quantity"></param>
     /// <returns></returns>
-    public static ReadOnlySpan<ushort> ReadHoldingRegisters(this ModbusProtocolDataUnit pdu)
+    public static ReadOnlySpan<ushort> ReadHoldingRegisters(this ModbusPDU pdu)
     {
         byte byteCount = pdu.Data[..1].Span[0];
         ushort[] span = new ushort[byteCount / 2];
@@ -58,7 +58,7 @@ public static class ModbusProtocolDataUnitEx
     /// <param name="pdu"></param>
     /// <param name="quantity"></param>
     /// <returns></returns>
-    public static ReadOnlySpan<ushort> ReadInputRegisters(this ModbusProtocolDataUnit pdu)
+    public static ReadOnlySpan<ushort> ReadInputRegisters(this ModbusPDU pdu)
     {
         return pdu.ReadHoldingRegisters();
     }
@@ -68,7 +68,7 @@ public static class ModbusProtocolDataUnitEx
     /// </summary>
     /// <param name="pdu"></param>
     /// <returns></returns>
-    public static ushort WriteSingleCoil(this ModbusProtocolDataUnit pdu)
+    public static ushort WriteSingleCoil(this ModbusPDU pdu)
     {
         return BinaryPrimitives.ReadUInt16BigEndian(pdu.Data.Span[..2]);
     }
@@ -78,7 +78,7 @@ public static class ModbusProtocolDataUnitEx
     /// </summary>
     /// <param name="pdu"></param>
     /// <returns></returns>
-    public static (ushort Address, ushort Value) WriteSingleRegister(this ModbusProtocolDataUnit pdu)
+    public static (ushort Address, ushort Value) WriteSingleRegister(this ModbusPDU pdu)
     {
         (ushort address, ushort value) = pdu.GetAddressAndData();
         return (Address: address, Value: value);
@@ -89,7 +89,7 @@ public static class ModbusProtocolDataUnitEx
     /// </summary>
     /// <param name="pdu"></param>
     /// <returns></returns>
-    public static (ushort Address, ushort Quantity) WriteMultipleCoils(this ModbusProtocolDataUnit pdu)
+    public static (ushort Address, ushort Quantity) WriteMultipleCoils(this ModbusPDU pdu)
     {
         (ushort address, ushort quantity) = pdu.GetAddressAndData();
         return (Address: address, Quantity: quantity);
@@ -99,13 +99,13 @@ public static class ModbusProtocolDataUnitEx
     /// </summary>
     /// <param name="pdu"></param>
     /// <returns></returns>
-    public static (ushort Address, ushort Quantity) WriteMultipleRegisters(this ModbusProtocolDataUnit pdu)
+    public static (ushort Address, ushort Quantity) WriteMultipleRegisters(this ModbusPDU pdu)
     {
         (ushort address, ushort quantity) = pdu.GetAddressAndData();
         return (Address: address, Quantity: quantity);
     }
 
-    private static (ushort Address, ushort Data) GetAddressAndData(this ModbusProtocolDataUnit pdu)
+    private static (ushort Address, ushort Data) GetAddressAndData(this ModbusPDU pdu)
     {
         ushort address = BinaryPrimitives.ReadUInt16BigEndian(pdu.Data.Span[..2]);
         ushort data = BinaryPrimitives.ReadUInt16BigEndian(pdu.Data.Span.Slice(2, 2));

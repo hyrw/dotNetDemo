@@ -2,7 +2,7 @@
 
 namespace PackageDecoder.Communication.Modbus;
 
-public record ModbusApplicationDataUnit(ushort TransactionId, ushort Length, byte UnitId, ModbusProtocolDataUnit Pdu)
+public record ModbusApplicationDataUnit(ushort TransactionId, ushort Length, byte UnitId, ModbusPDU Pdu)
 {
     public static readonly int MaxTcpPackageSize = 270;
     public ReadOnlySpan<byte> EncoderTcpAdu()
@@ -40,7 +40,7 @@ public record ModbusApplicationDataUnit(ushort TransactionId, ushort Length, byt
             throw new FormatException();
         }
 
-        var pdu = ModbusProtocolDataUnit.Format(frame[7..]);
+        var pdu = ModbusPDU.Format(frame[7..]);
 
         return new ModbusApplicationDataUnit(transactionId, length, unitId, pdu);
     }
@@ -58,7 +58,7 @@ public record ModbusApplicationDataUnit(ushort TransactionId, ushort Length, byt
         }
 
         byte unitId = frame[0];
-        var pdu = ModbusProtocolDataUnit.Format(frame[1..]);
+        var pdu = ModbusPDU.Format(frame[1..]);
 
         return new ModbusApplicationDataUnit(default, default, unitId, pdu);
     }
