@@ -12,8 +12,8 @@ namespace AvaloniaApplication.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Loopback, 503);
-    
+    private readonly IPEndPoint ipEndPoint = new(IPAddress.Loopback, 502);
+
     [ObservableProperty]
     ObservableCollection<RemarkAndValue> values = [];
 
@@ -22,18 +22,16 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private TimeSpan interval = TimeSpan.FromSeconds(1);
 
-    private readonly ModbusCommunication modbus;
-
-    public MainWindowViewModel()
-    {
-        this.modbus = new ModbusCommunication(ipEndPoint, ModbusType.TcpIp);
-    }
+    private ModbusCommunication? modbus;
+    private bool flag;
 
     [RelayCommand]
     private async Task Start()
     {
+        flag = true;
+        modbus ??= new ModbusCommunication(ipEndPoint, ModbusType.TcpIp);
         var readCoilRegister = ReadCoilRegister.Create(0, 1, ModbusFunctionCode.ReadCoil, 0x00, 10);
-        while (true)
+        while (flag)
         {
             if (!this.modbus.Connected)
             {
@@ -53,6 +51,13 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
+    [RelayCommand]
+    private async Task StopMonitor()
+    {
+        flag = false;
+        if (modbus is not null) await modbus.DisconnectAsync();
+        this.modbus = null;
+    }
 }
 
 public partial class RemarkAndValue(string remark, byte value) : ViewModelBase

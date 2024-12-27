@@ -50,6 +50,7 @@
         <UniformGrid>
             <CheckBox Content="Enable Flash Animation" IsChecked="{Binding EnableFlash}" />
             <Button Command="{Binding StartCommand}" Content="Start" />
+            <Button Command="{Binding StopMonitorCommand}" Content="Stop" />
         </UniformGrid>
     </StackPanel>
 
