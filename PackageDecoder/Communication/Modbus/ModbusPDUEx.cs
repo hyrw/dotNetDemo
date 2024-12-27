@@ -1,7 +1,5 @@
 ﻿using System.Buffers.Binary;
 using System.Collections;
-using System.ComponentModel;
-using System.Net.Sockets;
 
 namespace PackageDecoder.Communication.Modbus;
 
@@ -32,7 +30,7 @@ public static class ModbusPDUEx
     /// <returns></returns>
     public static ReadOnlySpan<byte> ReadDiscreteInputs(this ModbusPDU pdu, int quantity)
     {
-        return pdu.ReadDiscreteInputs(quantity);
+        return pdu.ReadCoilRegister(quantity);
     }
 
     /// <summary>
