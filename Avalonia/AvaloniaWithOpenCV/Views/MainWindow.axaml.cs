@@ -24,17 +24,21 @@ public partial class MainWindow : Avalonia.Controls.Window
         if (!ok) return;
 
         using Mat img = Cv2.ImRead(file!, ImreadModes.Color);
-        Cv2.CvtColor(img, img, ColorConversionCodes.BGR2BGRA);
-        //if (this.TheImage.Source is null)
-        //{
-        //    this.TheImage.Source = WriteableBitmap.Decode(img.ToMemoryStream());
-        //}
-        //else
-        //{
-        //    img.ToBitmapParallel((WriteableBitmap)this.TheImage.Source);
-        //    this.TheImage.InvalidateVisual();
-        //}
-        this.TheImage.Source = WriteableBitmap.Decode(img.ToMemoryStream());
+        PixelSize size = new(img.Width, img.Height);
+        Vector dpi = new Vector(96, 96);
+
+        WriteableBitmap? source = this.TheImage.Source as WriteableBitmap;
+        if (source is null || !source.Size.Equals(size))
+        {
+            source = new WriteableBitmap(size, dpi, PixelFormat.Bgra8888);
+            img.ToBitmapParallel(source);
+            this.TheImage.Source = source;
+        }
+        else
+        {
+            img.ToBitmapParallel(source);
+        }
+        this.TheImage.InvalidateVisual();
     }
 }
 
