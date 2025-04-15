@@ -24,13 +24,13 @@ public partial class MainWindow : Avalonia.Controls.Window
         if (!ok) return;
 
         using Mat img = Cv2.ImRead(file!, ImreadModes.Color);
-        PixelSize size = new(img.Width, img.Height);
-        Vector dpi = new Vector(96, 96);
+        Avalonia.Size size = new(img.Width, img.Height);
+        Vector dpi = new(96, 96);
 
-        WriteableBitmap? source = this.TheImage.Source as WriteableBitmap;
-        if (source is null || !source.Size.Equals(size))
+        if (this.TheImage.Source is not WriteableBitmap source || !(source.Size == size))
         {
-            source = new WriteableBitmap(size, dpi, PixelFormat.Bgra8888);
+            PixelSize pixelSize = new(img.Width, img.Height);
+            source = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888);
             img.ToBitmapParallel(source);
             this.TheImage.Source = source;
         }
