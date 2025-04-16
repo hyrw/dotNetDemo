@@ -2,6 +2,7 @@
     x:Class="AvaloniaWithOpenCV.Views.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ScottPlot="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:AvaloniaWithOpenCV.ViewModels"
@@ -21,12 +22,12 @@
     </Design.DataContext>
 
     <StackPanel>
-        <TextBlock
+        <Button
             HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Text="{Binding Greeting}" />
-        <Button Click="Button_Click" Content="下一张" />
-        <Image Name="TheImage" />
+            Click="Button_Click"
+            Content="下一张" />
+        <ScottPlot:AvaPlot Name="AvaPlot" Height="200" />
+        <Image Name="TheImage" Stretch="None" />
     </StackPanel>
 
 </Window>

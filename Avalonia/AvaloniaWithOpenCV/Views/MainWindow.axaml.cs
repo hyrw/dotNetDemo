@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using OpenCvSharp;
+using ScottPlot.Avalonia;
+using ScottPlot.Statistics;
 
 namespace AvaloniaWithOpenCV.Views;
 
@@ -20,6 +24,8 @@ public partial class MainWindow : Avalonia.Controls.Window
 
     private void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        Stopwatch stopwatch = new();
+        stopwatch.Restart();
         bool ok = files.TryDequeue(out var file);
         if (!ok) return;
 
@@ -39,6 +45,25 @@ public partial class MainWindow : Avalonia.Controls.Window
             img.ToBitmapParallel(source);
         }
         this.TheImage.InvalidateVisual();
+
+        AvaPlot? avaPlot = this.Find<AvaPlot>("AvaPlot");
+        if (avaPlot is null) return;
+
+        using Mat gray = img.CvtColor(ColorConversionCodes.BGR2GRAY);
+        (int width, int height) = (gray.Size());
+        var histogram = Histogram.WithBinCount(255, 0, 255);
+        double[] values = new double[width * height];
+        Parallel.For(0, height, y => {
+            for (int x = 0; x < width; x++)
+            {
+                int index = y * width + x;
+                values[index] = gray.At<byte>(y, x);
+            }
+        });
+        histogram.AddRange(values);
+        avaPlot.Plot.Add.Histogram(histogram);
+        avaPlot.Refresh();
+        Trace.WriteLine($"ºÄÊ±£º {stopwatch.Elapsed.TotalMilliseconds}ms");
     }
 }
 
