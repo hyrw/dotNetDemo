@@ -4,7 +4,6 @@ using Avalonia.Platform;
 using OpenCvSharp;
 using ScottPlot;
 using ScottPlot.Avalonia;
-using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
 using System.Buffers;
@@ -47,17 +46,21 @@ public partial class MainWindow : Avalonia.Controls.Window
         Avalonia.Size size = new(img.Width, img.Height);
         Vector dpi = new(96, 96);
 
-        if (this.TheImage.Source is not WriteableBitmap source || !(source.Size == size))
+        WriteableBitmap? source = this.TheImage.Source as WriteableBitmap;
+        await Task.Run(() =>
         {
-            Avalonia.PixelSize pixelSize = new(img.Width, img.Height);
-            source = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888);
-            img.ToBitmapParallel(source);
-            this.TheImage.Source = source;
-        }
-        else
-        {
-            img.ToBitmapParallel(source);
-        }
+            if (source is null || !(source.Size == size))
+            {
+                Avalonia.PixelSize pixelSize = new(img.Width, img.Height);
+                source = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888);
+                img.ToBitmapParallel(source);
+            }
+            else
+            {
+                img.ToBitmapParallel(source);
+            }
+        });
+        this.TheImage.Source = source;
 
         using Mat gray = img.CvtColor(ColorConversionCodes.BGR2GRAY);
         Cv2.MinMaxLoc(gray, out var minVal, out var maxVal, out var minLoc, out var maxLoc);
