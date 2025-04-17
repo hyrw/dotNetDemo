@@ -40,6 +40,7 @@ public partial class MainWindow : Avalonia.Controls.Window
             img.ToBitmapParallel(source);
         }
 
+        // BUG: 直方图的数据统计方式有问题
         using Mat gray = img.CvtColor(ColorConversionCodes.BGR2GRAY);
         Cv2.MinMaxLoc(gray, out var minVal, out var maxVal, out var minLoc, out var maxLoc);
         (int width, int height) = (gray.Size());
