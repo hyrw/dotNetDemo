@@ -1,40 +1,43 @@
 using Avalonia;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using OpenCvSharp;
 using ScottPlot;
 using ScottPlot.Avalonia;
+using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AvaloniaWithOpenCV.Views;
 
 public partial class MainWindow : Avalonia.Controls.Window
 {
-    Queue<string> files = new(Directory.EnumerateFiles(@"C:\Users\Coder\Workspace\OpencvTest\0327", "*.png", SearchOption.AllDirectories));
+    readonly Queue<string> files = new(Directory.EnumerateFiles(@"d:/新建文件夹/", "*.jpg", SearchOption.AllDirectories));
+
+    AxisLine? thresholdAxisLine = null;
+    Crosshair? crosshair = null;
+
     public MainWindow()
     {
         InitializeComponent();
-        var crosshair = this.AvaPlot.Plot.Add.Crosshair(0, 0);
-        crosshair.TextColor = Colors.White;
-        crosshair.TextBackgroundColor = crosshair.HorizontalLine.Color;
-        this.AvaPlot.PointerMoved += (s, e) =>
-        {
-            if (s is not AvaPlot plot) return;
-
-            var position = e.GetPosition(plot);
-            Pixel mousePixel = new(position.X, position.Y);
-            Coordinates mouseCoordinates = plot.Plot.GetCoordinates(mousePixel);
-            Title = $"X={mouseCoordinates.X:N3}, Y={mouseCoordinates.Y:N3}";
-            crosshair.Position = mouseCoordinates;
-            crosshair.VerticalLine.Text = $"{mouseCoordinates.X:N3}";
-            crosshair.HorizontalLine.Text = $"{mouseCoordinates.Y:N3}";
-            AvaPlot.Refresh();
-        };
+        this.crosshair = this.AvaPlot.Plot.Add.Crosshair(0, 0);
+        this.AvaPlot.Plot.Add.Crosshair(20, 20);
+        this.crosshair.TextColor = Colors.White;
+        this.crosshair.TextBackgroundColor = crosshair.HorizontalLine.Color;
+        this.crosshair.HorizontalLine.IsVisible = false;
+        var vl = this.AvaPlot.Plot.Add.VerticalLine(0);
+        vl.IsDraggable = true;
+        vl.Text = "Threshold";
+        this.AvaPlot.PointerPressed += OnMouseDown;
+        this.AvaPlot.PointerReleased += OnMouseUp;
+        this.AvaPlot.PointerMoved += OnMouseMove;
+        this.AvaPlot.PointerMoved += CrosshairHandle;
     }
 
     private async void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -91,6 +94,89 @@ public partial class MainWindow : Avalonia.Controls.Window
         }
         this.AvaPlot.Refresh();
         this.TheImage.InvalidateVisual();
+    }
+
+    private void OnMouseDown(object? sender, PointerEventArgs e)
+    {
+        if (sender is not Visual visual) return;
+
+        var pos = e.GetPosition(visual);
+        var lineUnderMouse = GetLineUnderMouse((float)pos.X, (float)pos.Y);
+        if (lineUnderMouse is not null)
+        {
+            thresholdAxisLine = lineUnderMouse;
+            this.AvaPlot.UserInputProcessor.Disable(); // disable panning while dragging
+        }
+    }
+
+    private void OnMouseUp(object? sender, PointerEventArgs e)
+    {
+        thresholdAxisLine = null;
+        AvaPlot.UserInputProcessor.Enable(); // enable panning again
+        AvaPlot.Refresh();
+    }
+
+    void CrosshairHandle(object? sender, PointerEventArgs e)
+    {
+        if (sender is not AvaPlot plot || this.crosshair is null) return;
+
+        var pos = e.GetPosition(plot);
+
+        Pixel mousePixel = new(pos.X, pos.Y);
+        Coordinates mouseCoordinates = plot.Plot.GetCoordinates(mousePixel);
+        Title = $"X={mouseCoordinates.X:N3}, Y={mouseCoordinates.Y:N3}";
+
+        crosshair.Position = mouseCoordinates;
+        crosshair.VerticalLine.Text = $"{mouseCoordinates.X:N3}";
+        crosshair.HorizontalLine.Text = $"{mouseCoordinates.Y:N3}";
+        AvaPlot.Refresh();
+    }
+
+    private void OnMouseMove(object? sender, PointerEventArgs e)
+    {
+        if (sender is not AvaPlot plot) return;
+
+        var pos = e.GetPosition(plot);
+
+        // this rectangle is the area around the mouse in coordinate units
+        CoordinateRect rect = this.AvaPlot.Plot.GetCoordinateRect((float)pos.X, (float)pos.Y, radius: 10);
+
+        if (thresholdAxisLine is null)
+        {
+            // set cursor based on what's beneath the plottable
+            var lineUnderMouse = GetLineUnderMouse((float)pos.X, (float)pos.Y);
+            if (lineUnderMouse is null) Cursor = new(StandardCursorType.Arrow);
+            else if (lineUnderMouse.IsDraggable && lineUnderMouse is VerticalLine) Cursor = new(StandardCursorType.SizeWestEast);
+            else if (lineUnderMouse.IsDraggable && lineUnderMouse is HorizontalLine) Cursor = new(StandardCursorType.SizeNorthSouth);
+        }
+        else
+        {
+            // update the position of the plottable being dragged
+            if (thresholdAxisLine is HorizontalLine hl)
+            {
+                hl.Y = rect.VerticalCenter;
+                hl.Text = $"{hl.Y:0.00}";
+            }
+            else if (thresholdAxisLine is VerticalLine vl)
+            {
+                vl.X = rect.HorizontalCenter;
+                vl.Text = $"{vl.X:0.00}";
+            }
+            AvaPlot.Refresh();
+        }
+    }
+
+    private AxisLine? GetLineUnderMouse(float x, float y)
+    {
+        CoordinateRect rect = AvaPlot.Plot.GetCoordinateRect(x, y, radius: 10);
+
+        foreach (AxisLine axLine in AvaPlot.Plot.GetPlottables<AxisLine>().Reverse())
+        {
+            if (axLine.IsUnderMouse(rect))
+                return axLine;
+        }
+
+        return null;
     }
 }
 
