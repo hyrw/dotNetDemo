@@ -42,27 +42,26 @@ public partial class MainWindow : Avalonia.Controls.Window
         bool ok = files.TryDequeue(out var file);
         if (!ok) return;
 
-        using Mat img = Cv2.ImRead(file!, ImreadModes.Color);
-        Avalonia.Size size = new(img.Width, img.Height);
+        using Mat gray = Cv2.ImRead(file!, ImreadModes.Grayscale);
+        Avalonia.Size size = new(gray.Width, gray.Height);
         Vector dpi = new(96, 96);
 
         WriteableBitmap? source = this.TheImage.Source as WriteableBitmap;
         await Task.Run(() =>
         {
-            if (source is null || !(source.Size == size))
+            if (source is null || source.Size != size)
             {
-                Avalonia.PixelSize pixelSize = new(img.Width, img.Height);
+                Avalonia.PixelSize pixelSize = new(gray.Width, gray.Height);
                 source = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888);
-                img.ToBitmapParallel(source);
+                gray.ToBitmapParallel(source);
             }
             else
             {
-                img.ToBitmapParallel(source);
+                gray.ToBitmapParallel(source);
             }
         });
         this.TheImage.Source = source;
 
-        using Mat gray = img.CvtColor(ColorConversionCodes.BGR2GRAY);
         Cv2.MinMaxLoc(gray, out var minVal, out var maxVal, out var minLoc, out var maxLoc);
         (int width, int height) = (gray.Size());
         var pool = ArrayPool<double>.Shared;
