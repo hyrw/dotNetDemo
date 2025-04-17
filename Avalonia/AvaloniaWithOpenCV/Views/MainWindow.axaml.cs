@@ -1,16 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
 using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using OpenCvSharp;
-using ScottPlot.Avalonia;
 using ScottPlot.Statistics;
+using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace AvaloniaWithOpenCV.Views;
 
@@ -22,10 +19,8 @@ public partial class MainWindow : Avalonia.Controls.Window
         InitializeComponent();
     }
 
-    private void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Stopwatch stopwatch = new();
-        stopwatch.Restart();
         bool ok = files.TryDequeue(out var file);
         if (!ok) return;
 
@@ -35,7 +30,7 @@ public partial class MainWindow : Avalonia.Controls.Window
 
         if (this.TheImage.Source is not WriteableBitmap source || !(source.Size == size))
         {
-            PixelSize pixelSize = new(img.Width, img.Height);
+            Avalonia.PixelSize pixelSize = new(img.Width, img.Height);
             source = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888);
             img.ToBitmapParallel(source);
             this.TheImage.Source = source;
@@ -44,26 +39,37 @@ public partial class MainWindow : Avalonia.Controls.Window
         {
             img.ToBitmapParallel(source);
         }
-        this.TheImage.InvalidateVisual();
-
-        AvaPlot? avaPlot = this.Find<AvaPlot>("AvaPlot");
-        if (avaPlot is null) return;
 
         using Mat gray = img.CvtColor(ColorConversionCodes.BGR2GRAY);
+        Cv2.MinMaxLoc(gray, out var minVal, out var maxVal, out var minLoc, out var maxLoc);
         (int width, int height) = (gray.Size());
         var histogram = Histogram.WithBinCount(255, 0, 255);
-        double[] values = new double[width * height];
-        Parallel.For(0, height, y => {
-            for (int x = 0; x < width; x++)
+        var pool = ArrayPool<double>.Shared;
+        double[] values = pool.Rent(width * height);
+        try
+        {
+            await Parallel.ForAsync(0, height, (y, cancelToken) =>
             {
-                int index = y * width + x;
-                values[index] = gray.At<byte>(y, x);
-            }
-        });
-        histogram.AddRange(values);
-        avaPlot.Plot.Add.Histogram(histogram);
-        avaPlot.Refresh();
-        Trace.WriteLine($"ºÄÊ±£º {stopwatch.Elapsed.TotalMilliseconds}ms");
+                for (int x = 0; x < width; x++)
+                {
+                    int index = y * width + x;
+                    byte v = gray.At<byte>(y, x);
+                    values[index] = v;
+                }
+                return ValueTask.CompletedTask;
+            });
+            await Task.Run(() =>
+            {
+                histogram.AddRange(values);
+                this.AvaPlot.Plot.Add.Histogram(histogram);
+            });
+        }
+        finally
+        {
+            pool.Return(values);
+        }
+        this.AvaPlot.Refresh();
+        this.TheImage.InvalidateVisual();
     }
 }
 
@@ -102,7 +108,7 @@ public static class LockedFramebufferExtensions
         }
     }
 
-    public static void SetPixel(this ILockedFramebuffer framebuffer, int x, int y, Color color)
+    public static void SetPixel(this ILockedFramebuffer framebuffer, int x, int y, Avalonia.Media.Color color)
     {
         var pixel = framebuffer.GetPixel(x, y);
 
