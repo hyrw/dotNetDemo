@@ -2,6 +2,9 @@ using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using OpenCvSharp;
+using ScottPlot;
+using ScottPlot.Avalonia;
+using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
 using System.Buffers;
@@ -17,6 +20,22 @@ public partial class MainWindow : Avalonia.Controls.Window
     public MainWindow()
     {
         InitializeComponent();
+        var crosshair = this.AvaPlot.Plot.Add.Crosshair(0, 0);
+        crosshair.TextColor = Colors.White;
+        crosshair.TextBackgroundColor = crosshair.HorizontalLine.Color;
+        this.AvaPlot.PointerMoved += (s, e) =>
+        {
+            if (s is not AvaPlot plot) return;
+
+            var position = e.GetPosition(plot);
+            Pixel mousePixel = new(position.X, position.Y);
+            Coordinates mouseCoordinates = plot.Plot.GetCoordinates(mousePixel);
+            Title = $"X={mouseCoordinates.X:N3}, Y={mouseCoordinates.Y:N3}";
+            crosshair.Position = mouseCoordinates;
+            crosshair.VerticalLine.Text = $"{mouseCoordinates.X:N3}";
+            crosshair.HorizontalLine.Text = $"{mouseCoordinates.Y:N3}";
+            AvaPlot.Refresh();
+        };
     }
 
     private async void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -40,11 +59,9 @@ public partial class MainWindow : Avalonia.Controls.Window
             img.ToBitmapParallel(source);
         }
 
-        // BUG: 直方图的数据统计方式有问题
         using Mat gray = img.CvtColor(ColorConversionCodes.BGR2GRAY);
         Cv2.MinMaxLoc(gray, out var minVal, out var maxVal, out var minLoc, out var maxLoc);
         (int width, int height) = (gray.Size());
-        var histogram = Histogram.WithBinCount(255, 0, 255);
         var pool = ArrayPool<double>.Shared;
         double[] values = pool.Rent(width * height);
         try
@@ -61,6 +78,7 @@ public partial class MainWindow : Avalonia.Controls.Window
             });
             await Task.Run(() =>
             {
+                var histogram = Histogram.WithBinCount(256, 0, 255);
                 histogram.AddRange(values);
                 this.AvaPlot.Plot.Add.Histogram(histogram);
             });
