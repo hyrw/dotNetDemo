@@ -21,7 +21,9 @@ public partial class MainWindow : Avalonia.Controls.Window
     readonly Queue<string> files = new(Directory.EnumerateFiles(@"d:/新建文件夹/", "*.jpg", SearchOption.AllDirectories));
 
     AxisLine? thresholdAxisLine = null;
-    Crosshair? crosshair = null;
+    readonly Crosshair? crosshair = null;
+    string file = string.Empty;
+    int? threshold;
 
     public MainWindow()
     {
@@ -34,18 +36,29 @@ public partial class MainWindow : Avalonia.Controls.Window
         var vl = this.AvaPlot.Plot.Add.VerticalLine(0);
         vl.IsDraggable = true;
         vl.Text = "Threshold";
+
+        // threshold axis
         this.AvaPlot.PointerPressed += OnMouseDown;
         this.AvaPlot.PointerReleased += OnMouseUp;
         this.AvaPlot.PointerMoved += OnMouseMove;
+
+        // crosshair
         this.AvaPlot.PointerMoved += CrosshairHandle;
     }
 
-    private async void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    async Task UpdateImage(string file)
     {
-        bool ok = files.TryDequeue(out var file);
-        if (!ok) return;
+        if (!File.Exists(file)) return;
 
         using Mat gray = Cv2.ImRead(file!, ImreadModes.Grayscale);
+        using Mat color = gray.CvtColor(ColorConversionCodes.GRAY2BGR);
+
+        if (this.threshold.HasValue)
+        {
+            using Mat mask = gray.Threshold(this.threshold.Value, 255, ThresholdTypes.Binary);
+            color.SetTo(Scalar.Red, mask);
+        }
+
         Avalonia.Size size = new(gray.Width, gray.Height);
         Vector dpi = new(96, 96);
 
@@ -54,13 +67,13 @@ public partial class MainWindow : Avalonia.Controls.Window
         {
             if (source is null || source.Size != size)
             {
-                Avalonia.PixelSize pixelSize = new(gray.Width, gray.Height);
+                Avalonia.PixelSize pixelSize = new(color.Width, color.Height);
                 source = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888);
-                gray.ToBitmapParallel(source);
+                color.ToBitmapParallel(source);
             }
             else
             {
-                gray.ToBitmapParallel(source);
+                color.ToBitmapParallel(source);
             }
         });
         this.TheImage.Source = source;
@@ -96,6 +109,15 @@ public partial class MainWindow : Avalonia.Controls.Window
         this.TheImage.InvalidateVisual();
     }
 
+    private async void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        bool ok = files.TryDequeue(out var file);
+        if (!ok) return;
+        this.file = file!;
+
+        await UpdateImage(this.file);
+    }
+
     private void OnMouseDown(object? sender, PointerEventArgs e)
     {
         if (sender is not Visual visual) return;
@@ -109,10 +131,11 @@ public partial class MainWindow : Avalonia.Controls.Window
         }
     }
 
-    private void OnMouseUp(object? sender, PointerEventArgs e)
+    private async void OnMouseUp(object? sender, PointerEventArgs e)
     {
         thresholdAxisLine = null;
         AvaPlot.UserInputProcessor.Enable(); // enable panning again
+        await UpdateImage(this.file);
         AvaPlot.Refresh();
     }
 
@@ -140,6 +163,8 @@ public partial class MainWindow : Avalonia.Controls.Window
 
         // this rectangle is the area around the mouse in coordinate units
         CoordinateRect rect = this.AvaPlot.Plot.GetCoordinateRect((float)pos.X, (float)pos.Y, radius: 10);
+        if (rect.HorizontalCenter < 0 ||
+            rect.HorizontalCenter > 255) return;
 
         if (thresholdAxisLine is null)
         {
@@ -161,6 +186,7 @@ public partial class MainWindow : Avalonia.Controls.Window
             {
                 vl.X = rect.HorizontalCenter;
                 vl.Text = $"{vl.X:0.00}";
+                this.threshold = (int)vl.X;
             }
             AvaPlot.Refresh();
         }
