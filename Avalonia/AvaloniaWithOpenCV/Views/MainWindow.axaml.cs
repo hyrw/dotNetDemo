@@ -63,8 +63,12 @@ public partial class MainWindow : Avalonia.Controls.Window
     {
         if (!File.Exists(file)) return;
 
-        using Mat gray = Cv2.ImRead(file!, ImreadModes.Grayscale);
-        using Mat color = gray.CvtColor(ColorConversionCodes.GRAY2BGR);
+        (Mat gray, Mat color) = await Task.Run(() =>
+        {
+            Mat gray = Cv2.ImRead(file!, ImreadModes.Grayscale);
+            Mat color = gray.CvtColor(ColorConversionCodes.GRAY2BGR);
+            return (gray, color);
+        });
 
         if (this.threshold.HasValue)
         {
@@ -117,6 +121,8 @@ public partial class MainWindow : Avalonia.Controls.Window
         finally
         {
             pool.Return(values);
+            color.Dispose();
+            gray.Dispose();
         }
         this.AvaPlot.Refresh();
         this.TheImage.InvalidateVisual();
