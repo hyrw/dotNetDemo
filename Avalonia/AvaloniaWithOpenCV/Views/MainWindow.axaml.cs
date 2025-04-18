@@ -78,7 +78,6 @@ public partial class MainWindow : Avalonia.Controls.Window
         });
         this.TheImage.Source = source;
 
-        Cv2.MinMaxLoc(gray, out var minVal, out var maxVal, out var minLoc, out var maxLoc);
         (int width, int height) = (gray.Size());
         var pool = ArrayPool<double>.Shared;
         double[] values = pool.Rent(width * height);
@@ -98,6 +97,7 @@ public partial class MainWindow : Avalonia.Controls.Window
             {
                 var histogram = Histogram.WithBinCount(256, 0, 255);
                 histogram.AddRange(values);
+                this.AvaPlot.Plot.Clear<HistogramBars>();
                 this.AvaPlot.Plot.Add.Histogram(histogram);
             });
         }
@@ -120,56 +120,58 @@ public partial class MainWindow : Avalonia.Controls.Window
 
     private void OnMouseDown(object? sender, PointerEventArgs e)
     {
-        if (sender is not Visual visual) return;
+        if (sender is not AvaPlot avaPlot) return;
 
-        var pos = e.GetPosition(visual);
-        var lineUnderMouse = GetLineUnderMouse((float)pos.X, (float)pos.Y);
+        var pos = e.GetPosition(avaPlot);
+        var lineUnderMouse = GetLineUnderMouse((float)pos.X, (float)pos.Y, avaPlot);
         if (lineUnderMouse is not null)
         {
             thresholdAxisLine = lineUnderMouse;
-            this.AvaPlot.UserInputProcessor.Disable(); // disable panning while dragging
+            avaPlot.UserInputProcessor.Disable(); // disable panning while dragging
         }
     }
 
     private async void OnMouseUp(object? sender, PointerEventArgs e)
     {
+        if (sender is not AvaPlot avaPlot) return;
+
         thresholdAxisLine = null;
-        AvaPlot.UserInputProcessor.Enable(); // enable panning again
+        avaPlot.UserInputProcessor.Enable(); // enable panning again
         await UpdateImage(this.file);
-        AvaPlot.Refresh();
+        avaPlot.Refresh();
     }
 
     void CrosshairHandle(object? sender, PointerEventArgs e)
     {
-        if (sender is not AvaPlot plot || this.crosshair is null) return;
+        if (sender is not AvaPlot avaPlot || this.crosshair is null) return;
 
-        var pos = e.GetPosition(plot);
+        var pos = e.GetPosition(avaPlot);
 
         Pixel mousePixel = new(pos.X, pos.Y);
-        Coordinates mouseCoordinates = plot.Plot.GetCoordinates(mousePixel);
+        Coordinates mouseCoordinates = avaPlot.Plot.GetCoordinates(mousePixel);
         Title = $"X={mouseCoordinates.X:N1}, Y={mouseCoordinates.Y:N1}";
 
         crosshair.Position = mouseCoordinates;
         crosshair.VerticalLine.Text = $"{mouseCoordinates.X:N1}";
         // crosshair.HorizontalLine.Text = $"{mouseCoordinates.Y:N1}";
-        AvaPlot.Refresh();
+        avaPlot.Refresh();
     }
 
     private void OnMouseMove(object? sender, PointerEventArgs e)
     {
-        if (sender is not AvaPlot plot) return;
+        if (sender is not AvaPlot avaPlot) return;
 
-        var pos = e.GetPosition(plot);
+        var pos = e.GetPosition(avaPlot);
 
         // this rectangle is the area around the mouse in coordinate units
-        CoordinateRect rect = this.AvaPlot.Plot.GetCoordinateRect((float)pos.X, (float)pos.Y, radius: 10);
+        CoordinateRect rect = avaPlot.Plot.GetCoordinateRect((float)pos.X, (float)pos.Y, radius: 10);
         if (rect.HorizontalCenter < 0 ||
             rect.HorizontalCenter > 255) return;
 
         if (thresholdAxisLine is null)
         {
             // set cursor based on what's beneath the plottable
-            var lineUnderMouse = GetLineUnderMouse((float)pos.X, (float)pos.Y);
+            var lineUnderMouse = GetLineUnderMouse((float)pos.X, (float)pos.Y, avaPlot);
             if (lineUnderMouse is null) Cursor = new(StandardCursorType.Arrow);
             else if (lineUnderMouse.IsDraggable && lineUnderMouse is VerticalLine) Cursor = new(StandardCursorType.SizeWestEast);
             else if (lineUnderMouse.IsDraggable && lineUnderMouse is HorizontalLine) Cursor = new(StandardCursorType.SizeNorthSouth);
@@ -188,15 +190,15 @@ public partial class MainWindow : Avalonia.Controls.Window
                 vl.Text = $"{vl.X:0.00}";
                 this.threshold = (int)vl.X;
             }
-            AvaPlot.Refresh();
+            avaPlot.Refresh();
         }
     }
 
-    private AxisLine? GetLineUnderMouse(float x, float y)
+    private AxisLine? GetLineUnderMouse(float x, float y, AvaPlot avaPlot)
     {
-        CoordinateRect rect = AvaPlot.Plot.GetCoordinateRect(x, y, radius: 10);
+        CoordinateRect rect = avaPlot.Plot.GetCoordinateRect(x, y, radius: 10);
 
-        foreach (AxisLine axLine in AvaPlot.Plot.GetPlottables<AxisLine>().Reverse())
+        foreach (AxisLine axLine in avaPlot.Plot.GetPlottables<AxisLine>().Reverse())
         {
             if (axLine.IsUnderMouse(rect))
                 return axLine;
