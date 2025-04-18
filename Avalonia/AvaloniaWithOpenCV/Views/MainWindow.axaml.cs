@@ -131,9 +131,9 @@ public partial class MainWindow : Avalonia.Controls.Window
     private async void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         bool ok = files.TryDequeue(out var file);
-        if (!ok) return;
-        this.file = file!;
+        if (!ok || string.IsNullOrEmpty(file)) return;
 
+        this.file = file;
         await UpdateImage(this.file);
     }
 
