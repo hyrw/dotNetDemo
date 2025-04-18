@@ -21,24 +21,24 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="2*" />
-        </Grid.RowDefinitions>
-        <Button
-            Grid.Row="0"
-            HorizontalAlignment="Center"
-            Click="Button_Click"
-            Content="下一张" />
-        <ScottPlot:AvaPlot
-            Name="AvaPlot"
-            Grid.Row="1"
-            Height="200" />
-        <Image
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="3*" />
+			<ColumnDefinition Width="7*" />
+		</Grid.ColumnDefinitions>
+		<StackPanel Grid.Column="0">
+			<ScottPlot:AvaPlot
+				Name="AvaPlot"
+				Height="150" />
+			<Button
+				HorizontalAlignment="Center"
+				Click="Button_Click"
+				Content="下一张" />
+		</StackPanel>
+		<Image
+			VerticalAlignment="Top"
             Name="TheImage"
-            Grid.Row="2"
+            Grid.Column="1"
             Stretch="Uniform" />
     </Grid>
 
