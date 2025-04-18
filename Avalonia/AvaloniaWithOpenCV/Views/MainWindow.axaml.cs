@@ -29,10 +29,10 @@ public partial class MainWindow : Avalonia.Controls.Window
     {
         InitializeComponent();
         this.crosshair = this.AvaPlot.Plot.Add.Crosshair(0, 0);
-        this.AvaPlot.Plot.Add.Crosshair(20, 20);
         this.crosshair.TextColor = Colors.White;
         this.crosshair.TextBackgroundColor = crosshair.HorizontalLine.Color;
         this.crosshair.HorizontalLine.IsVisible = false;
+        this.crosshair.VerticalLine.IsVisible = false;
         var vl = this.AvaPlot.Plot.Add.VerticalLine(0);
         vl.IsDraggable = true;
         vl.Text = "Threshold";
@@ -147,11 +147,11 @@ public partial class MainWindow : Avalonia.Controls.Window
 
         Pixel mousePixel = new(pos.X, pos.Y);
         Coordinates mouseCoordinates = plot.Plot.GetCoordinates(mousePixel);
-        Title = $"X={mouseCoordinates.X:N3}, Y={mouseCoordinates.Y:N3}";
+        Title = $"X={mouseCoordinates.X:N1}, Y={mouseCoordinates.Y:N1}";
 
         crosshair.Position = mouseCoordinates;
-        crosshair.VerticalLine.Text = $"{mouseCoordinates.X:N3}";
-        crosshair.HorizontalLine.Text = $"{mouseCoordinates.Y:N3}";
+        crosshair.VerticalLine.Text = $"{mouseCoordinates.X:N1}";
+        // crosshair.HorizontalLine.Text = $"{mouseCoordinates.Y:N1}";
         AvaPlot.Refresh();
     }
 
