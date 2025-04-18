@@ -18,7 +18,7 @@ namespace AvaloniaWithOpenCV.Views;
 
 public partial class MainWindow : Avalonia.Controls.Window
 {
-    readonly Queue<string> files = new(Directory.EnumerateFiles(@"c:/Users/Coder/Workspace/OpencvTest/0327_2/", "*.png", SearchOption.AllDirectories));
+    Queue<string> fileQueue = new();
 
     AxisLine? thresholdAxisLine = null;
     readonly Crosshair? crosshair = null;
@@ -130,7 +130,7 @@ public partial class MainWindow : Avalonia.Controls.Window
 
     private async void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        bool ok = files.TryDequeue(out var file);
+        bool ok = fileQueue.TryDequeue(out var file);
         if (!ok || string.IsNullOrEmpty(file)) return;
 
         this.file = file;
@@ -224,6 +224,36 @@ public partial class MainWindow : Avalonia.Controls.Window
         }
 
         return null;
+    }
+
+    async void Drop(object? sender, DragEventArgs e)
+    {
+        if (!e.Data.Contains(DataFormats.Files)) return;
+        var storeItem = e.Data.GetFiles()!;
+        List<string> filePath = [];
+        foreach (var i in storeItem)
+        {
+            string path = i.Path.LocalPath;
+            if (Directory.Exists(path))
+            {
+                var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories);
+                filePath.AddRange(files);
+            }
+            else if (File.Exists(path))
+            {
+                filePath.Add(path);
+            }
+        }
+        foreach (var i in filePath)
+        {
+            this.fileQueue.Enqueue(i);
+        }
+
+        if (this.fileQueue.TryDequeue(out string? file) && !string.IsNullOrEmpty(file))
+        {
+            this.file = file;
+            await UpdateImage(file);
+        }
     }
 }
 

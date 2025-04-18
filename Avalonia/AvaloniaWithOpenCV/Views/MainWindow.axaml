@@ -21,24 +21,22 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-	<Grid Margin="20">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*" />
-			<ColumnDefinition Width="7*" />
-		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Column="0" Margin="10 0 20 0">
-			<ScottPlot:AvaPlot
-				Name="AvaPlot"
-				Height="150" />
-			<Button
-				HorizontalAlignment="Center"
-				Click="Button_Click"
-				Content="下一张" />
-		</StackPanel>
-		<Image
-			VerticalAlignment="Top"
+    <Grid
+        Margin="20"
+        Background="Transparent"
+        DragDrop.AllowDrop="True"
+        DragDrop.Drop="Drop">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="7*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="10,0,20,0">
+            <ScottPlot:AvaPlot Name="AvaPlot" Height="150" />
+        </StackPanel>
+        <Image
             Name="TheImage"
             Grid.Column="1"
+            VerticalAlignment="Top"
             Stretch="Uniform" />
     </Grid>
 
