@@ -21,12 +21,12 @@
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
-	<Grid>
+	<Grid Margin="20">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="3*" />
 			<ColumnDefinition Width="7*" />
 		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Column="0">
+		<StackPanel Grid.Column="0" Margin="10 0 20 0">
 			<ScottPlot:AvaPlot
 				Name="AvaPlot"
 				Height="150" />

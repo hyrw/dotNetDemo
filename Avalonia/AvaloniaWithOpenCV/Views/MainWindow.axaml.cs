@@ -18,7 +18,7 @@ namespace AvaloniaWithOpenCV.Views;
 
 public partial class MainWindow : Avalonia.Controls.Window
 {
-    readonly Queue<string> files = new(Directory.EnumerateFiles(@"d:/新建文件夹/", "*.jpg", SearchOption.AllDirectories));
+    readonly Queue<string> files = new(Directory.EnumerateFiles(@"c:/Users/Coder/Workspace/OpencvTest/0327_2/", "*.png", SearchOption.AllDirectories));
 
     AxisLine? thresholdAxisLine = null;
     readonly Crosshair? crosshair = null;
@@ -44,6 +44,19 @@ public partial class MainWindow : Avalonia.Controls.Window
 
         // crosshair
         this.AvaPlot.PointerMoved += CrosshairHandle;
+
+        // Hide axis label and tick
+        this.AvaPlot.Plot.Axes.Left.IsVisible = false;
+        // this.AvaPlot.Plot.Axes.Left.TickLabelStyle.IsVisible = false;
+        // this.AvaPlot.Plot.Axes.Left.MinorTickStyle.Length = 0;
+        this.AvaPlot.Plot.Axes.Right.IsVisible = false;
+        // this.AvaPlot.Plot.Axes.Right.TickLabelStyle.IsVisible = false;
+        // this.AvaPlot.Plot.Axes.Right.MinorTickStyle.Length = 0;
+
+        // Hide axis edge line
+        this.AvaPlot.Plot.Axes.Top.FrameLineStyle.Width = 0;
+        this.AvaPlot.Plot.Axes.Left.FrameLineStyle.Width = 0;
+        this.AvaPlot.Plot.Axes.Right.FrameLineStyle.Width = 0;
     }
 
     async Task UpdateImage(string file)
