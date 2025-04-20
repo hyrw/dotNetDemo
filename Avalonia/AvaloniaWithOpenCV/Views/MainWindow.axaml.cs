@@ -9,8 +9,6 @@ using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
 using System.Buffers;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,12 +16,13 @@ namespace AvaloniaWithOpenCV.Views;
 
 public partial class MainWindow : Avalonia.Controls.Window
 {
-    Queue<string> fileQueue = new();
-
     AxisLine? thresholdAxisLine = null;
     readonly Crosshair? crosshair = null;
     string file = string.Empty;
     int? threshold;
+
+    public Mat? Img { get; set; }
+    public Mat? Mask { get; set; }
 
     public MainWindow()
     {
@@ -57,6 +56,33 @@ public partial class MainWindow : Avalonia.Controls.Window
         this.AvaPlot.Plot.Axes.Top.FrameLineStyle.Width = 0;
         this.AvaPlot.Plot.Axes.Left.FrameLineStyle.Width = 0;
         this.AvaPlot.Plot.Axes.Right.FrameLineStyle.Width = 0;
+
+        Closed += MainWindow_Closed;
+    }
+
+    void MainWindow_Closed(object? sender, EventArgs e)
+    {
+        this.Dispose(true);
+    }
+
+    public override void Show()
+    {
+        base.Show();
+        if (this.Img is not null)
+        {
+            _ = UpdateImageAsync(this.Img);
+        }
+    }
+
+    void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            this.Img?.Dispose();
+            this.Img = default;
+            this.Mask?.Dispose();
+            this.Mask = default;
+        }
     }
 
     async Task UpdateImageAsync(Mat color)
@@ -66,7 +92,8 @@ public partial class MainWindow : Avalonia.Controls.Window
 
         if (this.threshold.HasValue)
         {
-            using Mat mask = gray.Threshold(this.threshold.Value, 255, ThresholdTypes.Binary);
+            Mat mask = gray.Threshold(this.threshold.Value, 255, ThresholdTypes.Binary);
+            this.Mask = mask;
             grayToColor.SetTo(Scalar.Red, mask);
         }
 
@@ -122,9 +149,9 @@ public partial class MainWindow : Avalonia.Controls.Window
         this.TheImage.InvalidateVisual();
     }
 
-    Task<Mat> ImReadAsync(string file, ImreadModes imreadModes = ImreadModes.Color)
+    static Task<Mat> ImReadAsync(string file, ImreadModes flags = ImreadModes.Color)
     {
-        return Task.Run(() => Cv2.ImRead(file, imreadModes));
+        return Task.Run(() => Cv2.ImRead(file, flags));
     }
 
     private void OnMouseDown(object? sender, PointerEventArgs e)
@@ -147,7 +174,9 @@ public partial class MainWindow : Avalonia.Controls.Window
         thresholdAxisLine = null;
         avaPlot.UserInputProcessor.Enable(); // enable panning again
         Mat color = await ImReadAsync(this.file);
-        await UpdateImageAsync(color);
+        this.Dispose(true);
+        this.Img = color;
+        await UpdateImageAsync(this.Img);
         avaPlot.Refresh();
     }
 
@@ -221,31 +250,13 @@ public partial class MainWindow : Avalonia.Controls.Window
     {
         if (!e.Data.Contains(DataFormats.Files)) return;
         var storeItem = e.Data.GetFiles()!;
-        List<string> filePath = [];
-        foreach (var i in storeItem)
-        {
-            string path = i.Path.LocalPath;
-            if (Directory.Exists(path))
-            {
-                var files = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories);
-                filePath.AddRange(files);
-            }
-            else if (File.Exists(path))
-            {
-                filePath.Add(path);
-            }
-        }
-        foreach (var i in filePath)
-        {
-            this.fileQueue.Enqueue(i);
-        }
+        string localPath = storeItem.First().Path.LocalPath;
 
-        if (this.fileQueue.TryDequeue(out string? file) && !string.IsNullOrEmpty(file))
-        {
-            this.file = file;
-            using Mat color = await ImReadAsync(this.file);
-            await UpdateImageAsync(color);
-        }
+        this.file = localPath;
+        this.Dispose(true);
+        Mat color = await ImReadAsync(localPath);
+        this.Img = color;
+        await UpdateImageAsync(color);
     }
 }
 
