@@ -59,21 +59,15 @@ public partial class MainWindow : Avalonia.Controls.Window
         this.AvaPlot.Plot.Axes.Right.FrameLineStyle.Width = 0;
     }
 
-    async Task UpdateImage(string file)
+    async Task UpdateImageAsync(Mat color)
     {
-        if (!File.Exists(file)) return;
-
-        (Mat gray, Mat color) = await Task.Run(() =>
-        {
-            Mat gray = Cv2.ImRead(file!, ImreadModes.Grayscale);
-            Mat color = gray.CvtColor(ColorConversionCodes.GRAY2BGR);
-            return (gray, color);
-        });
+        Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
+        Mat grayToColor = await Task.Run(() => gray.CvtColor(ColorConversionCodes.GRAY2BGR));
 
         if (this.threshold.HasValue)
         {
             using Mat mask = gray.Threshold(this.threshold.Value, 255, ThresholdTypes.Binary);
-            color.SetTo(Scalar.Red, mask);
+            grayToColor.SetTo(Scalar.Red, mask);
         }
 
         Avalonia.Size size = new(gray.Width, gray.Height);
@@ -84,13 +78,13 @@ public partial class MainWindow : Avalonia.Controls.Window
         {
             if (source is null || source.Size != size)
             {
-                Avalonia.PixelSize pixelSize = new(color.Width, color.Height);
+                Avalonia.PixelSize pixelSize = new(grayToColor.Width, grayToColor.Height);
                 source = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888);
-                color.ToBitmapParallel(source);
+                grayToColor.ToBitmapParallel(source);
             }
             else
             {
-                color.ToBitmapParallel(source);
+                grayToColor.ToBitmapParallel(source);
             }
         });
         this.TheImage.Source = source;
@@ -121,20 +115,15 @@ public partial class MainWindow : Avalonia.Controls.Window
         finally
         {
             pool.Return(values);
-            color.Dispose();
             gray.Dispose();
         }
         this.AvaPlot.Refresh();
         this.TheImage.InvalidateVisual();
     }
 
-    private async void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    Task<Mat> ImReadAsync(string file, ImreadModes imreadModes = ImreadModes.Color)
     {
-        bool ok = fileQueue.TryDequeue(out var file);
-        if (!ok || string.IsNullOrEmpty(file)) return;
-
-        this.file = file;
-        await UpdateImage(this.file);
+        return Task.Run(() => Cv2.ImRead(file, imreadModes));
     }
 
     private void OnMouseDown(object? sender, PointerEventArgs e)
@@ -156,7 +145,8 @@ public partial class MainWindow : Avalonia.Controls.Window
 
         thresholdAxisLine = null;
         avaPlot.UserInputProcessor.Enable(); // enable panning again
-        await UpdateImage(this.file);
+        Mat color = await ImReadAsync(this.file);
+        await UpdateImageAsync(color);
         avaPlot.Refresh();
     }
 
@@ -252,7 +242,8 @@ public partial class MainWindow : Avalonia.Controls.Window
         if (this.fileQueue.TryDequeue(out string? file) && !string.IsNullOrEmpty(file))
         {
             this.file = file;
-            await UpdateImage(file);
+            using Mat color = await ImReadAsync(this.file);
+            await UpdateImageAsync(color);
         }
     }
 }
