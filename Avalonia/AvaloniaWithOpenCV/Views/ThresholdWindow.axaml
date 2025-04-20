@@ -21,7 +21,8 @@
 		<Image
             Name="TheImage"
             Grid.Column="1"
-            VerticalAlignment="Top"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
             Stretch="Uniform" />
 	</Grid>
 </Window>
