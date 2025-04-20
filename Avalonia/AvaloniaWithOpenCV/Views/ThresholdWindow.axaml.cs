@@ -83,6 +83,15 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         this.AvaPlot.Plot.Axes.Right.FrameLineStyle.Width = 0;
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == ImgProperty)
+        {
+            _ = this.UpdateImageAsync(change.GetNewValue<Mat>());
+        }
+    }
+
     async Task UpdateImageAsync(Mat color)
     {
         Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
