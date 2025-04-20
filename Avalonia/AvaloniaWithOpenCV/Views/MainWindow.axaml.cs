@@ -116,6 +116,7 @@ public partial class MainWindow : Avalonia.Controls.Window
         {
             pool.Return(values);
             gray.Dispose();
+            grayToColor.Dispose();
         }
         this.AvaPlot.Refresh();
         this.TheImage.InvalidateVisual();
