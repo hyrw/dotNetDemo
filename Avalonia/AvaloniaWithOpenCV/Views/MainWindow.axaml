@@ -2,7 +2,6 @@
     x:Class="AvaloniaWithOpenCV.Views.MainWindow"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ScottPlot="clr-namespace:ScottPlot.Avalonia;assembly=ScottPlot.Avalonia"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:AvaloniaWithOpenCV.ViewModels"
@@ -20,24 +19,5 @@
         -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
-
-    <Grid
-        Margin="20"
-        Background="Transparent"
-        DragDrop.AllowDrop="True"
-        DragDrop.Drop="Drop">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="7*" />
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.Column="0" Margin="10,0,20,0">
-            <ScottPlot:AvaPlot Name="AvaPlot" Height="150" />
-        </StackPanel>
-        <Image
-            Name="TheImage"
-            Grid.Column="1"
-            VerticalAlignment="Top"
-            Stretch="Uniform" />
-    </Grid>
-
+    <Button Click="Button_Click" Content="打开二值化窗口" />
 </Window>
