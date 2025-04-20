@@ -9,7 +9,7 @@ public class ThresholdService(Avalonia.Controls.Window owner) : IThresholdServic
     public async Task<Mat> ThresholdAsync(Mat img)
     {
         ThresholdWindow window = new ThresholdWindow();
-        window.Img = img;
+        window.Img = img.Clone();
         await window.ShowDialog(owner);
         Mat? result = window.Mask;
         window.Close();

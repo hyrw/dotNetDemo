@@ -1,4 +1,4 @@
-﻿
+﻿using OpenCvSharp;
 using AvaloniaWithOpenCV.Services;
 using CommunityToolkit.Mvvm.Input;
 using System.Threading.Tasks;
@@ -10,6 +10,7 @@ public partial class MainWindowViewModel(IThresholdService thresholdService) : V
     [RelayCommand]
     Task Threshold()
     {
-        return thresholdService.ThresholdAsync(null);
+        using Mat color = Cv2.ImRead(@"d:/新建文件夹/IMG_0067.JPG");
+        return thresholdService.ThresholdAsync(color);
     }
 }

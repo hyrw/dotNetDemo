@@ -10,7 +10,6 @@ using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
 using System.Buffers;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,11 +19,34 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
 {
     AxisLine? thresholdAxisLine = null;
     readonly Crosshair? crosshair = null;
-    string file = string.Empty;
-    int? threshold;
 
-    public Mat? Img { get; set; }
-    public Mat? Mask { get; set; }
+    public static readonly StyledProperty<int> ThresholdProperty;
+    public int Threshold
+    {
+        get => GetValue(ThresholdProperty);
+        set => SetValue(ThresholdProperty, value);
+    }
+
+    public static readonly StyledProperty<Mat> MaskProperty;
+    public Mat Mask
+    {
+        get => GetValue(MaskProperty);
+        set => SetValue(MaskProperty, value);
+    }
+
+    public static readonly StyledProperty<Mat> ImgProperty;
+    public Mat Img
+    {
+        get => GetValue(ImgProperty);
+        set => SetValue(ImgProperty, value);
+    }
+
+    static ThresholdWindow()
+    {
+        ImgProperty = AvaloniaProperty.Register<ThresholdWindow, Mat>(nameof(Img));
+        MaskProperty = AvaloniaProperty.Register<ThresholdWindow, Mat>(nameof(Mask));
+        ThresholdProperty = AvaloniaProperty.Register<ThresholdWindow, int>(nameof(ThresholdProperty), 255);
+    }
 
     public ThresholdWindow()
     {
@@ -36,7 +58,8 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         this.crosshair.VerticalLine.IsVisible = false;
         var vl = this.AvaPlot.Plot.Add.VerticalLine(0);
         vl.IsDraggable = true;
-        vl.Text = "Threshold";
+        vl.Text = this.Threshold.ToString();
+        vl.X = this.Threshold;
 
         // threshold axis
         this.AvaPlot.PointerPressed += OnMouseDown;
@@ -65,12 +88,9 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
         Mat grayToColor = await Task.Run(() => gray.CvtColor(ColorConversionCodes.GRAY2BGR));
 
-        if (this.threshold.HasValue)
-        {
-            Mat mask = gray.Threshold(this.threshold.Value, 255, ThresholdTypes.Binary);
-            this.Mask = mask;
-            grayToColor.SetTo(Scalar.Red, mask);
-        }
+        Mat mask = gray.Threshold(this.Threshold, 255, ThresholdTypes.Binary);
+        this.Mask = mask;
+        grayToColor.SetTo(Scalar.Red, mask);
 
         Avalonia.Size size = new(gray.Width, gray.Height);
         Vector dpi = new(96, 96);
@@ -148,10 +168,8 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
 
         thresholdAxisLine = null;
         avaPlot.UserInputProcessor.Enable(); // enable panning again
-        if (File.Exists(this.file))
+        if (this.Img is not null)
         {
-            Mat color = await ImReadAsync(this.file);
-            this.Img = color;
             await UpdateImageAsync(this.Img);
             avaPlot.Refresh();
         }
@@ -204,7 +222,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
             {
                 vl.X = rect.HorizontalCenter;
                 vl.Text = $"{vl.X:0.00}";
-                this.threshold = (int)vl.X;
+                this.Threshold = (int)vl.X;
             }
             avaPlot.Refresh();
         }
@@ -229,7 +247,6 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         var storeItem = e.Data.GetFiles()!;
         string localPath = storeItem.First().Path.LocalPath;
 
-        this.file = localPath;
         Mat color = await ImReadAsync(localPath);
         this.Img = color;
         await UpdateImageAsync(color);
