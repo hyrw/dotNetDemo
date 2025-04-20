@@ -1,7 +1,15 @@
-﻿namespace AvaloniaWithOpenCV.ViewModels
+﻿
+using AvaloniaWithOpenCV.Services;
+using CommunityToolkit.Mvvm.Input;
+using System.Threading.Tasks;
+
+namespace AvaloniaWithOpenCV.ViewModels;
+
+public partial class MainWindowViewModel(IThresholdService thresholdService) : ViewModelBase
 {
-    public partial class MainWindowViewModel : ViewModelBase
+    [RelayCommand]
+    Task Threshold()
     {
-        public string Greeting { get; } = "Welcome to Avalonia!";
+        return thresholdService.ThresholdAsync(null);
     }
 }

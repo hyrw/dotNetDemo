@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace AvaloniaWithOpenCV.Services;
 
-internal interface IThresholdServices
+public interface IThresholdService
 {
     Task<Mat> ThresholdAsync(Mat img);
 }

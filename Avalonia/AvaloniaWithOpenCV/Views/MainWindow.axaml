@@ -12,12 +12,8 @@
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
 
-    <Design.DataContext>
-        <!--
-            This only sets the DataContext for the previewer in an IDE,
-            to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs)
-        -->
+    <!--<Design.DataContext>
         <vm:MainWindowViewModel />
-    </Design.DataContext>
-    <Button Click="Button_Click" Content="打开二值化窗口" />
+    </Design.DataContext>-->
+    <Button Command="{Binding ThresholdCommand}" Content="打开二值化窗口" />
 </Window>
