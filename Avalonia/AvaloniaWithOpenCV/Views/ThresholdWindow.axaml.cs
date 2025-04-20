@@ -9,6 +9,7 @@ using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
 using System.Buffers;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -146,10 +147,13 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
 
         thresholdAxisLine = null;
         avaPlot.UserInputProcessor.Enable(); // enable panning again
-        Mat color = await ImReadAsync(this.file);
-        this.Img = color;
-        await UpdateImageAsync(this.Img);
-        avaPlot.Refresh();
+        if (File.Exists(this.file))
+        {
+            Mat color = await ImReadAsync(this.file);
+            this.Img = color;
+            await UpdateImageAsync(this.Img);
+            avaPlot.Refresh();
+        }
     }
 
     void CrosshairHandle(object? sender, PointerEventArgs e)
