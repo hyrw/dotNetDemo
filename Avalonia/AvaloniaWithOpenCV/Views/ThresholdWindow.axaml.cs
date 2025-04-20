@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using AvaloniaWithOpenCV.Extensions;
 using OpenCvSharp;
 using ScottPlot;
 using ScottPlot.Avalonia;
