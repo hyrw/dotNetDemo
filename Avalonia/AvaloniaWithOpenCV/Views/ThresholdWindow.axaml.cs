@@ -88,7 +88,9 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         base.OnPropertyChanged(change);
         if (change.Property == ImgProperty)
         {
-            _ = this.UpdateImageAsync(change.GetNewValue<Mat>());
+            (Mat oldValue, Mat newValue) = change.GetOldAndNewValue<Mat>();
+            oldValue?.Dispose();
+            _ = this.UpdateImageAsync(newValue);
         }
     }
 
