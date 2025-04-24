@@ -100,6 +100,10 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
             oldValue?.Dispose();
             _ = this.UpdateImageAsync(newValue);
         }
+        else if (change.Property == ThresholdProperty)
+        {
+            _ = this.UpdateImageAsync(this.Img);
+        }
     }
 
     async Task UpdateImageAsync(Mat color)
@@ -181,16 +185,15 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         }
     }
 
-    private async void OnMouseUp(object? sender, PointerEventArgs e)
+    void OnMouseUp(object? sender, PointerEventArgs e)
     {
         if (sender is not AvaPlot avaPlot) return;
 
-        thresholdAxisLine = null;
-        avaPlot.UserInputProcessor.Enable(); // enable panning again
-        if (this.Img is not null)
+        if (thresholdAxisLine is VerticalLine vl)
         {
-            await UpdateImageAsync(this.Img);
-            avaPlot.Refresh();
+            thresholdAxisLine = null;
+            avaPlot.UserInputProcessor.Enable(); // enable panning again
+            this.Threshold = (int)vl.X;
         }
     }
 
@@ -241,7 +244,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
             {
                 vl.X = rect.HorizontalCenter;
                 vl.Text = $"{vl.X:0.00}";
-                this.Threshold = (int)vl.X;
+                //this.Threshold = (int)vl.X;
             }
             avaPlot.Refresh();
         }
