@@ -41,11 +41,19 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         set => SetValue(ImgProperty, value);
     }
 
+    public static readonly StyledProperty<double> MaxValueProperty;
+    public double MaxValue
+    {
+        get => GetValue(MaxValueProperty);
+        set => SetValue(MaxValueProperty, value);
+    }
+
     static ThresholdWindow()
     {
         ImgProperty = AvaloniaProperty.Register<ThresholdWindow, Mat>(nameof(Img));
         MaskProperty = AvaloniaProperty.Register<ThresholdWindow, Mat>(nameof(Mask));
         ThresholdProperty = AvaloniaProperty.Register<ThresholdWindow, int>(nameof(ThresholdProperty), 255);
+        MaxValueProperty = AvaloniaProperty.Register<ThresholdWindow, double>(nameof(ThresholdProperty), 255);
     }
 
     public ThresholdWindow()
@@ -99,7 +107,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
         Mat grayToColor = await Task.Run(() => gray.CvtColor(ColorConversionCodes.GRAY2BGR));
 
-        Mat mask = gray.Threshold(this.Threshold, 255, ThresholdTypes.Binary);
+        Mat mask = gray.Threshold(this.Threshold, this.MaxValue, ThresholdTypes.Binary);
         this.Mask = mask;
         grayToColor.SetTo(Scalar.Red, mask);
 
