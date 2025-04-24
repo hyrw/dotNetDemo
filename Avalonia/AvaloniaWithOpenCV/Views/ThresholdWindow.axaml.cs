@@ -134,7 +134,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         });
         this.TheImage.Source = source;
 
-        (int width, int height) = (gray.Size());
+        (int width, int height) = gray.Size();
         var pool = ArrayPool<double>.Shared;
         double[] values = pool.Rent(width * height);
         try
