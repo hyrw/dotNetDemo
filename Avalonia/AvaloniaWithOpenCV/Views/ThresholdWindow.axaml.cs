@@ -9,7 +9,6 @@ using ScottPlot.Avalonia;
 using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
-using System.Buffers;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +18,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
 {
     AxisLine? thresholdAxisLine = null;
     readonly Crosshair? crosshair = null;
+    readonly Histogram histogram = Histogram.WithBinCount(256, 0, 255);
 
     public static readonly StyledProperty<int> ThresholdProperty;
     public int Threshold
@@ -134,32 +134,22 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         });
         this.TheImage.Source = source;
 
-        (int width, int height) = gray.Size();
-        var pool = ArrayPool<double>.Shared;
-        double[] values = pool.Rent(width * height);
         try
         {
-            await Parallel.ForAsync(0, height, (y, cancelToken) =>
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    int index = y * width + x;
-                    byte v = gray.At<byte>(y, x);
-                    values[index] = v;
-                }
-                return ValueTask.CompletedTask;
-            });
             await Task.Run(() =>
             {
-                var histogram = Histogram.WithBinCount(256, 0, 255);
-                histogram.AddRange(values);
+                using Mat hist = new();
+                Cv2.CalcHist([gray], [0], default, hist, 1, [256], [[0, 256]]);
+                for (int i = 0; i < hist.Rows; i++)
+                {
+                    histogram.Counts[i] = (int)hist.At<float>(i);
+                }
                 this.AvaPlot.Plot.Clear<HistogramBars>();
                 this.AvaPlot.Plot.Add.Histogram(histogram);
             });
         }
         finally
         {
-            pool.Return(values);
             gray.Dispose();
             grayToColor.Dispose();
         }
