@@ -99,6 +99,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
             (Mat oldValue, Mat newValue) = change.GetOldAndNewValue<Mat>();
             oldValue?.Dispose();
             _ = this.UpdateImageAsync(newValue);
+            _ = this.UpdatePlotAsync(newValue);
         }
         else if (change.Property == ThresholdProperty)
         {
@@ -108,8 +109,8 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
 
     async Task UpdateImageAsync(Mat color)
     {
-        Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
-        Mat grayToColor = await Task.Run(() => gray.CvtColor(ColorConversionCodes.GRAY2BGR));
+        using Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
+        using Mat grayToColor = await Task.Run(() => gray.CvtColor(ColorConversionCodes.GRAY2BGR));
 
         Mat mask = gray.Threshold(this.Threshold, this.MaxValue, ThresholdTypes.Binary);
         this.Mask = mask;
@@ -134,27 +135,35 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         });
         this.TheImage.Source = source;
 
-        try
+        await Task.Run(() =>
         {
-            await Task.Run(() =>
+            using Mat hist = new();
+            Cv2.CalcHist([gray], [0], default, hist, 1, [256], [[0, 256]]);
+            for (int i = 0; i < hist.Rows; i++)
             {
-                using Mat hist = new();
-                Cv2.CalcHist([gray], [0], default, hist, 1, [256], [[0, 256]]);
-                for (int i = 0; i < hist.Rows; i++)
-                {
-                    histogram.Counts[i] = (int)hist.At<float>(i);
-                }
-                this.AvaPlot.Plot.Clear<HistogramBars>();
-                this.AvaPlot.Plot.Add.Histogram(histogram);
-            });
-        }
-        finally
-        {
-            gray.Dispose();
-            grayToColor.Dispose();
-        }
-        this.AvaPlot.Refresh();
+                histogram.Counts[i] = (int)hist.At<float>(i);
+            }
+            this.AvaPlot.Plot.Clear<HistogramBars>();
+            this.AvaPlot.Plot.Add.Histogram(histogram);
+        });
         this.TheImage.InvalidateVisual();
+    }
+
+    async Task UpdatePlotAsync(Mat color)
+    {
+        using Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
+        await Task.Run(() =>
+        {
+            using Mat hist = new();
+            Cv2.CalcHist([gray], [0], default, hist, 1, [256], [[0, 256]]);
+            for (int i = 0; i < hist.Rows; i++)
+            {
+                histogram.Counts[i] = (int)hist.At<float>(i);
+            }
+            this.AvaPlot.Plot.Clear<HistogramBars>();
+            this.AvaPlot.Plot.Add.Histogram(histogram);
+        });
+        this.AvaPlot.Refresh();
     }
 
     static Task<Mat> ImReadAsync(string file, ImreadModes flags = ImreadModes.Color)
