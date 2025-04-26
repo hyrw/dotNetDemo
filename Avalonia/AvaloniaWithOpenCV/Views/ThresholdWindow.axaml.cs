@@ -113,6 +113,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         using Mat grayToColor = await Task.Run(() => gray.CvtColor(ColorConversionCodes.GRAY2BGR));
 
         Mat mask = gray.Threshold(this.Threshold, this.MaxValue, ThresholdTypes.Binary);
+        this.Mask?.Dispose();
         this.Mask = mask;
         grayToColor.SetTo(Scalar.Red, mask);
 

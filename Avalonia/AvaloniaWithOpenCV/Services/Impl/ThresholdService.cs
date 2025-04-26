@@ -11,7 +11,7 @@ public class ThresholdService(Avalonia.Controls.Window owner) : IThresholdServic
         ThresholdWindow window = new ThresholdWindow();
         window.Img = img.Clone();
         await window.ShowDialog(owner);
-        Mat? result = window.Mask;
+        Mat? result = window.Mask.Clone();
         window.Close();
         return result ?? Mat.Zeros(img.Size(), MatType.CV_8UC1);
     }
