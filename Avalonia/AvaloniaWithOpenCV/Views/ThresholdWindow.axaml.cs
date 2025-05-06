@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using AvaloniaWithOpenCV.Extensions;
 using OpenCvSharp;
 using ScottPlot;
@@ -10,6 +11,7 @@ using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace AvaloniaWithOpenCV.Views;
@@ -89,6 +91,11 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         this.AvaPlot.Plot.Axes.Top.FrameLineStyle.Width = 0;
         this.AvaPlot.Plot.Axes.Left.FrameLineStyle.Width = 0;
         this.AvaPlot.Plot.Axes.Right.FrameLineStyle.Width = 0;
+        Observable.FromEventPattern<AvaloniaPropertyChangedEventArgs>(h => this.PropertyChanged += h, h => this.PropertyChanged -= h)
+            .Where(x => x.EventArgs.Property == ThresholdProperty)
+            .Throttle(TimeSpan.FromMicroseconds(50))
+            .ObserveOn(AvaloniaSynchronizationContext.Current!)
+            .Subscribe(async x => await this.UpdateImageAsync(this.Img));
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -100,10 +107,6 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
             oldValue?.Dispose();
             _ = this.UpdateImageAsync(newValue);
             _ = this.UpdatePlotAsync(newValue);
-        }
-        else if (change.Property == ThresholdProperty)
-        {
-            _ = this.UpdateImageAsync(this.Img);
         }
     }
 
@@ -135,18 +138,6 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
             }
         });
         this.TheImage.Source = source;
-
-        await Task.Run(() =>
-        {
-            using Mat hist = new();
-            Cv2.CalcHist([gray], [0], default, hist, 1, [256], [[0, 256]]);
-            for (int i = 0; i < hist.Rows; i++)
-            {
-                histogram.Counts[i] = (int)hist.At<float>(i);
-            }
-            this.AvaPlot.Plot.Clear<HistogramBars>();
-            this.AvaPlot.Plot.Add.Histogram(histogram);
-        });
         this.TheImage.InvalidateVisual();
     }
 
@@ -244,7 +235,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
             {
                 vl.X = rect.HorizontalCenter;
                 vl.Text = $"{vl.X:0.00}";
-                //this.Threshold = (int)vl.X;
+                this.Threshold = (int)vl.X;
             }
             avaPlot.Refresh();
         }
