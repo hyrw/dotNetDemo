@@ -1,0 +1,93 @@
+<Window
+    x:Class="AvaloniaWithOpenCV.SmoothWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SmoothWindow"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid
+        Margin="20"
+        Background="Transparent"
+        DragDrop.AllowDrop="True"
+        DragDrop.Drop="Drop">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="7*" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0" Margin="10,0,20,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="缩放" />
+                <NumericUpDown
+                    Name="resizeSlider"
+                    Width="150"
+                    Increment="0.1"
+                    Minimum="1"
+                    ValueChanged="NumericUpDown_ValueChanged"
+                    Value="1" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="中值滤波" />
+                <NumericUpDown
+                    Width="150"
+                    Increment="1"
+                    Minimum="0"
+                    ValueChanged="NumericUpDown_ValueChanged_1"
+                    Value="0" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="距离" />
+                <NumericUpDown
+                    Width="150"
+                    Increment="1"
+                    Minimum="0"
+                    ValueChanged="DistanceChanged"
+                    Value="1" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="插入点数" />
+                <NumericUpDown
+                    Width="150"
+                    Minimum="1"
+                    ValueChanged="NumChanged"
+                    Value="1" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="strength" />
+                <NumericUpDown
+                    Width="150"
+                    Minimum="1"
+                    ValueChanged="StrengthChanged"
+                    Value="1" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="最小删除点数" />
+                <NumericUpDown
+                    Width="150"
+                    Minimum="0"
+                    ValueChanged="MinimumDeletionNumChanged"
+                    Value="0" />
+            </StackPanel>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Image
+                Name="BeforeImage"
+                Grid.Column="0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Stretch="Uniform" />
+            <Image
+                Name="AfterImage"
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Stretch="Uniform" />
+        </Grid>
+    </Grid>
+</Window>
