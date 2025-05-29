@@ -6,8 +6,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:AvaloniaWithOpenCV.ViewModels"
     Title="AvaloniaWithOpenCV"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    Width="200"
+    Height="200"
+    d:DesignHeight="200"
+    d:DesignWidth="200"
     x:DataType="vm:MainWindowViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
@@ -15,5 +17,8 @@
     <!--<Design.DataContext>
         <vm:MainWindowViewModel />
     </Design.DataContext>-->
-    <Button Command="{Binding ThresholdCommand}" Content="打开二值化窗口" />
+    <StackPanel HorizontalAlignment="Center">
+        <Button Command="{Binding OpenThresholdWindowCommand}" Content="打开二值化窗口" />
+        <Button Command="{Binding OpenSmoothWindowCommand}" Content="打开平滑窗口" />
+    </StackPanel>
 </Window>

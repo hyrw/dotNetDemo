@@ -13,10 +13,11 @@ using System;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using Window = Avalonia.Controls.Window;
 
 namespace AvaloniaWithOpenCV.Views;
 
-public partial class ThresholdWindow : Avalonia.Controls.Window
+public partial class ThresholdWindow : Window
 {
     AxisLine? thresholdAxisLine = null;
     readonly Crosshair? crosshair = null;
@@ -112,6 +113,8 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
 
     async Task UpdateImageAsync(Mat color)
     {
+        if (color is null || color.Empty()) return;
+
         using Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
         using Mat grayToColor = await Task.Run(() => gray.CvtColor(ColorConversionCodes.GRAY2BGR));
 
@@ -143,6 +146,8 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
 
     async Task UpdatePlotAsync(Mat color)
     {
+        if (color is null || color.Empty()) return;
+
         using Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
         await Task.Run(() =>
         {
@@ -158,10 +163,7 @@ public partial class ThresholdWindow : Avalonia.Controls.Window
         this.AvaPlot.Refresh();
     }
 
-    static Task<Mat> ImReadAsync(string file, ImreadModes flags = ImreadModes.Color)
-    {
-        return Task.Run(() => Cv2.ImRead(file, flags));
-    }
+    static Task<Mat> ImReadAsync(string file, ImreadModes flags = ImreadModes.Color) => Task.Run(() => Cv2.ImRead(file, flags));
 
     private void OnMouseDown(object? sender, PointerEventArgs e)
     {
