@@ -14,29 +14,10 @@
         DragDrop.AllowDrop="True"
         DragDrop.Drop="Drop">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" />
-            <ColumnDefinition Width="7*" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <StackPanel Grid.Column="0" Margin="10,0,20,0">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Text="缩放" />
-                <NumericUpDown
-                    Name="resizeSlider"
-                    Width="150"
-                    Increment="0.1"
-                    Minimum="1"
-                    ValueChanged="NumericUpDown_ValueChanged"
-                    Value="1" />
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Text="中值滤波" />
-                <NumericUpDown
-                    Width="150"
-                    Increment="1"
-                    Minimum="0"
-                    ValueChanged="NumericUpDown_ValueChanged_1"
-                    Value="0" />
-            </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="距离" />
                 <NumericUpDown
@@ -55,7 +36,7 @@
                     Value="1" />
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Text="strength" />
+                <TextBlock VerticalAlignment="Center" Text="强度" />
                 <NumericUpDown
                     Width="150"
                     Minimum="1"

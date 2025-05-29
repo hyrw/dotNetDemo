@@ -14,6 +14,7 @@ using Window = Avalonia.Controls.Window;
 
 namespace AvaloniaWithOpenCV;
 
+// TODO: 区分最外层轮廓
 public partial class SmoothWindow : Window
 {
     int Num { get; set; } = 1;
@@ -31,20 +32,6 @@ public partial class SmoothWindow : Window
         set => SetValue(ImgProperty, value);
     }
 
-    public static readonly StyledProperty<double> ResizeProperty;
-    public double Resize
-    {
-        get => GetValue(ResizeProperty);
-        set => SetValue(ResizeProperty, value);
-    }
-
-    public static readonly StyledProperty<int> MedianBlurProperty;
-    public int MedianBlur
-    {
-        get => GetValue(MedianBlurProperty);
-        set => SetValue(MedianBlurProperty, value);
-    }
-
     public static readonly StyledProperty<double> DistanceProperty;
     public double Distance
     {
@@ -57,8 +44,6 @@ public partial class SmoothWindow : Window
     static SmoothWindow()
     {
         ImgProperty = AvaloniaProperty.Register<SmoothWindow, Mat>(nameof(Img));
-        ResizeProperty = AvaloniaProperty.Register<SmoothWindow, double>(nameof(Resize), defaultValue: 1);
-        MedianBlurProperty = AvaloniaProperty.Register<SmoothWindow, int>(nameof(MedianBlur), defaultValue: 0);
         DistanceProperty = AvaloniaProperty.Register<SmoothWindow, double>(nameof(Distance), defaultValue: 1);
     }
 
@@ -70,10 +55,7 @@ public partial class SmoothWindow : Window
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == ImgProperty ||
-            change.Property == ResizeProperty ||
-            change.Property == MedianBlurProperty ||
-            change.Property == DistanceProperty)
+        if (change.Property == ImgProperty || change.Property == DistanceProperty)
         {
             _ = this.UpdateImageAsync(this.Img);
         }
@@ -103,8 +85,6 @@ public partial class SmoothWindow : Window
     async Task UpdateImageAsync(Mat img)
     {
         if (img is null || img.Empty()) return;
-
-        OpenCvSharp.Size resize = new OpenCvSharp.Size(img.Width / Resize, img.Height / Resize);
 
         using Mat temp = img.Clone();
         Cv2.FindContours(temp, out CvPoint[][] contours, out HierarchyIndex[] hierarchyIndex, RetrievalModes.CComp, ContourApproximationModes.ApproxTC89KCOS);
@@ -165,16 +145,6 @@ public partial class SmoothWindow : Window
     }
 
     static Task<Mat> ImReadAsync(string file, ImreadModes flags = ImreadModes.Color) => Task.Run(() => Cv2.ImRead(file, flags));
-
-    private void NumericUpDown_ValueChanged(object? sender, Avalonia.Controls.NumericUpDownValueChangedEventArgs e)
-    {
-        this.Resize = Convert.ToInt32(e.NewValue);
-    }
-
-    private void NumericUpDown_ValueChanged_1(object? sender, Avalonia.Controls.NumericUpDownValueChangedEventArgs e)
-    {
-        this.MedianBlur = Convert.ToInt32(e.NewValue);
-    }
 
     private void DistanceChanged(object? sender, Avalonia.Controls.NumericUpDownValueChangedEventArgs e)
     {
