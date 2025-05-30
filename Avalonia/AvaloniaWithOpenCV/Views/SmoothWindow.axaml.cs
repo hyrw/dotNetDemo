@@ -86,8 +86,7 @@ public partial class SmoothWindow : Window
     {
         if (img is null || img.Empty()) return;
 
-        using Mat temp = img.Clone();
-        Cv2.FindContours(temp, out CvPoint[][] contours, out HierarchyIndex[] hierarchyIndex, RetrievalModes.CComp, ContourApproximationModes.ApproxTC89KCOS);
+        Cv2.FindContours(img, out CvPoint[][] contours, out HierarchyIndex[] hierarchyIndex, RetrievalModes.CComp, ContourApproximationModes.ApproxTC89KCOS);
 
         using Mat result = Mat.Zeros(img.Size(), MatType.CV_8UC1);
         try
@@ -95,11 +94,21 @@ public partial class SmoothWindow : Window
             // Bezier
             for (int i = 0; i < contours.Length; i++)
             {
-                if (contours[i].Length > MinimumDeletionNum)
+                HierarchyIndex h = hierarchyIndex[i];
+                int contourLength = contours[i].Length;
+
+                // 最外层
+                //if (!h.HasParent() && contourLength > MinimumDeletionNum)
+                if (!h.HasParent())
                 {
                     DeletePoint(ref contours[i], Distance);
+                    Bezier(ref contours[i], this.Num, this.Strength);
                 }
-                Bezier(ref contours[i], this.Num, this.Strength);
+                else if (h.HasParent() && !h.HasChild() && contourLength > MinimumDeletionNum)
+                {
+                    DeletePoint(ref contours[i], Distance);
+                    Bezier(ref contours[i], this.Num, this.Strength);
+                }
             }
 
             // 传回层级关系，可恢复孔洞
