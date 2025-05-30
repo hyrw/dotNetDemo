@@ -14,7 +14,6 @@ using Window = Avalonia.Controls.Window;
 
 namespace AvaloniaWithOpenCV;
 
-// TODO: 区分最外层轮廓
 public partial class SmoothWindow : Window
 {
     int Num { get; set; } = 1;
