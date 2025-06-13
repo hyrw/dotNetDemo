@@ -16,6 +16,10 @@ namespace AvaloniaWithOpenCV;
 
 public partial class SmoothWindow : Window
 {
+    double Resize = 0;
+
+    int MedianBlurSize = 1;
+
     int Num { get; set; } = 1;
 
     int Strength { get; set; } = 1;
@@ -85,7 +89,11 @@ public partial class SmoothWindow : Window
     {
         if (img is null || img.Empty()) return;
 
-        Cv2.FindContours(img, out CvPoint[][] contours, out HierarchyIndex[] hierarchyIndex, RetrievalModes.CComp, ContourApproximationModes.ApproxTC89KCOS);
+        using Mat temp = img.Resize(img.Size(), fx: Resize, fy: Resize)
+            .MedianBlur(MedianBlurSize)
+            .Resize(img.Size());
+
+        Cv2.FindContours(temp, out CvPoint[][] contours, out HierarchyIndex[] hierarchyIndex, RetrievalModes.CComp, ContourApproximationModes.ApproxTC89KCOS);
 
         using Mat result = Mat.Zeros(img.Size(), MatType.CV_8UC1);
         try
@@ -97,8 +105,8 @@ public partial class SmoothWindow : Window
                 int contourLength = contours[i].Length;
 
                 // 最外层
-                //if (!h.HasParent() && contourLength > MinimumDeletionNum)
                 if (!h.HasParent())
+                //if (!h.HasParent() && contourLength > MinimumDeletionNum)
                 {
                     DeletePoint(ref contours[i], Distance);
                     Bezier(ref contours[i], this.Num, this.Strength);
@@ -269,4 +277,22 @@ public partial class SmoothWindow : Window
         result.Add(contour[^1]); // 保留终点
         contour = [.. result];
     }
+
+    private void ResizeChanged(object? sender, Avalonia.Controls.NumericUpDownValueChangedEventArgs e)
+    {
+        this.Resize = Convert.ToDouble(e.NewValue);
+        _ = UpdateImageAsync(this.Img);
+    }
+
+    private void MedianBlurChanged(object? sender, Avalonia.Controls.NumericUpDownValueChangedEventArgs e)
+    {
+        int value = Convert.ToInt16(e.NewValue);
+        if (value %2 == 0)
+        {
+            value++;
+        }
+        this.MedianBlurSize = value;
+        _ = UpdateImageAsync(this.Img);
+    }
+
 }
