@@ -85,6 +85,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCvToolkit.Browser", "Av
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCvToolkit.Desktop", "Avalonia\OpenCvToolkit.Desktop\OpenCvToolkit.Desktop.csproj", "{5CAC9BD4-4FC8-1676-1C19-844EFB2FDE52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfViewModelLocator", "WPF\WpfViewModelLocator\WpfViewModelLocator.csproj", "{F7887DEC-F53D-914A-03D5-1D394A26FEF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -231,6 +233,10 @@ Global
 		{5CAC9BD4-4FC8-1676-1C19-844EFB2FDE52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CAC9BD4-4FC8-1676-1C19-844EFB2FDE52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CAC9BD4-4FC8-1676-1C19-844EFB2FDE52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7887DEC-F53D-914A-03D5-1D394A26FEF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7887DEC-F53D-914A-03D5-1D394A26FEF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7887DEC-F53D-914A-03D5-1D394A26FEF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7887DEC-F53D-914A-03D5-1D394A26FEF1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -261,6 +267,7 @@ Global
 		{FD5FB842-14A5-FC6D-CDE3-ADCAB0B0CDAC} = {A4362810-B671-4388-A3B2-1CE5D94E7048}
 		{AB38C664-7EDE-742F-C274-3804F170586B} = {A4362810-B671-4388-A3B2-1CE5D94E7048}
 		{5CAC9BD4-4FC8-1676-1C19-844EFB2FDE52} = {A4362810-B671-4388-A3B2-1CE5D94E7048}
+		{F7887DEC-F53D-914A-03D5-1D394A26FEF1} = {390323C0-99C4-48A3-8575-55EBE8EB413D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4350933C-605F-4B50-B504-0661444DF5FF}
