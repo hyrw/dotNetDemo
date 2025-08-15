@@ -87,6 +87,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenCvToolkit.Desktop", "Av
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfViewModelLocator", "WPF\WpfViewModelLocator\WpfViewModelLocator.csproj", "{F7887DEC-F53D-914A-03D5-1D394A26FEF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ByteTransportDemo", "ByteTransportDemo\ByteTransportDemo.csproj", "{43BD56F4-4680-40DB-985E-A705C78FEB7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -237,6 +239,10 @@ Global
 		{F7887DEC-F53D-914A-03D5-1D394A26FEF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7887DEC-F53D-914A-03D5-1D394A26FEF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7887DEC-F53D-914A-03D5-1D394A26FEF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43BD56F4-4680-40DB-985E-A705C78FEB7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43BD56F4-4680-40DB-985E-A705C78FEB7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43BD56F4-4680-40DB-985E-A705C78FEB7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43BD56F4-4680-40DB-985E-A705C78FEB7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
