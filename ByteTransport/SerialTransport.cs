@@ -1,6 +1,6 @@
 using System.IO.Ports;
 
-namespace ByteTransportDemo;
+namespace ByteTransport;
 
 public class SerialTransport(string com, int baudRate) : IByteTransport
 {

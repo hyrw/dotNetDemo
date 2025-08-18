@@ -1,4 +1,4 @@
-﻿namespace ByteTransportDemo;
+﻿namespace ByteTransport;
 
 public interface IByteTransport
 {

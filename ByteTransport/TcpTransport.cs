@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace ByteTransportDemo;
+namespace ByteTransport;
 
 public class TcpTransport(string host, int port) : IByteTransport
 {

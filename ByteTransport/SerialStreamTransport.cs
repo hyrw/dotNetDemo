@@ -1,6 +1,6 @@
 ﻿using System.IO.Ports;
 
-namespace ByteTransportDemo;
+namespace ByteTransport;
 
 public class SerialStreamTransport(string com, int baudRate) : IByteTransport
 {
@@ -27,10 +27,16 @@ public class SerialStreamTransport(string com, int baudRate) : IByteTransport
         using var ms = new MemoryStream();
         var buffer = new byte[1024];
         int bytesRead;
-        while ((bytesRead = await _stream.ReadAsync(buffer, token)) > 0)
-        {
-            await ms.WriteAsync(buffer.AsMemory(0, bytesRead), token);
-        }
+
+        // https://github.com/microsoft/referencesource/blob/main/System/sys/system/IO/ports/SerialStream.cs#L882
+        // while ((bytesRead = await _stream.ReadAsync(buffer, token)) > 0)
+        // {
+        //     await ms.WriteAsync(buffer.AsMemory(0, bytesRead), token);
+        // }
+
+        bytesRead = await _stream.ReadAsync(buffer, token);
+        await ms.WriteAsync(buffer.AsMemory(0, bytesRead), token);
+
         return ms.ToArray();
     }
 
