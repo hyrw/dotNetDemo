@@ -2,10 +2,10 @@
 
 public interface IByteTransport
 {
-    void Connect();
-    void Disconnect();
-    Task SendAsync(byte[] data, CancellationToken token = default);
-    Task<byte[]> ReceiveAsync(CancellationToken token = default);
-    bool IsConnected();
+    Task ConnectAsync();
+    Task DisconnectAsync();
+    ValueTask SendAsync(ReadOnlyMemory<byte> buffer, CancellationToken token = default);
+    ValueTask<int> ReceiveAsync(Memory<byte> buffer, CancellationToken token = default);
+    bool IsConnected { get; }
 }
 

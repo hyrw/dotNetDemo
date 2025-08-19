@@ -6,17 +6,23 @@ public class TcpTransport(string host, int port) : IByteTransport
 {
     readonly TcpClient client = new();
 
-    public void Connect()
+    public Task ConnectAsync()
     {
-        client.Connect(host, port);
+        return client.ConnectAsync(host, port);
     }
 
-    public void Disconnect()
+    public Task DisconnectAsync()
     {
-        client.Close();
+        TaskCompletionSource tcs = new();
+        Task.Run(() =>
+        {
+            client.Close();
+            tcs.SetResult();
+        });
+        return tcs.Task;
     }
 
-    public bool IsConnected() => client.Connected;
+    public bool IsConnected => client.Connected;
 
     public async Task<byte[]> ReceiveAsync(CancellationToken token = default)
     {
@@ -27,11 +33,19 @@ public class TcpTransport(string host, int port) : IByteTransport
         return buffer[..bytesRead];
     }
 
-    public Task SendAsync(byte[] data, CancellationToken token = default)
+    public ValueTask SendAsync(ReadOnlyMemory<byte> buffer, CancellationToken token = default)
     {
-        if (!client.Connected) return Task.CompletedTask;
+        if (!client.Connected) return ValueTask.CompletedTask;
 
         var stream = client.GetStream();
-        return stream.WriteAsync(data, 0, data.Length, token);
+        return stream.WriteAsync(buffer, token);
+    }
+
+    public ValueTask<int> ReceiveAsync(Memory<byte> buffer, CancellationToken token = default)
+    {
+        if (!client.Connected) return ValueTask.FromResult(0);
+
+        var stream = client.GetStream();
+        return stream.ReadAsync(buffer, token);
     }
 }
