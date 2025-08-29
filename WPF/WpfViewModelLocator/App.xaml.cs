@@ -4,7 +4,7 @@ using Serilog;
 using Serilog.Sinks.RichTextBox.Themes;
 using System.Windows;
 using System.Windows.Controls;
-using WpfViewModelLocator.Log;
+using WpfViewModelLocator.LogConfig;
 using WpfViewModelLocator.ViewModel;
 
 namespace WpfViewModelLocator;
@@ -33,7 +33,7 @@ public partial class App : Application
             };
             logBuilder.Services.AddSingleton(box);
 
-            Serilog.Log.Logger = new LoggerConfiguration()
+            Log.Logger = new LoggerConfiguration()
             .Enrich.WithClassName()
             .MinimumLevel.Debug()
             .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {ClassName} {Message:lj}{NewLine}{Exception}")
@@ -41,7 +41,7 @@ public partial class App : Application
             .WriteTo.RichTextBox(box, theme: RichTextBoxConsoleTheme.Colored)
             .CreateLogger();
 
-            logBuilder.AddSerilog(logger: Serilog.Log.Logger);
+            logBuilder.AddSerilog(logger: Log.Logger);
         });
         var sp = sc.BuildServiceProvider();
         Ioc.Default.ConfigureServices(sp);
