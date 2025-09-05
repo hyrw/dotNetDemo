@@ -14,4 +14,68 @@
         <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/FlipCard.xaml" />
         <ResourceDictionary Source="/ControlLibrary;component/Themes/CustomControls/FlipItem.xaml" />
     </ResourceDictionary.MergedDictionaries>
+
+    <Style x:Key="PageBtnStyle" TargetType="RadioButton">
+        <Setter Property="Margin" Value="10" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentPresenter
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True"
+                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type controls:Pagination}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:Pagination}">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                Command="{x:Static NavigationCommands.FirstPage}"
+                                Content="First"
+                                Style="{DynamicResource PageBtnStyle}" />
+                            <Button
+                                Command="{x:Static NavigationCommands.PreviousPage}"
+                                Content="Prev"
+                                Style="{DynamicResource PageBtnStyle}" />
+                            <ItemsControl x:Name="PART_PageList" ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Pages}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <RadioButton
+                                            Content="{Binding}"
+                                            GroupName="PageListGroup"
+                                            Style="{StaticResource PageBtnStyle}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            <Button
+                                Command="{x:Static NavigationCommands.NextPage}"
+                                Content="Next"
+                                Style="{DynamicResource PageBtnStyle}" />
+                            <Button
+                                Command="{x:Static NavigationCommands.LastPage}"
+                                Content="Last"
+                                Style="{DynamicResource PageBtnStyle}" />
+                        </StackPanel>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
