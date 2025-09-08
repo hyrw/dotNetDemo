@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -9,6 +8,18 @@ namespace ControlLibrary.Controls;
 
 public class Pagination : Control
 {
+    public static readonly RoutedEvent PageIndexChangedEvent =
+         EventManager.RegisterRoutedEvent(nameof(PageIndexChanged), RoutingStrategy.Bubble,
+         typeof(PageIndexChangedEventHandler), typeof(Pagination));
+
+    public delegate void PageIndexChangedEventHandler(object sender, PageIndexChangedEventArgs e);
+
+    public event PageIndexChangedEventHandler PageIndexChanged
+    {
+        add { AddHandler(PageIndexChangedEvent, value); }
+        remove { RemoveHandler(PageIndexChangedEvent, value); }
+    }
+
     public ObservableCollection<int> Pages
     {
         get { return (ObservableCollection<int>)GetValue(PagesProperty); }
@@ -23,7 +34,20 @@ public class Pagination : Control
         set { SetValue(PageIndexProperty, value); }
     }
     public static readonly DependencyProperty PageIndexProperty =
-        DependencyProperty.Register(nameof(PageIndex), typeof(int), typeof(Pagination), new PropertyMetadata(0));
+        DependencyProperty.Register(nameof(PageIndex), typeof(int), typeof(Pagination), new PropertyMetadata(0, OnPageIndexChanged));
+
+    private static void OnPageIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+        if (d is not Pagination p) return;
+        int oldPageIndex = (int)e.OldValue;
+        int newPageIndex = (int)e.NewValue;
+        var args = new PageIndexChangedEventArgs(PageIndexChangedEvent, p)
+        {
+            OldValue = oldPageIndex,
+            NewValue = newPageIndex,
+        };
+        p.RaiseEvent(args);
+    }
 
     public int PageCount
     {
@@ -59,7 +83,10 @@ public class Pagination : Control
         if (e.OriginalSource is not RadioButton radioButton) return;
 
         int page = (int)radioButton.Content;
-        Debug.WriteLine(page);
+        if (1 < page && page < PageCount && PageIndex != page)
+        {
+            PageIndex = page;
+        }
     }
 
     private void CanExecGotoPage(object sender, CanExecuteRoutedEventArgs e)
@@ -67,7 +94,7 @@ public class Pagination : Control
         try
         {
             int page = Convert.ToInt32(e.Parameter);
-            if (1 <= page && page <= PageCount)
+            if (1 <= page && page <= PageCount && PageIndex != page)
             {
                 e.CanExecute = true;
             }
@@ -83,7 +110,7 @@ public class Pagination : Control
         try
         {
             int page = Convert.ToInt32(e.Parameter);
-            if (1 < page && page < PageCount)
+            if (1 < page && page < PageCount && PageIndex != page)
             {
                 PageIndex = page;
             }
@@ -115,7 +142,11 @@ public class Pagination : Control
 
     private void ExecLastPage(object sender, ExecutedRoutedEventArgs e)
     {
-        PageIndex = PageCount;
+        if (PageIndex != PageCount)
+        {
+            PageIndex = PageCount;
+        }
+        e.Handled = true;
     }
 
     private void PageIndexLtPageCount(object sender, CanExecuteRoutedEventArgs e)
@@ -140,7 +171,10 @@ public class Pagination : Control
 
     private void ExecFirstPage(object sender, ExecutedRoutedEventArgs e)
     {
-        PageIndex = 1;
+        if (PageIndex != 1)
+        {
+            PageIndex = 1;
+        }
         e.Handled = true;
     }
 
@@ -148,4 +182,14 @@ public class Pagination : Control
     {
         DefaultStyleKeyProperty.OverrideMetadata(typeof(Pagination), new FrameworkPropertyMetadata(typeof(Pagination)));
     }
+}
+
+public class PageIndexChangedEventArgs : RoutedEventArgs
+{
+    public int OldValue { get; set; }
+    public int NewValue { get; set; }
+
+    public PageIndexChangedEventArgs() : base() { }
+    public PageIndexChangedEventArgs(RoutedEvent routedEvent) : base(routedEvent) { }
+    public PageIndexChangedEventArgs(RoutedEvent routedEvent, object source) : base(routedEvent, source) { }
 }
