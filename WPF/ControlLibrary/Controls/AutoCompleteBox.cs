@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace ControlLibrary.CustomControls;
+namespace ControlLibrary.Controls;
 
 public class AutoCompleteBox : Control
 {

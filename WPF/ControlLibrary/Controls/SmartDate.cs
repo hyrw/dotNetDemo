@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace ControlLibrary.CustomControls;
+namespace ControlLibrary.Controls;
 
 [TemplatePart(Name = PART_CalendarSwitch, Type = typeof(ToggleButton))]
 [TemplatePart(Name = PART_CalendarBox, Type = typeof(ListBox))]

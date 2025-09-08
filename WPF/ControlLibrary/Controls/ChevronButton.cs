@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace ControlLibrary.CustomControls;
+namespace ControlLibrary.Controls;
 
 public class ChevronButton : Button
 {

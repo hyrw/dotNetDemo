@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls.Primitives;
 
-namespace ControlLibrary.CustomControls;
+namespace ControlLibrary.Controls;
 
 public class CalendarSwitch : ToggleButton
 {
