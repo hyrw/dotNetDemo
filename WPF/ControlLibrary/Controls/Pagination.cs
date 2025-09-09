@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace ControlLibrary.Controls;
@@ -74,19 +73,6 @@ public class Pagination : Control
         CommandBindings.Add(new CommandBinding(NavigationCommands.PreviousPage, ExecPrevPage, PageIndexGtOne));
         CommandBindings.Add(new CommandBinding(NavigationCommands.NextPage, ExecNextPage, PageIndexLtPageCount));
         CommandBindings.Add(new CommandBinding(NavigationCommands.GoToPage, ExecGotoPage, CanExecGotoPage));
-        AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(GotoPage));
-    }
-
-    private void GotoPage(object sender, RoutedEventArgs e)
-    {
-        e.Handled = true;
-        if (e.OriginalSource is not RadioButton radioButton) return;
-
-        int page = (int)radioButton.Content;
-        if (1 < page && page < PageCount && PageIndex != page)
-        {
-            PageIndex = page;
-        }
     }
 
     private void CanExecGotoPage(object sender, CanExecuteRoutedEventArgs e)
@@ -120,13 +106,12 @@ public class Pagination : Control
             e.Handled = true;
         }
     }
-        
 
     private void ExecNextPage(object sender, ExecutedRoutedEventArgs e)
     {
         if (PageIndex < PageCount)
         {
-            PageIndex ++;
+            PageIndex++;
         }
         e.Handled = true;
     }
@@ -135,7 +120,7 @@ public class Pagination : Control
     {
         if (PageIndex > 1)
         {
-            PageIndex --;
+            PageIndex--;
         }
         e.Handled = true;
     }

@@ -1,6 +1,8 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:B="clr-namespace:ControlLibrary.Behaviors"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:controls="clr-namespace:ControlLibrary.Controls">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/ControlLibrary;component/Themes/Controls/SmartDate.xaml" />
@@ -41,6 +43,11 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">
                         <StackPanel Orientation="Horizontal">
+                            <b:Interaction.Triggers>
+                                <B:RoutedEventTrigger RoutedEvent="{x:Static RadioButton.CheckedEvent}">
+                                    <b:InvokeCommandAction Command="NavigationCommands.GoToPage" />
+                                </B:RoutedEventTrigger>
+                            </b:Interaction.Triggers>
                             <Button
                                 Command="{x:Static NavigationCommands.FirstPage}"
                                 Content="First"
