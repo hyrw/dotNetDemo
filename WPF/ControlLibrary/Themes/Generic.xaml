@@ -48,14 +48,8 @@
                                     <b:InvokeCommandAction Command="NavigationCommands.GoToPage" />
                                 </B:RoutedEventTrigger>
                             </b:Interaction.Triggers>
-                            <Button
-                                Command="{x:Static NavigationCommands.FirstPage}"
-                                Content="First"
-                                Style="{DynamicResource PageBtnStyle}" />
-                            <Button
-                                Command="{x:Static NavigationCommands.PreviousPage}"
-                                Content="Prev"
-                                Style="{DynamicResource PageBtnStyle}" />
+                            <Button Command="{x:Static NavigationCommands.FirstPage}" Content="First" />
+                            <Button Command="{x:Static NavigationCommands.PreviousPage}" Content="Prev" />
                             <ItemsControl x:Name="PART_PageList" ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Pages}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
@@ -73,14 +67,8 @@
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
-                            <Button
-                                Command="{x:Static NavigationCommands.NextPage}"
-                                Content="Next"
-                                Style="{DynamicResource PageBtnStyle}" />
-                            <Button
-                                Command="{x:Static NavigationCommands.LastPage}"
-                                Content="Last"
-                                Style="{DynamicResource PageBtnStyle}" />
+                            <Button Command="{x:Static NavigationCommands.NextPage}" Content="Next" />
+                            <Button Command="{x:Static NavigationCommands.LastPage}" Content="Last" />
                         </StackPanel>
                     </Border>
                 </ControlTemplate>
