@@ -60,6 +60,8 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <RadioButton
+                                            Command="{x:Static NavigationCommands.GoToPage}"
+                                            CommandParameter="{Binding}"
                                             Content="{Binding}"
                                             GroupName="PageListGroup"
                                             Style="{StaticResource PageBtnStyle}" />

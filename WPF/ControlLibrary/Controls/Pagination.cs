@@ -96,7 +96,7 @@ public class Pagination : Control
         try
         {
             int page = Convert.ToInt32(e.Parameter);
-            if (1 < page && page < PageCount && PageIndex != page)
+            if (1 <= page && page <= PageCount && PageIndex != page)
             {
                 PageIndex = page;
             }
