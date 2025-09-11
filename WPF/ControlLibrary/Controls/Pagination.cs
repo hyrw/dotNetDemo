@@ -1,12 +1,23 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace ControlLibrary.Controls;
 
+[TemplatePart(Name = PART_PagesContainer, Type = typeof(ItemsControl))]
 public class Pagination : Control
 {
+    #region const
+    const string PART_PagesContainer = "PART_PagesContainer";
+    #endregion
+
+    readonly ObservableCollection<PaginationItem> pages = [];
+
+    bool isApplyTemplate;
+
+    #region routed event
     public static readonly RoutedEvent PageIndexChangedEvent =
          EventManager.RegisterRoutedEvent(nameof(PageIndexChanged), RoutingStrategy.Bubble,
          typeof(PageIndexChangedEventHandler), typeof(Pagination));
@@ -18,15 +29,9 @@ public class Pagination : Control
         add { AddHandler(PageIndexChangedEvent, value); }
         remove { RemoveHandler(PageIndexChangedEvent, value); }
     }
+    #endregion
 
-    public ObservableCollection<int> Pages
-    {
-        get { return (ObservableCollection<int>)GetValue(PagesProperty); }
-        set { SetValue(PagesProperty, value); }
-    }
-    public static readonly DependencyProperty PagesProperty =
-        DependencyProperty.Register(nameof(Pages), typeof(ObservableCollection<int>), typeof(Pagination), new PropertyMetadata(new ObservableCollection<int>()));
-
+    #region dependency property
     public int PageIndex
     {
         get { return (int)GetValue(PageIndexProperty); }
@@ -34,6 +39,7 @@ public class Pagination : Control
     }
     public static readonly DependencyProperty PageIndexProperty =
         DependencyProperty.Register(nameof(PageIndex), typeof(int), typeof(Pagination), new PropertyMetadata(0, OnPageIndexChanged));
+    #endregion
 
     private static void OnPageIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
@@ -59,14 +65,28 @@ public class Pagination : Control
     private static void OnPageCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         Pagination p = (Pagination)d;
-        p.Pages.Clear();
-        for (int i = 1; i <= p.PageCount; i++)
+
+        p.UpdatePageList();
+    }
+
+    void UpdatePageList()
+    {
+        if (!this.isApplyTemplate) return;
+
+        this.pages.Clear();
+        for (int i = 1; i <= this.PageCount; i++)
         {
-            p.Pages.Add(i);
+            this.pages.Add(new PaginationItem
+            {
+                PageIndex = i,
+                Text = i.ToString(),
+            });
         }
     }
 
+#pragma warning disable CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑添加 "required" 修饰符或声明为可为 null。
     public Pagination()
+#pragma warning restore CS8618 // 在退出构造函数时，不可为 null 的字段必须包含非 null 值。请考虑添加 "required" 修饰符或声明为可为 null。
     {
         CommandBindings.Add(new CommandBinding(NavigationCommands.FirstPage, ExecFirstPage, PageIndexGtOne));
         CommandBindings.Add(new CommandBinding(NavigationCommands.LastPage, ExecLastPage, PageIndexLtPageCount));
@@ -75,11 +95,29 @@ public class Pagination : Control
         CommandBindings.Add(new CommandBinding(NavigationCommands.GoToPage, ExecGotoPage, CanExecGotoPage));
     }
 
+    public override void OnApplyTemplate()
+    {
+        base.OnApplyTemplate();
+
+        var pagesContainer = (ItemsControl)GetTemplateChild(PART_PagesContainer);
+
+        pagesContainer.SetBinding(ItemsControl.ItemsSourceProperty, new Binding()
+        {
+            Source = this.pages,
+        });
+
+        this.isApplyTemplate = true;
+        UpdatePageList();
+    }
+
     private void CanExecGotoPage(object sender, CanExecuteRoutedEventArgs e)
     {
         try
         {
-            int page = Convert.ToInt32(e.Parameter);
+            if (e.Parameter is not PaginationItem pageItem) return;
+
+            int page = pageItem.PageIndex;
+
             if (1 <= page && page <= PageCount && PageIndex != page)
             {
                 e.CanExecute = true;
@@ -93,17 +131,13 @@ public class Pagination : Control
 
     private void ExecGotoPage(object sender, ExecutedRoutedEventArgs e)
     {
-        try
+        e.Handled = true;
+        if (e.Parameter is not PaginationItem pageItem) return;
+
+        int page = pageItem.PageIndex;
+        if (1 <= page && page <= PageCount && PageIndex != page)
         {
-            int page = Convert.ToInt32(e.Parameter);
-            if (1 <= page && page <= PageCount && PageIndex != page)
-            {
-                PageIndex = page;
-            }
-        }
-        finally
-        {
-            e.Handled = true;
+            PageIndex = page;
         }
     }
 
@@ -167,6 +201,12 @@ public class Pagination : Control
     {
         DefaultStyleKeyProperty.OverrideMetadata(typeof(Pagination), new FrameworkPropertyMetadata(typeof(Pagination)));
     }
+}
+
+public class PaginationItem
+{
+    public int PageIndex { get; set; }
+    public string Text { get; set; } = string.Empty;
 }
 
 public class PageIndexChangedEventArgs : RoutedEventArgs
