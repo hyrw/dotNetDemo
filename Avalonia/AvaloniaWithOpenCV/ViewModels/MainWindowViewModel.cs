@@ -21,4 +21,12 @@ public partial class MainWindowViewModel(IThresholdService thresholdService) : V
         window.Show();
         return Task.CompletedTask;
     }
+
+    [RelayCommand]
+    Task OpenColorWindow()
+    {
+        var window = new ColorSegmentationWindow() {};
+        window.Show();
+        return Task.CompletedTask;
+    }
 }

@@ -1,0 +1,47 @@
+<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d" d:DesignWidth="800"
+		x:Class="AvaloniaWithOpenCV.ColorSegmentationWindow"
+		Name="root"
+		Title="ColorSegmentation">
+	<Grid
+	Margin="20"
+	Background="Transparent"
+	DragDrop.AllowDrop="True"
+	DragDrop.Drop="Drop">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="3*" />
+			<ColumnDefinition Width="7*" />
+		</Grid.ColumnDefinitions>
+		<StackPanel>
+			<Label Content="H Min"/>
+			<NumericUpDown Minimum="0" Maximum="255" Value="{Binding #root.HMin}" />
+			<Slider Value="{Binding #root.HMin}" Minimum="0" Maximum="255"/>
+			<Label Content="H Max"/>
+			<NumericUpDown Value="{Binding #root.HMax}" Minimum="0" Maximum="255" />
+			<Slider Value="{Binding #root.HMax}" Minimum="0" Maximum="255" />
+
+			<Label Content="S Min"/>
+			<NumericUpDown Value="{Binding #root.SMin}" Minimum="0" Maximum="255"  />
+			<Slider Value="{Binding #root.SMin}" Minimum="0" Maximum="255"  />
+			<Label Content="S Max"/>
+			<NumericUpDown Value="{Binding #root.SMax}" Minimum="0" Maximum="255" />
+			<Slider Value="{Binding #root.SMax}" Minimum="0" Maximum="255"  />
+
+			<Label Content="V Min"/>
+			<NumericUpDown Value="{Binding #root.VMin}" Minimum="0" Maximum="255"  />
+			<Slider Value="{Binding #root.VMin}" Minimum="0" Maximum="255"  />
+			<Label Content="V Max"/>
+			<NumericUpDown Value="{Binding #root.VMax}" Minimum="0" Maximum="255" />
+			<Slider Value="{Binding #root.VMax}" Minimum="0" Maximum="255"  />
+		</StackPanel>
+		<Image
+		Name="TheImage"
+		Grid.Column="1"
+		VerticalAlignment="Center"
+		HorizontalAlignment="Center"
+		Stretch="Uniform" />
+	</Grid>
+</Window>

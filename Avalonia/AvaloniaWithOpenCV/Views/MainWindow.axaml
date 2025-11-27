@@ -20,5 +20,6 @@
     <StackPanel HorizontalAlignment="Center">
         <Button Command="{Binding OpenThresholdWindowCommand}" Content="打开二值化窗口" />
         <Button Command="{Binding OpenSmoothWindowCommand}" Content="打开平滑窗口" />
+        <Button Command="{Binding OpenColorWindowCommand}" Content="打开颜色分割窗口" />
     </StackPanel>
 </Window>
