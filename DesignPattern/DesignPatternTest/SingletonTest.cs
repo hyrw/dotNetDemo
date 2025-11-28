@@ -1,8 +1,22 @@
 using System.Collections.Concurrent;
 
 namespace SingletonTest;
+
 public class SingletonTest
 {
+
+    [Fact]
+    [Trait("状态模式", "")]
+    public async Task TestStateMatchineAsync()
+    {
+
+        Equipment equpment = new();
+        equpment.Init();
+        equpment.Start();
+        equpment.Stop();
+        await Task.Delay(TimeSpan.FromSeconds(30));
+    }
+
     [Fact]
     [Trait("单例", "静态初始化")]
     public void TestStaticNew()

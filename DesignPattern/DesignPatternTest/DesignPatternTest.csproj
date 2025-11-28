@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Singleton\Singleton.csproj" />
+    <ProjectReference Include="..\DesignPattern\DesignPattern.csproj" />
   </ItemGroup>
 
   <ItemGroup>
