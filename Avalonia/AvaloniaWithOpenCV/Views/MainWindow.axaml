@@ -1,25 +1,41 @@
 <Window
-    x:Class="AvaloniaWithOpenCV.Views.MainWindow"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:AvaloniaWithOpenCV.ViewModels"
-    Title="AvaloniaWithOpenCV"
-    Width="200"
-    Height="200"
-    d:DesignHeight="200"
-    d:DesignWidth="200"
-    x:DataType="vm:MainWindowViewModel"
-    Icon="/Assets/avalonia-logo.ico"
-    mc:Ignorable="d">
+x:Class="AvaloniaWithOpenCV.Views.MainWindow"
+xmlns="https://github.com/avaloniaui"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:vm="using:AvaloniaWithOpenCV.ViewModels"
+Title="AvaloniaWithOpenCV"
+Width="800"
+Height="900"
+d:DesignHeight="800"
+d:DesignWidth="900"
+x:DataType="vm:MainWindowViewModel"
+Icon="/Assets/avalonia-logo.ico"
+DragDrop.AllowDrop="True"
+DragDrop.Drop="Drop"
+mc:Ignorable="d">
 
-    <!--<Design.DataContext>
-        <vm:MainWindowViewModel />
-    </Design.DataContext>-->
-    <StackPanel HorizontalAlignment="Center">
-        <Button Command="{Binding OpenThresholdWindowCommand}" Content="打开二值化窗口" />
-        <Button Command="{Binding OpenSmoothWindowCommand}" Content="打开平滑窗口" />
-        <Button Command="{Binding OpenColorWindowCommand}" Content="打开颜色分割窗口" />
-    </StackPanel>
+	<!--<Design.DataContext>
+	<vm:MainWindowViewModel />
+	</Design.DataContext>-->
+
+	<DockPanel>
+		<Menu DockPanel.Dock="Top">
+			<MenuItem Header="二值化">
+				<MenuItem Header="二值化" Command="{Binding OpenThresholdWindowCommand}"/>
+			</MenuItem>
+			<MenuItem Header="颜色分割">
+				<MenuItem Header="HSV" Command="{Binding OpenColorRangeWindowCommand}"/>
+				<Separator/>
+				<MenuItem Header="RGB" Command="{Binding OpenColorRangeWindowCommand}"/>
+			</MenuItem>
+		</Menu>
+		<Grid Margin="20" Background="Transparent">
+			<Image Name="TheImage" VerticalAlignment="Center"
+				   RenderOptions.BitmapInterpolationMode="HighQuality"
+				   HorizontalAlignment="Center"
+				   Stretch="Uniform" />
+		</Grid>
+	</DockPanel>
 </Window>

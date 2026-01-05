@@ -5,17 +5,10 @@
 		mc:Ignorable="d" d:DesignWidth="800"
 		x:Class="AvaloniaWithOpenCV.ColorSegmentationWindow"
 		Name="root"
+		MaxWidth="200"
 		Title="ColorSegmentation">
-	<Grid
-	Margin="20"
-	Background="Transparent"
-	DragDrop.AllowDrop="True"
-	DragDrop.Drop="Drop">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*" />
-			<ColumnDefinition Width="7*" />
-		</Grid.ColumnDefinitions>
-		<StackPanel>
+	<ScrollViewer>
+		<StackPanel Margin="15">
 			<Label Content="H Min"/>
 			<NumericUpDown Minimum="0" Maximum="255" Value="{Binding #root.HMin}" />
 			<Slider Value="{Binding #root.HMin}" Minimum="0" Maximum="255"/>
@@ -37,11 +30,5 @@
 			<NumericUpDown Value="{Binding #root.VMax}" Minimum="0" Maximum="255" />
 			<Slider Value="{Binding #root.VMax}" Minimum="0" Maximum="255"  />
 		</StackPanel>
-		<Image
-		Name="TheImage"
-		Grid.Column="1"
-		VerticalAlignment="Center"
-		HorizontalAlignment="Center"
-		Stretch="Uniform" />
-	</Grid>
+	</ScrollViewer>
 </Window>

@@ -25,16 +25,22 @@ namespace AvaloniaWithOpenCV
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
 
+                desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnMainWindowClose;
+
                 MainWindow window = new();
-                IThresholdService thresholdService = new ThresholdService(window);
-                window.DataContext = new MainWindowViewModel(thresholdService);
+                ColorSegmentationWindow colorSegmentationWindow = new();
+                ThresholdWindow thresholdWindow = new();
+                IImageDisplay display = new ImageDisplay(window.TheImage);
+                IThresholdService thresholdService = new ThresholdService(window, thresholdWindow, display);
+                IColorSegmentationUI segmentationUI = new ColorSegmentationUI(window, colorSegmentationWindow, display);
+                window.DataContext = new MainWindowViewModel(thresholdService, segmentationUI, display);
                 desktop.MainWindow = window;
             }
 
             base.OnFrameworkInitializationCompleted();
         }
 
-        private void DisableAvaloniaDataAnnotationValidation()
+        static void DisableAvaloniaDataAnnotationValidation()
         {
             // Get an array of plugins to remove
             var dataValidationPluginsToRemove =

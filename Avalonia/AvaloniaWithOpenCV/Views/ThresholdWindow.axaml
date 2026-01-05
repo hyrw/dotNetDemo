@@ -8,21 +8,9 @@
         Title="ThresholdWindow">
 	<Grid
         Margin="20"
-        Background="Transparent"
-        DragDrop.AllowDrop="True"
-        DragDrop.Drop="Drop">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="3*" />
-			<ColumnDefinition Width="7*" />
-		</Grid.ColumnDefinitions>
-		<StackPanel Grid.Column="0" Margin="10,0,20,0">
+        Background="Transparent">
+		<StackPanel Margin="10">
 			<ScottPlot:AvaPlot Name="AvaPlot" Height="150" />
 		</StackPanel>
-		<Image
-            Name="TheImage"
-            Grid.Column="1"
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center"
-            Stretch="Uniform" />
 	</Grid>
 </Window>

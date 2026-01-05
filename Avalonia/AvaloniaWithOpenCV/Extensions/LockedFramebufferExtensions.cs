@@ -89,5 +89,5 @@ public static class LockedFramebufferExtensions
         return new(IntPtr.Add(mat.DataStart, y * mat.GetRealStep() + offset).ToPointer(), length <= 0 ? mat.GetRealStep() : length);
     }
 
-    public static int GetRealStep(this Mat mat) => mat.Width * mat.Channels();
+    static int GetRealStep(this Mat mat) => mat.Width * mat.Channels();
 }

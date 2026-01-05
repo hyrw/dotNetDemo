@@ -1,32 +1,42 @@
-﻿using OpenCvSharp;
 using AvaloniaWithOpenCV.Services;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using OpenCvSharp;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace AvaloniaWithOpenCV.ViewModels;
 
-public partial class MainWindowViewModel(IThresholdService thresholdService) : ViewModelBase
+internal partial class MainWindowViewModel(IThresholdService thresholdService, IColorSegmentationUI colorSegmentation, IImageDisplay display) : ViewModelBase
 {
     [RelayCommand]
-    Task OpenThresholdWindow()
+    void OpenThresholdWindow()
     {
-        using Mat color = Cv2.ImRead(@"d:/新建文件夹/IMG_0067.JPG");
-        return thresholdService.ThresholdAsync(color);
+        thresholdService.Show();
     }
 
     [RelayCommand]
-    Task OpenSmoothWindow()
+    static Task OpenSmoothWindow()
     {
-        var window = new SmoothWindow() {};
+        var window = new SmoothWindow() { };
         window.Show();
         return Task.CompletedTask;
     }
 
     [RelayCommand]
-    Task OpenColorWindow()
+    void OpenColorRangeWindow()
     {
-        var window = new ColorSegmentationWindow() {};
-        window.Show();
-        return Task.CompletedTask;
+        colorSegmentation.Show();
+    }
+
+    [ObservableProperty]
+    public partial string FilePath { get; set; }
+
+    async partial void OnFilePathChanged(string value)
+    {
+        if (!File.Exists(value)) return;
+
+        using Mat mat = Cv2.ImRead(value);
+        await display.Display(mat);
     }
 }

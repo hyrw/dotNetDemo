@@ -1,9 +1,6 @@
 using Avalonia;
 using Avalonia.Input;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Avalonia.Threading;
-using AvaloniaWithOpenCV.Extensions;
 using OpenCvSharp;
 using ScottPlot;
 using ScottPlot.Avalonia;
@@ -11,8 +8,6 @@ using ScottPlot.Plottables;
 using ScottPlot.Statistics;
 using System;
 using System.Linq;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
 using Window = Avalonia.Controls.Window;
 
 namespace AvaloniaWithOpenCV.Views;
@@ -92,78 +87,26 @@ public partial class ThresholdWindow : Window
         this.AvaPlot.Plot.Axes.Top.FrameLineStyle.Width = 0;
         this.AvaPlot.Plot.Axes.Left.FrameLineStyle.Width = 0;
         this.AvaPlot.Plot.Axes.Right.FrameLineStyle.Width = 0;
-        Observable.FromEventPattern<AvaloniaPropertyChangedEventArgs>(h => this.PropertyChanged += h, h => this.PropertyChanged -= h)
-            .Where(x => x.EventArgs.Property == ThresholdProperty)
-            .Throttle(TimeSpan.FromMicroseconds(50))
-            .ObserveOn(AvaloniaSynchronizationContext.Current!)
-            .Subscribe(async x => await this.UpdateImageAsync(this.Img));
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    public void UpdatePlot(Mat color)
     {
-        base.OnPropertyChanged(change);
-        if (change.Property == ImgProperty)
+        if (color is null || color.Empty()) return;
+
+        using Mat gray = color.CvtColor(ColorConversionCodes.BGR2GRAY);
+        using Mat hist = new();
+        Cv2.CalcHist([gray], [0], default, hist, 1, [256], [[0, 256]]);
+        for (int i = 0; i < hist.Rows; i++)
         {
-            (Mat oldValue, Mat newValue) = change.GetOldAndNewValue<Mat>();
-            oldValue?.Dispose();
-            _ = this.UpdateImageAsync(newValue);
-            _ = this.UpdatePlotAsync(newValue);
+            histogram.Counts[i] = (int)hist.At<float>(i);
         }
-    }
-
-    async Task UpdateImageAsync(Mat color)
-    {
-        if (color is null || color.Empty()) return;
-
-        using Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
-        using Mat grayToColor = await Task.Run(() => gray.CvtColor(ColorConversionCodes.GRAY2BGR));
-
-        Mat mask = gray.Threshold(this.Threshold, this.MaxValue, ThresholdTypes.Binary);
-        this.Mask?.Dispose();
-        this.Mask = mask;
-        grayToColor.SetTo(Scalar.Red, mask);
-
-        Avalonia.Size size = new(gray.Width, gray.Height);
-        Vector dpi = new(96, 96);
-
-        WriteableBitmap? source = this.TheImage.Source as WriteableBitmap;
-        await Task.Run(() =>
+        Dispatcher.UIThread.Post(() =>
         {
-            if (source is null || source.Size != size)
-            {
-                Avalonia.PixelSize pixelSize = new(grayToColor.Width, grayToColor.Height);
-                source = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888);
-                grayToColor.ToBitmapParallel(source);
-            }
-            else
-            {
-                grayToColor.ToBitmapParallel(source);
-            }
-        });
-        this.TheImage.Source = source;
-        this.TheImage.InvalidateVisual();
-    }
-
-    async Task UpdatePlotAsync(Mat color)
-    {
-        if (color is null || color.Empty()) return;
-
-        using Mat gray = await Task.Run(() => color.CvtColor(ColorConversionCodes.BGR2GRAY));
-        await Task.Run(() =>
-        {
-            using Mat hist = new();
-            Cv2.CalcHist([gray], [0], default, hist, 1, [256], [[0, 256]]);
-            for (int i = 0; i < hist.Rows; i++)
-            {
-                histogram.Counts[i] = (int)hist.At<float>(i);
-            }
             this.AvaPlot.Plot.Clear<HistogramBars>();
             this.AvaPlot.Plot.Add.Histogram(histogram);
+            this.AvaPlot.Refresh();
         });
-        this.AvaPlot.Refresh();
     }
-
-    static Task<Mat> ImReadAsync(string file, ImreadModes flags = ImreadModes.Color) => Task.Run(() => Cv2.ImRead(file, flags));
 
     private void OnMouseDown(object? sender, PointerEventArgs e)
     {
@@ -243,7 +186,7 @@ public partial class ThresholdWindow : Window
         }
     }
 
-    private AxisLine? GetLineUnderMouse(float x, float y, AvaPlot avaPlot)
+    static AxisLine? GetLineUnderMouse(float x, float y, AvaPlot avaPlot)
     {
         CoordinateRect rect = avaPlot.Plot.GetCoordinateRect(x, y, radius: 10);
 
@@ -254,16 +197,5 @@ public partial class ThresholdWindow : Window
         }
 
         return null;
-    }
-
-    async void Drop(object? sender, DragEventArgs e)
-    {
-        if (!e.Data.Contains(DataFormats.Files)) return;
-        var storeItem = e.Data.GetFiles()!;
-        string localPath = storeItem.First().Path.LocalPath;
-
-        Mat color = await ImReadAsync(localPath);
-        this.Img = color;
-        await UpdateImageAsync(color);
     }
 }
