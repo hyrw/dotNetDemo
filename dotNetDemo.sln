@@ -91,6 +91,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignPattern", "DesignPatt
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignPatternTest", "DesignPattern\DesignPatternTest\DesignPatternTest.csproj", "{A674CB25-9526-DB72-D539-A0B9D1BE737A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScaleAndTranslateTransform", "WPF\ScaleAndTranslateTransform\ScaleAndTranslateTransform.csproj", "{0B0C1D42-EEFE-4E3F-8AA3-61E733606F05}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
