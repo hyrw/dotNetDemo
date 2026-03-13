@@ -1,0 +1,53 @@
+<Solution>
+  <Folder Name="/Avalonia/">
+    <Project Path="Avalonia/AvaloniaApplication/AvaloniaApplication.csproj" />
+    <Project Path="Avalonia/AvaloniaWithOpenCV/AvaloniaWithOpenCV.csproj" />
+    <Project Path="Avalonia/OpenCvToolkit.Browser/OpenCvToolkit.Browser.csproj" />
+    <Project Path="Avalonia/OpenCvToolkit.Desktop/OpenCvToolkit.Desktop.csproj" />
+    <Project Path="Avalonia/OpenCvToolkit/OpenCvToolkit.csproj" />
+  </Folder>
+  <Folder Name="/DesignPattern/">
+    <Project Path="DesignPattern/DesignPattern/DesignPattern.csproj" />
+    <Project Path="DesignPattern/DesignPatternTest/DesignPatternTest.csproj" />
+  </Folder>
+  <Folder Name="/MQTTDemo/">
+    <Project Path="MQTTDemo/MQTT.UI/MQTT.UI.csproj" />
+    <Project Path="MQTTDemo/MQTTClient/MQTTPublish.csproj" />
+    <Project Path="MQTTDemo/MQTTServer/MQTTServer.csproj" />
+    <Project Path="MQTTDemo/MQTTSubscribe/MQTTSubscribe.csproj" />
+  </Folder>
+  <Folder Name="/PInvoke/">
+    <Project Path="PInvoke/SendInputDemo/SendInputDemo.csproj" />
+  </Folder>
+  <Folder Name="/Plugin/">
+    <Project Path="PluginDemo.Core/PluginDemo.Core.csproj" />
+    <Project Path="PluginDemo.Main/PluginDemo.Main.csproj" />
+    <Project Path="PluginDemo.PluginA/PluginDemo.PluginA.csproj" />
+  </Folder>
+  <Folder Name="/WPF/">
+    <Project Path="NavigationDemo/NavigationDemo.csproj" />
+    <Project Path="NotifyIconAndHotKeyDemo/NotifyIconAndHotKeyDemo.csproj" />
+    <Project Path="SnakeDemo/SnakeDemo.csproj" />
+    <Project Path="WindowMoveDemo/OverlayDemo.csproj" />
+    <Project Path="WPF/ControlDemoApp/ControlDemoApp.csproj" />
+    <Project Path="WPF/ControlLibrary/ControlLibrary.csproj" />
+    <Project Path="WPF/DataTemplateSelectorDemo/DataTemplateSelectorDemo.csproj" />
+    <Project Path="WPF/DragDemo/DragDemo.csproj" />
+    <Project Path="WPF/ScaleAndTranslateTransform/ScaleAndTranslateTransform.csproj" />
+    <Project Path="WPF/Validation/Validation.csproj" />
+    <Project Path="WPF/WPFUserControlDemo/WPFUserControlDemo.csproj" />
+    <Project Path="WPF/WpfViewModelLocator/WpfViewModelLocator.csproj" />
+  </Folder>
+  <Project Path="Benchmark/Benchmark.csproj" />
+  <Project Path="ByteTransport/ByteTransport.csproj" />
+  <Project Path="ByteTransportTest/ByteTransportTest.csproj" />
+  <Project Path="dotNetDemo/dotNetDemo.csproj" />
+  <Project Path="EnumBinding/EnumBinding.csproj" />
+  <Project Path="EnumerableObject/EnumerableObject.csproj" />
+  <Project Path="HttpClientDemo/HttpClientDemo.csproj" />
+  <Project Path="InteractionDemo/InteractionDemo.csproj" />
+  <Project Path="ListToTreeDemo/ListToTreeDemo.csproj" />
+  <Project Path="PackageDecoder/PackageDecoder.csproj" />
+  <Project Path="PackageDecoderTests/PackageDecoderTests.csproj" />
+  <Project Path="PrismNavigationTest/PrismNavigationTest.csproj" />
+</Solution>
