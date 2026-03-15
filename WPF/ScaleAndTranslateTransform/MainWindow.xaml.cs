@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace ScaleAndTranslateTransform;
 
@@ -14,6 +17,8 @@ public partial class MainWindow : Window
 
     private Point? lastMousePosition;
     private bool isDragging;
+    Storyboard MatrixStoryboard => (Storyboard)FindResource("Storyboard.Matrix");
+    Storyboard TranslateStoryboard => (Storyboard)FindResource("Storyboard.Translate");
 
     public MainWindow()
     {
@@ -22,10 +27,8 @@ public partial class MainWindow : Window
 
     private void ResetButton_Click(object sender, RoutedEventArgs e)
     {
-        this.translateTransform.X = 0;
-        this.translateTransform.Y = 0;
-        this.scaleTransform.ScaleX = 1;
-        this.scaleTransform.ScaleY = 1;
+        this.MatrixStoryboard.Begin();
+        this.matrixTransform.Matrix = Matrix.Identity;
     }
 
     private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -40,13 +43,13 @@ public partial class MainWindow : Window
 
         // 方式1 使用MatrixTransform
         matrix.ScaleAtPrepend(delta, delta, point.X, point.Y);
-        //transform.Matrix = matrix;
+        this.MatrixStoryboard.Begin();
 
-        // 方式2 使用TransformGroup，方便做动画
-        this.scaleTransform.ScaleX = matrix.M11;
-        this.scaleTransform.ScaleY = matrix.M22;
-        this.translateTransform.X = matrix.OffsetX;
-        this.translateTransform.Y = matrix.OffsetY;
+        // 方式2 使用TransformGroup
+        //this.scaleTransform.ScaleX = matrix.M11;
+        //this.scaleTransform.ScaleY = matrix.M22;
+        //this.translateTransform.X = matrix.OffsetX;
+        //this.translateTransform.Y = matrix.OffsetY;
 
         // 与ScaleAtPrepend相等
         //matrix.Prepend(new Matrix
@@ -96,8 +99,8 @@ public partial class MainWindow : Window
 
         matrix.Translate(delta.X, delta.Y);
 
-        this.translateTransform.X = matrix.OffsetX;
-        this.translateTransform.Y = matrix.OffsetY;
+        this.TranslateStoryboard.Begin();
+        this.matrixTransform.Matrix = matrix;
     }
 
     private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

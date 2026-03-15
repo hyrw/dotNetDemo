@@ -11,6 +11,23 @@
     WindowStartupLocation="CenterScreen"
     WindowState="Maximized"
     mc:Ignorable="d">
+    <Window.Resources>
+        <SineEase x:Key="EasingFunction.Matrix" EasingMode="EaseOut" />
+        <Storyboard x:Key="Storyboard.Matrix">
+            <local:MatrixAnimation
+                EasingFunction="{StaticResource EasingFunction.Matrix}"
+                Storyboard.TargetName="matrixTransform"
+                Storyboard.TargetProperty="Matrix"
+                Duration="0:0:0.200" />
+        </Storyboard>
+        <Storyboard x:Key="Storyboard.Translate">
+            <local:MatrixAnimation
+                EasingFunction="{StaticResource EasingFunction.Matrix}"
+                Storyboard.TargetName="matrixTransform"
+                Storyboard.TargetProperty="Matrix"
+                Duration="0:0:0.000" />
+        </Storyboard>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -46,34 +63,14 @@
                 RenderTransformOrigin="0,0">
                 <Grid.RenderTransform>
                     <TransformGroup x:Name="transformGroup">
-                        <ScaleTransform x:Name="scaleTransform" />
-                        <TranslateTransform x:Name="translateTransform" />
+                        <MatrixTransform x:Name="matrixTransform" />
                     </TransformGroup>
                 </Grid.RenderTransform>
-                <StackPanel>
-                    <Image
-                        Width="400"
-                        Height="300"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Source="pack://application:,,,/Resources/cat.jpeg"
-                        Stretch="UniformToFill">
-                        <Image.RenderTransform>
-                            <MatrixTransform Matrix="1 0 0 1 0 0" />
-                        </Image.RenderTransform>
-                    </Image>
-                    <Image
-                        Width="400"
-                        Height="300"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Source="pack://application:,,,/Resources/cat.jpeg"
-                        Stretch="UniformToFill">
-                        <Image.RenderTransform>
-                            <MatrixTransform Matrix="2 0 0 2 0 0" />
-                        </Image.RenderTransform>
-                    </Image>
-                </StackPanel>
+                <Image
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Source="pack://application:,,,/Resources/cat.jpeg"
+                    Stretch="Uniform" />
             </Grid>
         </Grid>
     </Grid>
