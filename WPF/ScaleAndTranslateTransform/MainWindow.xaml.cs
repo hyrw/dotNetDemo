@@ -1,7 +1,5 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace ScaleAndTranslateTransform;
 
@@ -24,35 +22,69 @@ public partial class MainWindow : Window
 
     private void ResetButton_Click(object sender, RoutedEventArgs e)
     {
-        if (this.EleContainer.RenderTransform is MatrixTransform transform)
-        {
-            transform.Matrix = Matrix.Identity;
-            e.Handled = true;
-        }
+        this.translateTransform.X = 0;
+        this.translateTransform.Y = 0;
+        this.scaleTransform.ScaleX = 1;
+        this.scaleTransform.ScaleY = 1;
     }
 
     private void Grid_MouseWheel(object sender, MouseWheelEventArgs e)
     {
-        if (sender is not Panel || this.EleContainer.RenderTransform is not MatrixTransform transform) return;
-
         e.Handled = true;
 
         Point point = e.GetPosition(this.EleContainer);
 
-        var matrix = transform.Value;
+        var matrix = this.transformGroup.Value;
 
         double delta = e.Delta > 0 ? ZoomFactor : 1 / ZoomFactor;
 
+        // 方式1 使用MatrixTransform
         matrix.ScaleAtPrepend(delta, delta, point.X, point.Y);
-        //Trace.WriteLine($"Scale x:{matrix.M11}, y:{matrix.M22}");
+        //transform.Matrix = matrix;
 
-        transform.Matrix = matrix;
+        // 方式2 使用TransformGroup，方便做动画
+        this.scaleTransform.ScaleX = matrix.M11;
+        this.scaleTransform.ScaleY = matrix.M22;
+        this.translateTransform.X = matrix.OffsetX;
+        this.translateTransform.Y = matrix.OffsetY;
+
+        // 与ScaleAtPrepend相等
+        //matrix.Prepend(new Matrix
+        //{
+        //    OffsetX = point.X,
+        //    OffsetY = point.Y,
+        //});
+        //matrix.Prepend(new Matrix
+        //{
+        //    M11 = delta,
+        //    M22 = delta,
+        //});
+        //matrix.Prepend(new Matrix
+        //{
+        //    OffsetX = -point.X,
+        //    OffsetY = -point.Y,
+        //});
+
+        // 与ScaleAtPrepend相等
+        //matrix.Append(new Matrix
+        //{
+        //    OffsetX = -point.X,
+        //    OffsetY = -point.Y,
+        //});
+        //matrix.Append(new Matrix
+        //{
+        //    M11 = delta,
+        //    M22 = delta,
+        //});
+        //matrix.Append(new Matrix
+        //{
+        //    OffsetX = point.X,
+        //    OffsetY = point.Y,
+        //});
     }
 
     private void Grid_MouseMove(object sender, MouseEventArgs e)
     {
-        if (sender is not Panel ||
-            this.EleContainer.RenderTransform is not MatrixTransform matrixTransform) return;
         if (!isDragging || !lastMousePosition.HasValue) return;
 
         e.Handled = true;
@@ -60,12 +92,12 @@ public partial class MainWindow : Window
         Point mousePos = e.GetPosition(this.EleContainer);
         Vector delta = mousePos - lastMousePosition.Value;
 
-        var matrix = matrixTransform.Value;
+        var matrix = this.transformGroup.Value;
 
-        matrix.TranslatePrepend(delta.X, delta.Y);
+        matrix.Translate(delta.X, delta.Y);
 
-        matrixTransform.Matrix = matrix;
-        //Trace.WriteLine($"Offset x:{matrix.OffsetX}, y:{matrix.OffsetY}");
+        this.translateTransform.X = matrix.OffsetX;
+        this.translateTransform.Y = matrix.OffsetY;
     }
 
     private void Grid_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
