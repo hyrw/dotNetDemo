@@ -31,16 +31,23 @@ mc:Ignorable="d">
 				<MenuItem Header="RGB" Command="{Binding OpenColorRangeWindowCommand}"/>
 			</MenuItem>
 		</Menu>
-		<Grid PointerWheelChanged="OnPointerWheelChanged">
+		<Grid PointerWheelChanged="OnPointerWheelChanged" ClipToBounds="True">
 			<Grid Name="EleContainer" Margin="20" Background="Transparent" RenderTransformOrigin="0,0">
 				<Grid.RenderTransform>
-					<MatrixTransform />
+					<!-- 重要 -->
+					<MatrixTransform Matrix="1,0,0,1,0,0" />
 				</Grid.RenderTransform>
-			<Image Name="TheImage" VerticalAlignment="Center"
-				   RenderOptions.BitmapInterpolationMode="HighQuality"
-				   HorizontalAlignment="Center"
-				   Stretch="Uniform" />
-		</Grid>
+				<Grid.Transitions>
+					<Transitions>
+						<!-- 应用动画 -->
+						<TransformOperationsTransition Easing="SineEaseOut" Property="RenderTransform" Duration="0:0:0.200"/>
+					</Transitions>
+				</Grid.Transitions>
+				<Image Name="TheImage" VerticalAlignment="Center"
+					   RenderOptions.BitmapInterpolationMode="HighQuality"
+					   HorizontalAlignment="Center"
+					   Stretch="Uniform" />
+			</Grid>
 		</Grid>
 	</DockPanel>
 </Window>
