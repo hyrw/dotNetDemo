@@ -31,11 +31,16 @@ mc:Ignorable="d">
 				<MenuItem Header="RGB" Command="{Binding OpenColorRangeWindowCommand}"/>
 			</MenuItem>
 		</Menu>
-		<Grid Margin="20" Background="Transparent">
+		<Grid PointerWheelChanged="OnPointerWheelChanged">
+			<Grid Name="EleContainer" Margin="20" Background="Transparent" RenderTransformOrigin="0,0">
+				<Grid.RenderTransform>
+					<MatrixTransform />
+				</Grid.RenderTransform>
 			<Image Name="TheImage" VerticalAlignment="Center"
 				   RenderOptions.BitmapInterpolationMode="HighQuality"
 				   HorizontalAlignment="Center"
 				   Stretch="Uniform" />
+		</Grid>
 		</Grid>
 	</DockPanel>
 </Window>
