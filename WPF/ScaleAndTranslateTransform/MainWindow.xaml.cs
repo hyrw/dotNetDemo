@@ -44,6 +44,7 @@ public partial class MainWindow : Window
         // 方式1 使用MatrixTransform
         matrix.ScaleAtPrepend(delta, delta, point.X, point.Y);
         this.MatrixStoryboard.Begin();
+        this.matrixTransform.Matrix = matrix;
 
         // 方式2 使用TransformGroup
         //this.scaleTransform.ScaleX = matrix.M11;
