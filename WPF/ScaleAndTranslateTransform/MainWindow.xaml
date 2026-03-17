@@ -20,13 +20,6 @@
                 Storyboard.TargetProperty="Matrix"
                 Duration="0:0:0.200" />
         </Storyboard>
-        <Storyboard x:Key="Storyboard.Translate">
-            <local:MatrixAnimation
-                EasingFunction="{StaticResource EasingFunction.Matrix}"
-                Storyboard.TargetName="matrixTransform"
-                Storyboard.TargetProperty="Matrix"
-                Duration="0:0:0.000" />
-        </Storyboard>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -62,9 +55,7 @@
                 ClipToBounds="True"
                 RenderTransformOrigin="0,0">
                 <Grid.RenderTransform>
-                    <TransformGroup x:Name="transformGroup">
-                        <MatrixTransform x:Name="matrixTransform" />
-                    </TransformGroup>
+                    <MatrixTransform x:Name="matrixTransform" />
                 </Grid.RenderTransform>
                 <Image
                     HorizontalAlignment="Center"

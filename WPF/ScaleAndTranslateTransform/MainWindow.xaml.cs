@@ -37,7 +37,7 @@ public partial class MainWindow : Window
 
         Point point = e.GetPosition(this.EleContainer);
 
-        var matrix = this.transformGroup.Value;
+        var matrix = this.matrixTransform.Value;
 
         double delta = e.Delta > 0 ? ZoomFactor : 1 / ZoomFactor;
 
@@ -96,11 +96,10 @@ public partial class MainWindow : Window
         Point mousePos = e.GetPosition(this.EleContainer);
         Vector delta = mousePos - lastMousePosition.Value;
 
-        var matrix = this.transformGroup.Value;
+        var matrix = this.matrixTransform.Value;
 
         matrix.Translate(delta.X, delta.Y);
 
-        this.TranslateStoryboard.Begin();
         this.matrixTransform.Matrix = matrix;
     }
 
