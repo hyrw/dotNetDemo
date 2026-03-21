@@ -1,0 +1,39 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+         xmlns:controls="clr-namespace:OpenCvToolkit.Controls">
+  
+    <Design.PreviewWith>
+	    <controls:ZoomViewer />
+    </Design.PreviewWith>
+
+    <!-- ZoomViewer Style -->
+    <Style Selector="controls|ZoomViewer">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <!-- Main container grid with clipping and wheel event handling -->
+                <Panel Name="PART_Root" ClipToBounds="True" Background="{TemplateBinding Background}">
+                    
+                    <!-- Transform container with animation support -->
+                    <Panel Name="PART_Container" Margin="20" RenderTransformOrigin="0,0">
+                        <Panel.RenderTransform>
+                            <MatrixTransform Matrix="1,0,0,1,0,0" />
+                        </Panel.RenderTransform>
+                        <Panel.Transitions>
+                            <Transitions>
+                                <TransformOperationsTransition 
+                                    Easing="SineEaseOut" 
+                                    Property="RenderTransform" 
+                                    Duration="0:0:0.200"/>
+                            </Transitions>
+                        </Panel.Transitions>
+                        
+                        <ContentPresenter 
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center"
+                            Content="{TemplateBinding Content}"/>
+                    </Panel>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
