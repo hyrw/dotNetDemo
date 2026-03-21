@@ -1,11 +1,15 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Messaging;
+using OpenCvToolkit.Controls;
 using OpenCvToolkit.Messages;
 
 namespace OpenCvToolkit.Views;
 
 public partial class MainView : UserControl, IRecipient<UpdateImageMessage>
 {
+    private ZoomViewer? _beforeViewer;
+    private ZoomViewer? _afterViewer;
+    
     public MainView()
     {
         InitializeComponent();
@@ -25,7 +29,7 @@ public partial class MainView : UserControl, IRecipient<UpdateImageMessage>
 
     void IRecipient<UpdateImageMessage>.Receive(UpdateImageMessage message)
     {
-        this.beforeImage.InvalidateVisual();
-        this.afterImage.InvalidateVisual();
+        _beforeViewer?.InvalidateVisual();
+        _afterViewer?.InvalidateVisual();
     }
 }

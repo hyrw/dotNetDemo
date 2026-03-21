@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using OpenCvSharp;
 using OpenCvToolkit.Extensions;
 using OpenCvToolkit.Messages;
+using System.IO;
 using CvPoint = OpenCvSharp.Point;
 
 namespace OpenCvToolkit.ViewModels;
@@ -14,10 +15,20 @@ namespace OpenCvToolkit.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     [ObservableProperty]
-    public partial WriteableBitmap Before { get; set; }
+    public partial WriteableBitmap? Before { get; set; }
 
     [ObservableProperty]
-    public partial WriteableBitmap After { get; set; }
+    public partial WriteableBitmap? After { get; set; }
+
+    [ObservableProperty]
+    public partial string FilePath { get; set; } = @"D:\Pictures\Camera Roll\cat.jpeg";
+
+    partial void OnFilePathChanged(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || !File.Exists(value)) return;
+
+        LoadImageCommand.Execute(null);
+    }
 
     public MainViewModel()
     {
@@ -26,7 +37,9 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     void LoadImage()
     {
-        using Mat src = Cv2.ImRead(@"C:/Users/Coder/Desktop/nickel.jpg", ImreadModes.Grayscale);
+        if (string.IsNullOrWhiteSpace(FilePath) || !File.Exists(FilePath)) return;
+        
+        using Mat src = Cv2.ImRead(FilePath, ImreadModes.Grayscale);
         using Mat result = src.Threshold(220, 255, ThresholdTypes.Binary).Clone();
 
         FloodFill(result);
@@ -37,12 +50,12 @@ public partial class MainViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Send(new UpdateImageMessage());
     }
 
-    void FloodFill(Mat input)
+    static void FloodFill(Mat input)
     {
         Cv2.FloodFill(input, new CvPoint(0, 0), Scalar.Black);
     }
 
-    WriteableBitmap Update(Mat img, WriteableBitmap writeableBitmap)
+    static WriteableBitmap Update(Mat img, WriteableBitmap? writeableBitmap)
     {
         Avalonia.Size size = new(img.Width, img.Height);
         Vector dpi = new(96, 96);
