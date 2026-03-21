@@ -26,8 +26,9 @@ public partial class MainWindow : Avalonia.Controls.Window
         m = m.ScaleAtPrepend(scale, scale, p.Position.X, p.Position.Y);
 
         // 不用动画可以直接用MatrixTransform
-        var t = TransformOperations.Parse($"matrix({m.M11},{m.M21},{m.M21},{m.M22},{m.M31},{m.M32})");
-        this.EleContainer.RenderTransform = t;
+        var builder = TransformOperations.CreateBuilder(1);
+        builder.AppendMatrix(m);
+        this.EleContainer.RenderTransform = builder.Build();
     }
 
     public Mat? Mat { get; set; }
