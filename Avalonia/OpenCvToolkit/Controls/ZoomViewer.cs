@@ -223,13 +223,6 @@ public partial class ZoomViewer
         set => SetValue(EnablePanProperty, value);
     }
 
-    public static readonly StyledProperty<IImage?> SourceProperty;
-    public IImage? Source
-    {
-        get => GetValue(SourceProperty);
-        set => SetValue(SourceProperty, value);
-    }
-
     // Static constructor for StyledProperty registration
     static ZoomViewer()
     {
@@ -257,9 +250,6 @@ public partial class ZoomViewer
         EnablePanProperty = AvaloniaProperty.Register<ZoomViewer, bool>(
              nameof(EnablePan),
              defaultValue: true);
-
-        SourceProperty = AvaloniaProperty.Register<ZoomViewer, IImage?>(
-            nameof(Source));
     }
 
 }
