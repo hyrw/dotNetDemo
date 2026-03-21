@@ -21,6 +21,9 @@ public partial class MainViewModel : ViewModelBase
     public partial WriteableBitmap? After { get; set; }
 
     [ObservableProperty]
+    public partial Matrix SyncMatrix { get; set; } = Matrix.Identity;
+
+    [ObservableProperty]
     public partial string FilePath { get; set; } = @"D:\Pictures\Camera Roll\cat.jpeg";
 
     partial void OnFilePathChanged(string value)
@@ -38,13 +41,13 @@ public partial class MainViewModel : ViewModelBase
     void LoadImage()
     {
         if (string.IsNullOrWhiteSpace(FilePath) || !File.Exists(FilePath)) return;
-        
+
         using Mat src = Cv2.ImRead(FilePath, ImreadModes.Grayscale);
         using Mat result = src.Threshold(220, 255, ThresholdTypes.Binary).Clone();
 
         FloodFill(result);
 
-        Before = Update(src,  Before);
+        Before = Update(src, Before);
         After = Update(result, After);
 
         WeakReferenceMessenger.Default.Send(new UpdateImageMessage());

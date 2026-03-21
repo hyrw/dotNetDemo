@@ -5,6 +5,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Transformation;
+using Avalonia.Reactive;
 using System;
 
 namespace OpenCvToolkit.Controls;
@@ -24,6 +25,10 @@ public partial class ZoomViewer : UserControl
     Point _panStartPoint;
     bool _isPanning;
 
+    public ZoomViewer()
+    {
+        this.GetObservable(MatrixProperty).Subscribe(new AnonymousObserver<Matrix>(ApplyTransformWithAnimation));
+    }
 
     // Override OnApplyTemplate to get template parts
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -55,7 +60,7 @@ public partial class ZoomViewer : UserControl
         }
 
         // Initialize transform if container exists
-        PART_container?.RenderTransform = new MatrixTransform();
+        PART_container?.RenderTransform = new MatrixTransform(Matrix);
 
     }
 
@@ -170,6 +175,10 @@ public partial class ZoomViewer : UserControl
 
     private void ApplyTransformWithAnimation(Matrix matrix)
     {
+        if (Matrix != matrix)
+        {
+            Matrix = matrix;
+        }
         if (PART_container == null) return;
 
         // Use TransformOperations for smooth animation
@@ -223,6 +232,13 @@ public partial class ZoomViewer
         set => SetValue(EnablePanProperty, value);
     }
 
+    public static readonly StyledProperty<Matrix> MatrixProperty;
+    public Matrix Matrix
+    {
+        get => GetValue(MatrixProperty);
+        set => SetValue(MatrixProperty, value);
+    }
+
     // Static constructor for StyledProperty registration
     static ZoomViewer()
     {
@@ -250,6 +266,10 @@ public partial class ZoomViewer
         EnablePanProperty = AvaloniaProperty.Register<ZoomViewer, bool>(
              nameof(EnablePan),
              defaultValue: true);
+
+        MatrixProperty = AvaloniaProperty.Register<ZoomViewer, Matrix>(
+             nameof(MatrixProperty),
+             defaultValue: Matrix.Identity);
     }
 
 }

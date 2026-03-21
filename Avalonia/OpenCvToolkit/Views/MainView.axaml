@@ -25,11 +25,13 @@
 
     <UniformGrid Columns="2" >
         <controls:ZoomViewer x:Name="beforeViewer"
+                            Matrix="{Binding SyncMatrix, Mode=TwoWay}"
                             EnableZoom="True"
                             Scale="1.0" >
             <Image Source="{Binding Before}"/>
         </controls:ZoomViewer>
         <controls:ZoomViewer x:Name="afterViewer"
+                            Matrix="{Binding SyncMatrix, Mode=TwoWay}"
                             EnableZoom="True"
                             Scale="1.0" >
             <Image Source="{Binding After}"/>

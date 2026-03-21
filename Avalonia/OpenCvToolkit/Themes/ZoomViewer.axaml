@@ -3,7 +3,7 @@
          xmlns:controls="clr-namespace:OpenCvToolkit.Controls">
   
     <Design.PreviewWith>
-	    <controls:ZoomViewer />
+        <controls:ZoomViewer />
     </Design.PreviewWith>
 
     <!-- ZoomViewer Style -->
