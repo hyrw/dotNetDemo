@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -7,13 +8,17 @@ using CommunityToolkit.Mvvm.Messaging;
 using OpenCvSharp;
 using OpenCvToolkit.Extensions;
 using OpenCvToolkit.Messages;
+using System;
 using System.IO;
+using System.Linq;
 using CvPoint = OpenCvSharp.Point;
 
 namespace OpenCvToolkit.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
+    static readonly string[] ImageExtensionNames = [".jpg", ".jpeg", ".png", ".bmp", ".gif", ".tiff", ".tif", ".webp"];
+
     [ObservableProperty]
     public partial WriteableBitmap? Before { get; set; }
 
@@ -24,7 +29,7 @@ public partial class MainViewModel : ViewModelBase
     public partial Matrix SyncMatrix { get; set; } = Matrix.Identity;
 
     [ObservableProperty]
-    public partial string FilePath { get; set; } = @"D:\Pictures\Camera Roll\cat.jpeg";
+    public partial string FilePath { get; set; } = string.Empty;
 
     partial void OnFilePathChanged(string value)
     {
@@ -53,6 +58,15 @@ public partial class MainViewModel : ViewModelBase
         WeakReferenceMessenger.Default.Send(new UpdateImageMessage());
     }
 
+
+    [RelayCommand]
+    void DropImage(DragEventArgs e)
+    {
+        if (!TryGetImageFile(e, out string file)) return;
+
+        FilePath = file;
+    }
+
     static void FloodFill(Mat input)
     {
         Cv2.FloodFill(input, new CvPoint(0, 0), Scalar.Black);
@@ -74,6 +88,27 @@ public partial class MainViewModel : ViewModelBase
             img.ToBitmapParallel(writeableBitmap);
         }
         return writeableBitmap;
+    }
+
+    static bool TryGetImageFile(DragEventArgs e, out string file)
+    {
+        file = string.Empty;
+        if (!e.Data.Contains(DataFormats.Files)) return false;
+
+        var storeItems = e.Data.GetFiles()?.ToList();
+        if (storeItems is null || storeItems.Count != 1) return false;
+
+        var filePath = storeItems[0].Path.LocalPath;
+        var extension = Path.GetExtension(filePath)?.ToLowerInvariant();
+        if ( !string.IsNullOrWhiteSpace(extension) && ImageExtensionNames.Contains(extension))
+        {
+            file = filePath;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }

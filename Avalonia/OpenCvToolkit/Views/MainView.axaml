@@ -9,11 +9,15 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:MainViewModel"
+    DragDrop.AllowDrop="True"
     mc:Ignorable="d">
     <Interaction.Behaviors>
         <EventTriggerBehavior EventName="Loaded">
             <InvokeCommandAction Command="{Binding LoadImageCommand}" />
         </EventTriggerBehavior>
+        <RoutedEventTriggerBehavior RoutedEvent="{x:Static DragDrop.DropEvent}">
+            <InvokeCommandAction Command="{Binding DropImageCommand}" PassEventArgsToCommand="True"/>
+        </RoutedEventTriggerBehavior>
     </Interaction.Behaviors>
     <Design.DataContext>
         <!--
@@ -23,18 +27,42 @@
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <UniformGrid Columns="2" >
+    <Grid Background="Transparent">
+        <UniformGrid Columns="2" >
         <controls:ZoomViewer x:Name="beforeViewer"
                             Matrix="{Binding SyncMatrix, Mode=TwoWay}"
                             EnableZoom="True"
-                            Scale="1.0" >
+                            Scale="1.0"
+                            Background="Transparent">
             <Image Source="{Binding Before}"/>
         </controls:ZoomViewer>
         <controls:ZoomViewer x:Name="afterViewer"
                             Matrix="{Binding SyncMatrix, Mode=TwoWay}"
                             EnableZoom="True"
-                            Scale="1.0" >
+                            Scale="1.0"
+                            Background="Transparent">
             <Image Source="{Binding After}"/>
         </controls:ZoomViewer>
-    </UniformGrid>
+        </UniformGrid>
+        
+        <!-- 拖拽提示 -->
+        <Border x:Name="DragHintBorder"
+                Background="#80000000" 
+                CornerRadius="8"
+                Padding="20"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                IsVisible="{Binding Before, Converter={x:Static ObjectConverters.IsNull}}">
+            <StackPanel Spacing="8" HorizontalAlignment="Center">
+                <TextBlock Text="📁 拖拽图片文件到此区域"
+                           FontSize="16"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Text="支持格式: JPG, PNG, BMP, GIF, TIFF, WEBP"
+                           FontSize="12"
+                           Foreground="#CCCCCC"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>
