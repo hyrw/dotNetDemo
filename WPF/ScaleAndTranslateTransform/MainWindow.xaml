@@ -2,6 +2,7 @@
     x:Class="ScaleAndTranslateTransform.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controlLib="clr-namespace:ControlLibrary.Controls;assembly=ControlLibrary"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ScaleAndTranslateTransform"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -39,6 +40,14 @@
                 Content="重置变换" />
         </StackPanel>
 
+        <controlLib:ScaleAndTranslate Grid.Row="1" Grid.Column="2">
+            <Image
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="pack://application:,,,/Resources/cat.jpeg"
+                Stretch="Uniform" />
+        </controlLib:ScaleAndTranslate>
+
         <Grid
             Grid.Row="1"
             Grid.Column="2"
@@ -48,7 +57,8 @@
             MouseLeftButtonDown="Grid_MouseLeftButtonDown"
             MouseLeftButtonUp="Grid_MouseLeftButtonUp"
             MouseMove="Grid_MouseMove"
-            MouseWheel="Grid_MouseWheel">
+            MouseWheel="Grid_MouseWheel"
+            Visibility="Collapsed">
             <Grid
                 x:Name="EleContainer"
                 Grid.Column="1"
