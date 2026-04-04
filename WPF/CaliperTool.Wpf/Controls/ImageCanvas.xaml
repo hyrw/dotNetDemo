@@ -1,0 +1,46 @@
+<UserControl
+    x:Class="CaliperTool.Wpf.Controls.ImageCanvas"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:CaliperTool.Wpf.Controls"
+    Background="#1E1E1E"
+    ClipToBounds="True">
+    <Grid>
+        <!--  图像显示层  -->
+        <Image
+            x:Name="PART_Image"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            RenderOptions.BitmapScalingMode="HighQuality"
+            Stretch="Uniform" />
+
+        <!--  DrawingVisual 宿主层  -->
+        <local:DrawingVisualHost x:Name="PART_DrawingHost" Cursor="Hand" />
+
+        <!--  无图像时的提示  -->
+        <TextBlock
+            x:Name="PART_Hint"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="16"
+            Foreground="#888"
+            Text="请加载图像" />
+
+        <!--  鼠标坐标悬浮标签  -->
+        <Border
+            x:Name="PART_CoordBorder"
+            Margin="6"
+            Padding="6,3"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Background="#CC000000"
+            CornerRadius="3"
+            Visibility="Hidden">
+            <TextBlock
+                x:Name="PART_CoordText"
+                FontFamily="Consolas"
+                FontSize="11"
+                Foreground="#00E050" />
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,678 @@
+<Window
+    x:Class="CaliperTool.Wpf.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:CaliperTool.Wpf.Controls"
+    xmlns:controlsLib="clr-namespace:ControlLibrary.Controls;assembly=ControlLibrary"
+    Title="卡尺工具"
+    Width="1300"
+    Height="820"
+    MinWidth="960"
+    MinHeight="640"
+    Background="#1E1E1E"
+    WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!--  普通工具栏按钮  -->
+        <Style x:Key="TBBtn" TargetType="Button">
+            <Setter Property="Background" Value="#3F3F46" />
+            <Setter Property="Foreground" Value="#DCDCDC" />
+            <Setter Property="BorderBrush" Value="#555" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14,6" />
+            <Setter Property="Margin" Value="3,0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#525257" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#007ACC" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.38" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  高亮操作按钮（执行检测）  -->
+        <Style
+            x:Key="AccentBtn"
+            BasedOn="{StaticResource TBBtn}"
+            TargetType="Button">
+            <Setter Property="Background" Value="#0E6DB7" />
+            <Setter Property="BorderBrush" Value="#1A8ADB" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1A8ADB" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#005A9E" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!--  模式切换 ToggleButton 激活态  -->
+        <Style x:Key="ModeBtn" TargetType="ToggleButton">
+            <Setter Property="Background" Value="#3F3F46" />
+            <Setter Property="Foreground" Value="#AAAAAA" />
+            <Setter Property="BorderBrush" Value="#555" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14,6" />
+            <Setter Property="Margin" Value="2,0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Background" Value="#0E6DB7" />
+                                <Setter Property="BorderBrush" Value="#1A8ADB" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#525257" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  面板区块标题  -->
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Foreground" Value="#9CDCFE" />
+            <Setter Property="Margin" Value="0,10,0,4" />
+        </Style>
+
+        <!--  结果值  -->
+        <Style x:Key="ResultVal" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Consolas" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="#E0E0E0" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <!--  分割线  -->
+        <Style x:Key="Divider" TargetType="Rectangle">
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Fill" Value="#3A3A3A" />
+            <Setter Property="Margin" Value="0,8,0,0" />
+        </Style>
+
+        <!--  Slider 样式  -->
+        <Style x:Key="ParamSlider" TargetType="Slider">
+            <Setter Property="Foreground" Value="#007ACC" />
+            <Setter Property="Margin" Value="0,2,0,0" />
+        </Style>
+
+        <!--  辅助标签  -->
+        <Style x:Key="DimLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="Foreground" Value="#777" />
+        </Style>
+
+        <!--  BooleanToVisibility 转换器  -->
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
+
+    <DockPanel>
+        <!--  ═══════════ 工具栏 ═══════════  -->
+        <Border
+            Padding="10,7"
+            Background="#2D2D30"
+            BorderBrush="#3A3A3A"
+            BorderThickness="0,0,0,1"
+            DockPanel.Dock="Top">
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+
+                <!--  加载图像  -->
+                <Button
+                    x:Name="BtnLoadImage"
+                    Click="OnLoadImageClick"
+                    Style="{StaticResource TBBtn}"
+                    ToolTip="加载图像文件 (Ctrl+O)">
+                    加载图像
+                </Button>
+
+                <Rectangle
+                    Width="1"
+                    Margin="10,2"
+                    Fill="#444" />
+
+                <!--  模式切换  -->
+                <TextBlock
+                    Margin="0,0,6,0"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource DimLabel}"
+                    Text="模式:" />
+                <ToggleButton
+                    x:Name="BtnLineMode"
+                    Click="OnLineModeClick"
+                    IsChecked="True"
+                    Style="{StaticResource ModeBtn}"
+                    ToolTip="直线卡尺模式">
+                    直线卡尺
+                </ToggleButton>
+                <ToggleButton
+                    x:Name="BtnCircleMode"
+                    Click="OnCircleModeClick"
+                    IsChecked="False"
+                    Style="{StaticResource ModeBtn}"
+                    ToolTip="圆卡尺模式">
+                    圆卡尺
+                </ToggleButton>
+
+                <Rectangle
+                    Width="1"
+                    Margin="10,2"
+                    Fill="#444" />
+
+                <!--  执行检测  -->
+                <Button
+                    x:Name="BtnDetect"
+                    Click="OnDetectClick"
+                    Style="{StaticResource AccentBtn}"
+                    ToolTip="执行边缘检测并拟合 (F5)">
+                    执行检测
+                </Button>
+
+                <Rectangle
+                    Width="1"
+                    Margin="8,2"
+                    Fill="#444" />
+
+                <!--  重置  -->
+                <Button
+                    x:Name="BtnReset"
+                    Click="OnResetClick"
+                    Style="{StaticResource TBBtn}"
+                    ToolTip="重置卡尺 (Esc)">
+                    重置
+                </Button>
+
+            </StackPanel>
+        </Border>
+
+        <!--  ═══════════ 状态栏 ═══════════  -->
+        <Border
+            Padding="12,5"
+            Background="#1A1A1A"
+            BorderBrush="#3A3A3A"
+            BorderThickness="0,1,0,0"
+            DockPanel.Dock="Bottom">
+            <TextBlock
+                x:Name="TxtStatus"
+                FontFamily="Consolas"
+                FontSize="12"
+                Foreground="#888"
+                Text="就绪" />
+        </Border>
+
+        <!--  ═══════════ 主区域 ═══════════  -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="420" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition
+                    Width="310"
+                    MinWidth="280"
+                    MaxWidth="400" />
+            </Grid.ColumnDefinitions>
+
+            <!--  图像画布（两种模式共用）  -->
+            <controlsLib:ScaleAndTranslate Grid.Column="0">
+                <controls:ImageCanvas x:Name="TheImageCanvas" />
+            </controlsLib:ScaleAndTranslate>
+
+            <!--  分隔条  -->
+            <GridSplitter
+                Grid.Column="1"
+                Width="5"
+                HorizontalAlignment="Stretch"
+                Background="#3A3A3A"
+                ResizeBehavior="PreviousAndNext"
+                ResizeDirection="Columns" />
+
+            <!--  ═══════════ 右侧面板 ═══════════  -->
+            <Border
+                Grid.Column="2"
+                Background="#252526"
+                BorderBrush="#3A3A3A"
+                BorderThickness="1,0,0,0">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+
+                    <!--  ─── 直线卡尺面板 ───  -->
+                    <StackPanel x:Name="PanelLine" Margin="14,12">
+
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#DCDCDC"
+                            Text="直线卡尺" />
+
+                        <Rectangle Margin="0,6,0,0" Style="{StaticResource Divider}" />
+
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="卡尺参数" />
+
+                        <!--  ROI 数量  -->
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="36" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource DimLabel}"
+                                Text="ROI 数量" />
+                            <TextBlock
+                                x:Name="TxtLineRoiCount"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ResultVal}"
+                                Text="10" />
+                        </Grid>
+                        <Slider
+                            x:Name="SliderLineRoiCount"
+                            IsSnapToTickEnabled="True"
+                            LargeChange="5"
+                            Maximum="50"
+                            Minimum="3"
+                            SmallChange="1"
+                            Style="{StaticResource ParamSlider}"
+                            TickFrequency="1"
+                            ValueChanged="OnLineRoiCountChanged"
+                            Value="10" />
+
+                        <!--  ROI 半宽  -->
+                        <Grid Margin="0,8,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource DimLabel}"
+                                Text="ROI 半宽 (px)" />
+                            <TextBlock
+                                x:Name="TxtLineRoiHalf"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ResultVal}"
+                                Text="20" />
+                        </Grid>
+                        <Slider
+                            x:Name="SliderLineRoiHalf"
+                            IsSnapToTickEnabled="True"
+                            LargeChange="10"
+                            Maximum="100"
+                            Minimum="5"
+                            SmallChange="1"
+                            Style="{StaticResource ParamSlider}"
+                            TickFrequency="1"
+                            ValueChanged="OnLineRoiHalfChanged"
+                            Value="20" />
+
+                        <Rectangle Style="{StaticResource Divider}" />
+
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="检测结果" />
+                        <TextBlock Style="{StaticResource DimLabel}" Text="有效点 / 总 ROI" />
+                        <TextBlock
+                            x:Name="TxtLineValidPts"
+                            Style="{StaticResource ResultVal}"
+                            Text="—" />
+
+                        <Rectangle Style="{StaticResource Divider}" />
+
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="拟合直线" />
+                        <TextBlock Style="{StaticResource DimLabel}" Text="直线方程" />
+                        <TextBlock
+                            x:Name="TxtLineEq"
+                            Margin="0,2,0,0"
+                            Style="{StaticResource ResultVal}"
+                            Text="—" />
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            Style="{StaticResource DimLabel}"
+                            Text="参数化形式" />
+                        <TextBlock
+                            x:Name="TxtLineParam"
+                            Margin="0,2,0,0"
+                            FontSize="11"
+                            Style="{StaticResource ResultVal}"
+                            Text="—" />
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            Style="{StaticResource DimLabel}"
+                            Text="倾斜角度" />
+                        <TextBlock
+                            x:Name="TxtLineAngle"
+                            Margin="0,2,0,0"
+                            Style="{StaticResource ResultVal}"
+                            Text="—" />
+
+                        <Rectangle Style="{StaticResource Divider}" />
+
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="误差指标" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="52" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,3,0,0"
+                                Style="{StaticResource DimLabel}"
+                                Text="MSE" />
+                            <TextBlock
+                                x:Name="TxtLineMse"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Style="{StaticResource ResultVal}"
+                                Text="—" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,3,0,0"
+                                Style="{StaticResource DimLabel}"
+                                Text="RMSE" />
+                            <TextBlock
+                                x:Name="TxtLineRmse"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource ResultVal}"
+                                Text="—" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Margin="0,3,0,0"
+                                Style="{StaticResource DimLabel}"
+                                Text="R²" />
+                            <TextBlock
+                                x:Name="TxtLineR2"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Style="{StaticResource ResultVal}"
+                                Text="—" />
+                        </Grid>
+
+                        <Rectangle Style="{StaticResource Divider}" />
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="使用说明" />
+                        <TextBlock
+                            FontSize="11"
+                            Foreground="#555"
+                            LineHeight="18"
+                            TextWrapping="Wrap">
+                            1. 加载图像&#10;2. 点击设置起点 P1&#10;3. 点击设置终点 P2&#10;   → 自动生成 ROI 矩形框&#10;4. 调整 ROI 参数&#10;5. 点击「执行检测」&#10;   → 红点：各 ROI 边缘点&#10;   → 绿线：拟合直线
+                        </TextBlock>
+                    </StackPanel>
+
+                </ScrollViewer>
+            </Border>
+
+            <!--  ─── 圆卡尺面板（叠加在同一格，默认隐藏）───  -->
+            <Border
+                x:Name="PanelCircleBorder"
+                Grid.Column="2"
+                Background="#252526"
+                BorderBrush="#3A3A3A"
+                BorderThickness="1,0,0,0"
+                Visibility="Collapsed">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="14,12">
+
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#DCDCDC"
+                            Text="圆卡尺" />
+
+                        <Rectangle Margin="0,6,0,0" Style="{StaticResource Divider}" />
+
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="卡尺参数" />
+
+                        <!--  ROI 数量  -->
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="36" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource DimLabel}"
+                                Text="ROI 数量" />
+                            <TextBlock
+                                x:Name="TxtCircleRoiCount"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ResultVal}"
+                                Text="16" />
+                        </Grid>
+                        <Slider
+                            x:Name="SliderCircleRoiCount"
+                            IsSnapToTickEnabled="True"
+                            LargeChange="5"
+                            Maximum="60"
+                            Minimum="3"
+                            SmallChange="1"
+                            Style="{StaticResource ParamSlider}"
+                            TickFrequency="1"
+                            ValueChanged="OnCircleRoiCountChanged"
+                            Value="16" />
+
+                        <!--  ROI 半宽  -->
+                        <Grid Margin="0,8,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource DimLabel}"
+                                Text="ROI 半宽 (px)" />
+                            <TextBlock
+                                x:Name="TxtCircleRoiHalf"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ResultVal}"
+                                Text="20" />
+                        </Grid>
+                        <Slider
+                            x:Name="SliderCircleRoiHalf"
+                            IsSnapToTickEnabled="True"
+                            LargeChange="10"
+                            Maximum="100"
+                            Minimum="5"
+                            SmallChange="1"
+                            Style="{StaticResource ParamSlider}"
+                            TickFrequency="1"
+                            ValueChanged="OnCircleRoiHalfChanged"
+                            Value="20" />
+
+                        <!--  起始角度  -->
+                        <Grid Margin="0,8,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="46" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource DimLabel}"
+                                Text="起始角度 (°)" />
+                            <TextBlock
+                                x:Name="TxtStartAngle"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ResultVal}"
+                                Text="0" />
+                        </Grid>
+                        <Slider
+                            x:Name="SliderStartAngle"
+                            IsSnapToTickEnabled="True"
+                            LargeChange="15"
+                            Maximum="359"
+                            Minimum="0"
+                            SmallChange="1"
+                            Style="{StaticResource ParamSlider}"
+                            TickFrequency="1"
+                            ValueChanged="OnStartAngleChanged"
+                            Value="0" />
+
+                        <!--  扫描范围  -->
+                        <Grid Margin="0,8,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="46" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Style="{StaticResource DimLabel}"
+                                Text="扫描范围 (°)" />
+                            <TextBlock
+                                x:Name="TxtSweepAngle"
+                                Grid.Column="1"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource ResultVal}"
+                                Text="360" />
+                        </Grid>
+                        <Slider
+                            x:Name="SliderSweepAngle"
+                            IsSnapToTickEnabled="True"
+                            LargeChange="30"
+                            Maximum="360"
+                            Minimum="10"
+                            SmallChange="1"
+                            Style="{StaticResource ParamSlider}"
+                            TickFrequency="1"
+                            ValueChanged="OnSweepAngleChanged"
+                            Value="360" />
+
+                        <Rectangle Style="{StaticResource Divider}" />
+
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="检测结果" />
+                        <TextBlock Style="{StaticResource DimLabel}" Text="有效点 / 总 ROI" />
+                        <TextBlock
+                            x:Name="TxtCircleValidPts"
+                            Style="{StaticResource ResultVal}"
+                            Text="—" />
+
+                        <Rectangle Style="{StaticResource Divider}" />
+
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="拟合圆" />
+                        <TextBlock Style="{StaticResource DimLabel}" Text="圆心 (px)" />
+                        <TextBlock
+                            x:Name="TxtCircleCenter"
+                            Margin="0,2,0,0"
+                            Style="{StaticResource ResultVal}"
+                            Text="—" />
+                        <TextBlock
+                            Margin="0,6,0,0"
+                            Style="{StaticResource DimLabel}"
+                            Text="半径 (px)" />
+                        <TextBlock
+                            x:Name="TxtCircleRadius"
+                            Margin="0,2,0,0"
+                            Style="{StaticResource ResultVal}"
+                            Text="—" />
+
+                        <Rectangle Style="{StaticResource Divider}" />
+
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="误差指标" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="62" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,3,0,0"
+                                Style="{StaticResource DimLabel}"
+                                Text="MSE" />
+                            <TextBlock
+                                x:Name="TxtCircleMse"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Style="{StaticResource ResultVal}"
+                                Text="—" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin="0,3,0,0"
+                                Style="{StaticResource DimLabel}"
+                                Text="RMSE" />
+                            <TextBlock
+                                x:Name="TxtCircleRmse"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Style="{StaticResource ResultVal}"
+                                Text="—" />
+                            <TextBlock
+                                Grid.Row="2"
+                                Grid.Column="0"
+                                Margin="0,3,0,0"
+                                Style="{StaticResource DimLabel}"
+                                Text="最大偏差" />
+                            <TextBlock
+                                x:Name="TxtCircleMaxDev"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                Style="{StaticResource ResultVal}"
+                                Text="—" />
+                        </Grid>
+
+                        <Rectangle Style="{StaticResource Divider}" />
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="使用说明" />
+                        <TextBlock
+                            FontSize="11"
+                            Foreground="#555"
+                            LineHeight="18"
+                            TextWrapping="Wrap">
+                            1. 加载图像&#10;2. 在图像上点击 3 个点&#10;   → 自动生成参考圆和 ROI&#10;3. 调整 ROI 参数和扫描角度&#10;4. 点击「执行检测」&#10;   → 红点：各 ROI 边缘点&#10;   → 绿圆：拟合结果圆
+                        </TextBlock>
+
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+        </Grid>
+    </DockPanel>
+</Window>
