@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="D:\source\dotNetDemo\WPF\ControlLibrary\ControlLibrary.csproj" />
+    <ProjectReference Include="..\ControlLibrary\ControlLibrary.csproj" />
   </ItemGroup>
 
 </Project>

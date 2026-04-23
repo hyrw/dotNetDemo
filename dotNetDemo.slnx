@@ -25,7 +25,7 @@
     <Project Path="PluginDemo.PluginA/PluginDemo.PluginA.csproj" />
   </Folder>
   <Folder Name="/WPF/">
-    <Project Path="C:/Users/xhui/source/dotNetDemo/WPF/CaliperTool.Wpf/CaliperTool.Wpf.csproj" />
+    <Project Path="WPF/CaliperTool.Wpf/CaliperTool.Wpf.csproj" />
     <Project Path="NavigationDemo/NavigationDemo.csproj" />
     <Project Path="NotifyIconAndHotKeyDemo/NotifyIconAndHotKeyDemo.csproj" />
     <Project Path="SnakeDemo/SnakeDemo.csproj" />
